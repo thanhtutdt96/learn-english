@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/fragment3_container"    android:background="?android:windowBackground"
+
+    android:padding="16dp">
+
+    <RelativeLayout
+        android:id="@+id/sectionFeatured"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/txtFeatured"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Featured courses"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            android:textColor="@color/colorBlack" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerFeatured"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtFeatured"
+            android:scrollbars="horizontal">
+
+        </android.support.v7.widget.RecyclerView>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/sectionFeatured"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:id="@+id/txtCategory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Categories"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            android:textColor="@color/colorBlack" />
+
+        <ListView
+            android:layout_marginTop="5dp"
+            android:id="@+id/listCategory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtCategory"
+            android:divider="@null">
+
+        </ListView>
+    </RelativeLayout>
+</RelativeLayout>
