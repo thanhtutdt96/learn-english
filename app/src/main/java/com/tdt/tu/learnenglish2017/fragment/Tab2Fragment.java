@@ -1,6 +1,7 @@
 package com.tdt.tu.learnenglish2017.fragment;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 
 import com.tdt.tu.learnenglish2017.R;
 import com.tdt.tu.learnenglish2017.activity.LessonActivity;
+import com.tdt.tu.learnenglish2017.activity.QAActivity;
 import com.tdt.tu.learnenglish2017.helper.Constants;
 import com.tdt.tu.learnenglish2017.helper.CourseAdapter;
 import com.tdt.tu.learnenglish2017.item.Course;
@@ -33,6 +35,8 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by Pham Thanh Tu on 26-Sep-17.
@@ -137,6 +141,7 @@ public class Tab2Fragment extends Fragment {
             JSONArray jsonArray = jsonObject.getJSONArray("courses");
 
             final String[] course_names = new String[jsonArray.length()];
+            final String[] course_ids = new String[jsonArray.length()];
             int[] prices = new int[jsonArray.length()];
             listCourse = new ArrayList<>();
 
@@ -146,10 +151,10 @@ public class Tab2Fragment extends Fragment {
                 //getting json object from the json array
                 JSONObject object = jsonArray.getJSONObject(i);
 
-                //getting the name from the json object and putting it inside string array
+                course_ids[i] = object.getString("course_id");
                 course_names[i] = object.getString("course_name");
                 prices[i] = object.getInt("price");
-                listCourse.add(new Course(imageId[i], course_names[i], prices[i]));
+                listCourse.add(new Course(imageId[i], course_ids[i], course_names[i], prices[i]));
             }
         } else {
             Toasty.warning(view.getContext(), "No courses found", Toast.LENGTH_SHORT);
@@ -161,9 +166,16 @@ public class Tab2Fragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent i = new Intent(view.getContext(), LessonActivity.class);
-                i.putExtra("courseName", listCourse.get(position).getTitle());
-                startActivity(i);
+
+                SharedPreferences prefs = view.getContext().getSharedPreferences("my_prefs",MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString("courseId", listCourse.get(position).getCourseId());
+                editor.commit();
+
+                Intent i1 = new Intent(view.getContext(), LessonActivity.class);
+                i1.putExtra("courseName", listCourse.get(position).getCourseName());
+                startActivity(i1);
+
             }
         });
     }

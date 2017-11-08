@@ -55,8 +55,8 @@ public class CourseAdapter extends ArrayAdapter<Course> {
 
         ButterKnife.bind(this, convertView);
 
-        icon.setImageResource(course.getId());
-        title.setText(course.getTitle());
+        icon.setImageResource(course.getImageId());
+        title.setText(course.getCourseName());
         SpannableString priceUnit = new SpannableString("đ" + String.valueOf(course.getPrice()));
         priceUnit.setSpan(new UnderlineSpan(), 0, 1, 0);
         if (course.getPrice() == 0)

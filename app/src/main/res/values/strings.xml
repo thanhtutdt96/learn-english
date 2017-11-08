@@ -2,10 +2,19 @@
 <resources>
 
     <string name="app_name">Learn English 2017</string>
-    <string name="summary_tab_name">Summary</string>
-    <string name="mine_tab_name">Mine</string>
-    <string name="featured_tab_name">Featured</string>
-    <string name="search_tab_name">Search</string>
-    <string name="favorite_tab_name">Favorite</string>
+
+    <string-array name="lessons_array">
+        <item>General question</item>
+        <item>Lesson 1</item>
+        <item>Lesson 2</item>
+        <item>Lesson 3</item>
+        <item>Lesson 4</item>
+        <item>Lesson 5</item>
+        <item>Lesson 6</item>
+        <item>Lesson 7</item>
+        <item>Lesson 8</item>
+        <item>Lesson 9</item>
+        <item>Lesson 10</item>
+    </string-array>
 
 </resources>

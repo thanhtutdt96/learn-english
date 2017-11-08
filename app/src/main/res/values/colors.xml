@@ -2,13 +2,13 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#8BC34A</color>
     <color name="colorGrey">#C3C3C3</color>
     <color name="colorRed">#F44336</color>
     <color name="colorTeal">#009688</color>
     <color name="colorOrange">#FF9800</color>
     <color name="colorWhite">#FFFFFF</color>
-    <color name="color5">#009688</color>
+    <color name="colorGreen">#8BC34A</color>
     <color name="colorBlack">#000000</color>
 
 

@@ -21,7 +21,7 @@
                 android:id="@+id/txtName_Question"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="7"
+                android:layout_weight="8"
                 android:text="Name"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
                 android:textColor="@color/colorBlack" />
@@ -30,7 +30,7 @@
                 android:id="@+id/txtlessonNumber_Question"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="3"
+                android:layout_weight="2"
                 android:text="Lesson"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
                 android:textColor="@color/colorRed" />

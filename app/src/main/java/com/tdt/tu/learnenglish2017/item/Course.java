@@ -1,34 +1,40 @@
 package com.tdt.tu.learnenglish2017.item;
 
-/**
- * Created by Pham Thanh Tu on 11-Oct-17.
- */
-
 public class Course {
-    int id;
-    String title;
-    int price;
+    private int imageId;
+    private String courseId;
+    private String courseName;
+    private int price;
 
-    public Course(int id, String title, int price) {
-        this.id = id;
-        this.title = title;
+    public Course(int imageId, String courseId, String courseName, int price) {
+        this.imageId = imageId;
+        this.courseId = courseId;
+        this.courseName = courseName;
         this.price = price;
     }
 
-    public int getId() {
-        return id;
+    public int getImageId() {
+        return imageId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setImageId(int imageId) {
+        this.imageId = imageId;
     }
 
-    public String getTitle() {
-        return title;
+    public String getCourseId() {
+        return courseId;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setCourseId(String courseId) {
+        this.courseId = courseId;
+    }
+
+    public String getCourseName() {
+        return courseName;
+    }
+
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
     }
 
     public int getPrice() {

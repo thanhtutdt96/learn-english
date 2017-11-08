@@ -15,6 +15,7 @@ import com.google.android.youtube.player.YouTubePlayerFragment;
 import com.tdt.tu.learnenglish2017.R;
 import com.tdt.tu.learnenglish2017.fragment.LessonsFragment;
 import com.tdt.tu.learnenglish2017.fragment.MoreFragment;
+import com.tdt.tu.learnenglish2017.fragment.Tab3Fragment;
 import com.tdt.tu.learnenglish2017.helper.Constants;
 import com.tdt.tu.learnenglish2017.helper.SectionsPagerAdapter;
 import com.tdt.tu.learnenglish2017.item.Lesson;
@@ -40,7 +41,6 @@ public class LessonActivity extends AppCompatActivity implements YouTubePlayer.O
 
     String[] links;
     public static ArrayList<Lesson> listLesson;
-
     @BindView(R.id.viewpager)
     ViewPager viewPager;
     @BindView(R.id.tabs_Lesson)
@@ -86,6 +86,14 @@ public class LessonActivity extends AppCompatActivity implements YouTubePlayer.O
         adapter.addFragment(new LessonsFragment());
         adapter.addFragment(new MoreFragment());
         viewPager.setAdapter(adapter);
+    }
+
+    private void transferDataToFragment()
+    {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("listLesson",listLesson);
+        LessonsFragment lessonsFragment = new LessonsFragment();
+        lessonsFragment.setArguments(bundle);
     }
 
 
