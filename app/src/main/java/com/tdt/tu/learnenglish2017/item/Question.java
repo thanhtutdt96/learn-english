@@ -5,18 +5,28 @@ package com.tdt.tu.learnenglish2017.item;
  */
 
 public class Question {
+    int questionId;
     String name;
     String date;
     String lesson;
     String title;
     String content;
 
-    public Question(String name, String date, String lesson, String title, String content) {
+    public Question(int questionId, String name, String date, String lesson, String title, String content) {
+        this.questionId = questionId;
         this.name = name;
         this.date = date;
         this.lesson = lesson;
         this.title = title;
         this.content = content;
+    }
+
+    public int getQuestionId() {
+        return questionId;
+    }
+
+    public void setQuestionId(int questionId) {
+        this.questionId = questionId;
     }
 
     public String getName() {

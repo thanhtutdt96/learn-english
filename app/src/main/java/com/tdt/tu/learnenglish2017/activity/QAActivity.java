@@ -1,13 +1,9 @@
 package com.tdt.tu.learnenglish2017.activity;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -18,34 +14,25 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.tdt.tu.learnenglish2017.R;
-import com.tdt.tu.learnenglish2017.fragment.Tab1Fragment;
 import com.tdt.tu.learnenglish2017.helper.Constants;
-import com.tdt.tu.learnenglish2017.helper.CourseAdapter;
 import com.tdt.tu.learnenglish2017.helper.QuestionAdapter;
 import com.tdt.tu.learnenglish2017.helper.RequestHandler;
-import com.tdt.tu.learnenglish2017.item.Course;
 import com.tdt.tu.learnenglish2017.item.Question;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import es.dmoral.toasty.Toasty;
 
 public class QAActivity extends AppCompatActivity {
     @BindView(R.id.listViewQA)
@@ -82,6 +69,16 @@ public class QAActivity extends AppCompatActivity {
         buttonHandler();
         spinnerHandler();
         loadQuestions();
+        listViewHandler();
+    }
+
+    private void listViewHandler() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+            }
+        });
     }
 
     private void buttonHandler() {
@@ -225,6 +222,7 @@ public class QAActivity extends AppCompatActivity {
             JSONObject obj = questions.getJSONObject(i);
 
             questionList.add(new Question(
+                    obj.getInt("question_id"),
                     obj.getString("name"),
                     obj.getString("date"),
                     obj.getString("lesson_number"),

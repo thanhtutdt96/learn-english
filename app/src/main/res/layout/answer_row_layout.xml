@@ -1,52 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:padding="10dp">
 
     <ImageView
-        android:id="@+id/imgAvatar_Question"
+        android:id="@+id/imgAvatar_rowAnswer"
         android:layout_width="37dp"
         android:layout_height="37dp"
         android:padding="2dp"
         android:src="@drawable/avatar" />
 
     <LinearLayout
-        android:id="@+id/infoSection"
+        android:id="@+id/section1_rowAnswer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_toRightOf="@+id/imgAvatar_Question"
-        android:layout_marginLeft="5dp">
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@+id/imgAvatar_rowAnswer"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:textColor="@color/colorBlack"
-            android:weightSum="15">
+            android:weightSum="10">
 
             <TextView
-                android:id="@+id/txtName_Question"
+                android:id="@+id/txtName_rowAnswer"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="11"
+                android:layout_weight="8"
                 android:text="Name"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
                 android:textColor="@color/colorBlack" />
-
-            <TextView
-                android:id="@+id/txtlessonNumber_Question"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="4"
-                android:text="Lesson"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-                android:textColor="@color/colorRed" />
         </LinearLayout>
 
         <TextView
-            android:id="@+id/txtDate_Question"
+            android:id="@+id/txtDate_rowAnswer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Date"
@@ -57,21 +48,12 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/infoSection"
+        android:layout_below="@id/section1_rowAnswer"
         android:layout_marginTop="10dp"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/txtTitle_Question"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Title"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-            android:textColor="@color/colorBlack"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/txtContent_Question"
+            android:id="@+id/txtContent_Answer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Content"
