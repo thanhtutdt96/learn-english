@@ -3,6 +3,8 @@ package com.tdt.tu.learnenglish2017.activity;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -70,6 +72,11 @@ public class QAActivity extends AppCompatActivity {
         spinnerHandler();
         loadQuestions();
         listViewHandler();
+    }
+
+    private void callFragment(Fragment fragment) {
+        FragmentManager manager = getSupportFragmentManager();
+
     }
 
     private void listViewHandler() {
