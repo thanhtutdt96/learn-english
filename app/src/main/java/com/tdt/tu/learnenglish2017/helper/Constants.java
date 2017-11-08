@@ -1,7 +1,7 @@
 package com.tdt.tu.learnenglish2017.helper;
 
 public class Constants {
-    private static String ROOT_URL = "http://192.168.1.55/learn_english_2017/";
+    private static String ROOT_URL = "http://192.168.0.141/learn_english_2017/";
 
     public static final String API_KEY = "AIzaSyD3-fhnusRAieaxCw8sfkZyxJBoWpqr7PY";
 
