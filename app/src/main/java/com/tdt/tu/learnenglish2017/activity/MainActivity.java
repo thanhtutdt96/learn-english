@@ -56,8 +56,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupBottomNavigationStyle() {
-        bottomNavigation.setDefaultBackgroundColor(fetchColor(R.color.colorTeal));
-        bottomNavigation.setAccentColor(fetchColor(R.color.colorWhite));
+        bottomNavigation.setDefaultBackgroundColor(fetchColor(R.color.colorWhite));
+        bottomNavigation.setAccentColor(fetchColor(R.color.colorAccent));
         bottomNavigation.setInactiveColor(fetchColor(R.color.colorGrey));
         bottomNavigation.setTitleState(AHBottomNavigation.TitleState.ALWAYS_SHOW);
     }

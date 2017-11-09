@@ -3,16 +3,13 @@ package com.tdt.tu.learnenglish2017.helper;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tdt.tu.learnenglish2017.R;
-import com.tdt.tu.learnenglish2017.item.More;
 import com.tdt.tu.learnenglish2017.item.Question;
 
 import java.util.List;
@@ -39,7 +36,6 @@ public class QuestionAdapter extends ArrayAdapter<Question> {
     TextView title;
     @BindView(R.id.txtContent_Question)
     TextView content;
-    TextView textView;
 
     public QuestionAdapter(@NonNull Context context, int resource, @NonNull List objects) {
         super(context, resource, objects);

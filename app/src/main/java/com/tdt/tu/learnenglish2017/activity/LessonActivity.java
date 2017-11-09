@@ -15,7 +15,6 @@ import com.google.android.youtube.player.YouTubePlayerFragment;
 import com.tdt.tu.learnenglish2017.R;
 import com.tdt.tu.learnenglish2017.fragment.LessonsFragment;
 import com.tdt.tu.learnenglish2017.fragment.MoreFragment;
-import com.tdt.tu.learnenglish2017.fragment.Tab3Fragment;
 import com.tdt.tu.learnenglish2017.helper.Constants;
 import com.tdt.tu.learnenglish2017.helper.SectionsPagerAdapter;
 import com.tdt.tu.learnenglish2017.item.Lesson;
@@ -40,7 +39,7 @@ public class LessonActivity extends AppCompatActivity implements YouTubePlayer.O
     private YouTubePlayerFragment youTubePlayerFragment;
 
     String[] links;
-    public static ArrayList<Lesson> listLesson;
+    public static ArrayList<Lesson> listLesson = new ArrayList<>();
     @BindView(R.id.viewpager)
     ViewPager viewPager;
     @BindView(R.id.tabs_Lesson)
@@ -51,6 +50,9 @@ public class LessonActivity extends AppCompatActivity implements YouTubePlayer.O
     public static YouTubePlayer mYoutubePlayer;
     int REQUEST_VIDEO = 1;
 
+    String courseName;
+    String courseId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,10 +61,8 @@ public class LessonActivity extends AppCompatActivity implements YouTubePlayer.O
         // Initialize the views
         ButterKnife.bind(this);
 
-        String name = getIntent().getStringExtra("courseName");
-        courseTitle.setText(name);
-
-        listLesson = new ArrayList<>();
+        courseName = getIntent().getStringExtra("courseName");
+        courseTitle.setText(courseName);
 
         //Retrieve all lessons data
         getJSON(Constants.URL_ALL_LESSONS);
@@ -87,15 +87,6 @@ public class LessonActivity extends AppCompatActivity implements YouTubePlayer.O
         adapter.addFragment(new MoreFragment());
         viewPager.setAdapter(adapter);
     }
-
-    private void transferDataToFragment()
-    {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("listLesson",listLesson);
-        LessonsFragment lessonsFragment = new LessonsFragment();
-        lessonsFragment.setArguments(bundle);
-    }
-
 
     @Override
     public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
@@ -195,7 +186,6 @@ public class LessonActivity extends AppCompatActivity implements YouTubePlayer.O
             String[] durations = new String[jsonArray.length()];
             links = new String[jsonArray.length()];
             String[] thumbnail = new String[jsonArray.length()];
-            int[] prices = new int[jsonArray.length()];
 
             //looping through all the elements in json array
             for (int i = 0; i < jsonArray.length(); i++) {

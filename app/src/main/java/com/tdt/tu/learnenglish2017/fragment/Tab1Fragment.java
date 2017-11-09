@@ -2,20 +2,17 @@ package com.tdt.tu.learnenglish2017.fragment;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tdt.tu.learnenglish2017.R;
 import com.tdt.tu.learnenglish2017.activity.LoginActivity;
-import com.tdt.tu.learnenglish2017.activity.MainActivity;
-import com.tdt.tu.learnenglish2017.activity.QAActivity;
 import com.tdt.tu.learnenglish2017.helper.SQLiteHandler;
 import com.tdt.tu.learnenglish2017.helper.SessionManager;
 
@@ -66,6 +63,7 @@ public class Tab1Fragment extends Fragment {
         SharedPreferences prefs = view.getContext().getSharedPreferences("my_prefs",MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("username", name );
+        editor.putString("email", email);
         editor.commit();
 
         // Displaying the user details on the screen

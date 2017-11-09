@@ -5,14 +5,14 @@ package com.tdt.tu.learnenglish2017.item;
  */
 
 public class Question {
-    int questionId;
+    String questionId;
     String name;
     String date;
     String lesson;
     String title;
     String content;
 
-    public Question(int questionId, String name, String date, String lesson, String title, String content) {
+    public Question(String questionId, String name, String date, String lesson, String title, String content) {
         this.questionId = questionId;
         this.name = name;
         this.date = date;
@@ -21,11 +21,11 @@ public class Question {
         this.content = content;
     }
 
-    public int getQuestionId() {
+    public String getQuestionId() {
         return questionId;
     }
 
-    public void setQuestionId(int questionId) {
+    public void setQuestionId(String questionId) {
         this.questionId = questionId;
     }
 

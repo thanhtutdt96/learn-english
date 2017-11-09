@@ -4,7 +4,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -20,6 +20,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.tdt.tu.learnenglish2017.R;
+import com.tdt.tu.learnenglish2017.fragment.AnswerFragment;
 import com.tdt.tu.learnenglish2017.helper.Constants;
 import com.tdt.tu.learnenglish2017.helper.QuestionAdapter;
 import com.tdt.tu.learnenglish2017.helper.RequestHandler;
@@ -32,6 +33,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Scanner;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,7 +43,7 @@ public class QAActivity extends AppCompatActivity {
     ListView listView;
     @BindView(R.id.spinLesson)
     Spinner spinner;
-    @BindView(R.id.imgbackArrow)
+    @BindView(R.id.imgbackArrow_Question)
     ImageView backArrow;
     @BindView(R.id.imgClose)
     ImageView closeForm;
@@ -58,8 +60,6 @@ public class QAActivity extends AppCompatActivity {
 
     QuestionAdapter adapter;
     List<Question> questionList = new ArrayList<>();
-    private static final int CODE_GET_REQUEST = 1024;
-    private static final int CODE_POST_REQUEST = 1025;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,23 +67,45 @@ public class QAActivity extends AppCompatActivity {
         setContentView(R.layout.activity_qa);
 
         init();
-
         buttonHandler();
         spinnerHandler();
         loadQuestions();
         listViewHandler();
     }
 
-    private void callFragment(Fragment fragment) {
-        FragmentManager manager = getSupportFragmentManager();
+    private String prepareQuestionId() {
+        String currentId = questionList.get(questionList.size() - 1).getQuestionId();
+        Scanner scanner = new Scanner(currentId).useDelimiter("[^0-9]+");
+        int integer = scanner.nextInt();
+        integer++;
+        String newId = "Q" + String.valueOf(integer);
+        return newId;
+    }
 
+
+    private void callFragment(Fragment fragment) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.qAContainer, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     private void listViewHandler() {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Fragment answerFragment = new AnswerFragment();
+                callFragment(answerFragment);
 
+                Bundle bundle = new Bundle();
+                bundle.putString("question_id", questionList.get(i).getQuestionId());
+                bundle.putString("name", questionList.get(i).getName());
+                bundle.putString("date", questionList.get(i).getDate());
+                bundle.putString("lesson_number", questionList.get(i).getLesson());
+                bundle.putString("title", questionList.get(i).getTitle());
+                bundle.putString("content", questionList.get(i).getContent());
+
+                answerFragment.setArguments(bundle);
             }
         });
     }
@@ -177,11 +199,11 @@ public class QAActivity extends AppCompatActivity {
         protected String doInBackground(Void... voids) {
             RequestHandler requestHandler = new RequestHandler();
 
-            if (requestCode == CODE_POST_REQUEST)
+            if (requestCode == Constants.CODE_POST_REQUEST)
                 return requestHandler.sendPostRequest(url, params);
 
 
-            if (requestCode == CODE_GET_REQUEST)
+            if (requestCode == Constants.CODE_GET_REQUEST)
                 return requestHandler.sendGetRequest(url);
 
             return null;
@@ -190,7 +212,7 @@ public class QAActivity extends AppCompatActivity {
 
     private void createQuestion() {
         SharedPreferences prefs = getSharedPreferences("my_prefs", MODE_PRIVATE);
-        String courseId = prefs.getString("courseId", "");
+        String courseId = prefs.getString("course_id", "");
         String name = prefs.getString("username", "");
         String title = editTitle.getText().toString().trim();
         String content = editContent.getText().toString().trim();
@@ -206,6 +228,7 @@ public class QAActivity extends AppCompatActivity {
         }
 
         HashMap<String, String> params = new HashMap<>();
+        params.put("question_id", prepareQuestionId());
         params.put("course_id", courseId);
         params.put("lesson_number", lesson_number);
         params.put("name", name);
@@ -213,12 +236,12 @@ public class QAActivity extends AppCompatActivity {
         params.put("content", content);
         Log.d("map", params.toString());
 
-        PerformNetworkRequest request = new PerformNetworkRequest(Constants.URL_ADD_QUESTION, params, CODE_POST_REQUEST);
+        PerformNetworkRequest request = new PerformNetworkRequest(Constants.URL_ADD_QUESTION, params, Constants.CODE_POST_REQUEST);
         request.execute();
     }
 
     private void loadQuestions() {
-        PerformNetworkRequest request = new PerformNetworkRequest(Constants.URL_GET_QUESTIONS, null, CODE_GET_REQUEST);
+        PerformNetworkRequest request = new PerformNetworkRequest(Constants.URL_GET_QUESTIONS, null, Constants.CODE_GET_REQUEST);
         request.execute();
     }
 
@@ -229,7 +252,7 @@ public class QAActivity extends AppCompatActivity {
             JSONObject obj = questions.getJSONObject(i);
 
             questionList.add(new Question(
-                    obj.getInt("question_id"),
+                    obj.getString("question_id"),
                     obj.getString("name"),
                     obj.getString("date"),
                     obj.getString("lesson_number"),
