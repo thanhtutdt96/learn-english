@@ -28,8 +28,12 @@ public class Constants {
 
     public static String URL_GET_COURSES_BY_CATEGORY_ID = ROOT_URL + "api.php?apicall=getcoursesbycategoryid";
 
-    public static String URL_ADD_USER_COURSES = ROOT_URL + "api.php?apicall=createusercourse";
+    public static String URL_ADD_USER_COURSE = ROOT_URL + "api.php?apicall=createusercourse";
 
     public static String URL_GET_COURSES_BY_EMAIL = ROOT_URL + "api.php?apicall=getcoursesbyemail";
+
+    public static String URL_ADD_USER_FAVORITE = ROOT_URL + "api.php?apicall=createuserfavorite";
+
+    public static String URL_GET_FAVORITES_BY_EMAIL = ROOT_URL + "api.php?apicall=getfavoritesbyemail";
 
 }

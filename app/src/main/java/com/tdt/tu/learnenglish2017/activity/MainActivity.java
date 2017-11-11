@@ -17,18 +17,19 @@ import com.tdt.tu.learnenglish2017.fragment.Tab5Fragment;
 import com.tdt.tu.learnenglish2017.helper.SectionsPagerAdapter;
 
 public class MainActivity extends AppCompatActivity {
-    private SectionsPagerAdapter mSectionsPagerAdapter;
-    private ViewPager mViewPager;
+    private SectionsPagerAdapter sectionsPagerAdapter;
+    private ViewPager viewPager;
     private AHBottomNavigation bottomNavigation;
+    boolean allowRefresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        mViewPager = (ViewPager) findViewById(R.id.container);
-        setupViewPager(mViewPager);
+        sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        viewPager = (ViewPager) findViewById(R.id.container);
+        setupViewPager(viewPager);
 
         bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation);
         addBottomNavigationItems();
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onTabSelected(int position, boolean wasSelected) {
                 if (!wasSelected)
-                    mViewPager.setCurrentItem(position);
+                    viewPager.setCurrentItem(position);
                 return true;
             }
         });
@@ -75,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigation.addItem(searchTab);
         bottomNavigation.addItem(favoriteTab);
     }
+
 
     private int fetchColor(@ColorRes int color) {
         return ContextCompat.getColor(this, color);

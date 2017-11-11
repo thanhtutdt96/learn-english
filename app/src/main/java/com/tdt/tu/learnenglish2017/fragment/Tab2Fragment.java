@@ -41,6 +41,8 @@ public class Tab2Fragment extends Fragment {
     CourseAdapter adapter;
     @BindView(R.id.listUserCourse)
     ListView listView;
+
+    ArrayList<String> listCourseId = new ArrayList<>();
     View view;
 
     Integer[] imageId = {
@@ -66,7 +68,15 @@ public class Tab2Fragment extends Fragment {
         init();
         loadUserCourses();
         listViewHandler();
+        getAllCourseId();
         return view;
+    }
+
+    private void getAllCourseId() {
+        for (int i = 0; i < listUserCourse.size(); i++) {
+            listCourseId.add(listUserCourse.get(i).getCourseId());
+        }
+
     }
 
     private void listViewHandler() {
@@ -162,4 +172,9 @@ public class Tab2Fragment extends Fragment {
         ButterKnife.bind(this, view);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadUserCourses();
+    }
 }

@@ -18,6 +18,7 @@ android {
         }
     }
     useLibrary 'org.apache.http.legacy'
+    sourceSets { main { assets.srcDirs = ['src/main/assets', 'src/main/res/assets/'] } }
 }
 
 dependencies {
@@ -27,16 +28,15 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     implementation files('libs/YouTubeAndroidPlayerApi.jar')
-    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:appcompat-v7:25.4.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.android.support:design:25.3.1'
+    compile 'com.android.support:design:25.4.0'
     compile 'com.aurelhubert:ahbottomnavigation:2.1.0'
     compile 'com.mcxiaoke.volley:library-aar:1.0.0'
     compile 'com.github.GrenderG:Toasty:1.2.5'
     compile 'com.jakewharton:butterknife:8.8.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'com.android.support:recyclerview-v7:25.3.1'
-
+    compile 'com.github.bluejamesbond:textjustify-android:2.1.6'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 }
