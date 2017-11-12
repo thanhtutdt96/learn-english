@@ -1,8 +1,13 @@
 package com.tdt.tu.learnenglish2017.activity;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
@@ -16,9 +21,11 @@ import com.tdt.tu.learnenglish2017.R;
 import com.tdt.tu.learnenglish2017.helper.Constants;
 import com.tdt.tu.learnenglish2017.helper.RequestHandler;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import butterknife.BindView;
@@ -38,6 +45,7 @@ public class CourseInfoActivity extends AppCompatActivity {
 
     String courseId;
     String email;
+    ArrayList<String> listCourseId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,17 +54,39 @@ public class CourseInfoActivity extends AppCompatActivity {
 
         init();
         setContent();
-        buttonHandler();
+        loadCourseIdList();
     }
 
     private void buttonHandler() {
+        for (String tmp : listCourseId) {
+            if (tmp.equals(courseId)) {
+                disableBuy();
+                disableFavorite();
+            }
+        }
         btnBuy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 buyCourse();
-                btnBuy.setText("Bought");
-                btnBuy.setEnabled(false);
-                btnBuy.setBackgroundColor(getResources().getColor(R.color.colorGrey));
+                disableBuy();
+                final AlertDialog.Builder builder = new AlertDialog.Builder(CourseInfoActivity.this);
+                builder.setMessage("Do you want to open this course and learn now?");
+                builder.setCancelable(false);
+                builder.setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent intent = new Intent(CourseInfoActivity.this, LessonActivity.class);
+                        startActivity(intent);
+                    }
+                });
+                builder.setPositiveButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
             }
         });
 
@@ -64,8 +94,24 @@ public class CourseInfoActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 addCourseToFavorite();
+                disableFavorite();
             }
         });
+    }
+
+    private void disableBuy() {
+        btnBuy.setText("Bought");
+        btnBuy.setEnabled(false);
+        btnBuy.setCompoundDrawablesWithIntrinsicBounds(this.getResources().getDrawable(R.drawable.ic_check_green_24dp), null, null, null);
+        btnBuy.setBackgroundColor(getResources().getColor(R.color.colorGrey));
+    }
+
+    private void disableFavorite() {
+        btnFavorite.setText("Added to your favorite");
+        btnFavorite.setEnabled(false);
+        btnFavorite.setTextColor(getResources().getColor(R.color.colorWhite));
+        btnFavorite.setCompoundDrawablesWithIntrinsicBounds(this.getResources().getDrawable(R.drawable.ic_check_green_24dp), null, null, null);
+        btnFavorite.setBackgroundColor(getResources().getColor(R.color.colorGrey));
     }
 
     private void setContent() {
@@ -113,11 +159,13 @@ public class CourseInfoActivity extends AppCompatActivity {
         request.execute();
     }
 
-    private class PerformNetworkRequest extends AsyncTask<Void, Void, String> {
+
+    public class PerformNetworkRequest extends AsyncTask<Void, Void, String> {
 
         String url;
         HashMap<String, String> params;
         int requestCode;
+        ProgressDialog dialog;
 
         PerformNetworkRequest(String url, HashMap<String, String> params, int requestCode) {
             this.url = url;
@@ -128,6 +176,17 @@ public class CourseInfoActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            dialog = new ProgressDialog(CourseInfoActivity.this);
+            dialog.setMessage("Please wait...");
+            dialog.setCancelable(false);
+            dialog.show();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    dialog.dismiss();
+                }
+            }, 750);
+
         }
 
         @Override
@@ -138,8 +197,10 @@ public class CourseInfoActivity extends AppCompatActivity {
                 if (!object.getBoolean("error")) {
                     if (!object.getString("message").equals(""))
                         Toast.makeText(CourseInfoActivity.this, object.getString("message"), Toast.LENGTH_SHORT).show();
-
+                    refreshCourseIdList(object.getJSONArray("course_ids"));
+                    buttonHandler();
                 }
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -156,6 +217,27 @@ public class CourseInfoActivity extends AppCompatActivity {
                 return requestHandler.sendGetRequest(url);
 
             return null;
+        }
+    }
+
+
+    private void loadCourseIdList() {
+        SharedPreferences prefs = getSharedPreferences("my_prefs", MODE_PRIVATE);
+        String email = prefs.getString("email", "");
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("email", email);
+
+        PerformNetworkRequest request = new PerformNetworkRequest(Constants.URL_GET_COURSE_ID_BY_EMAIL, params, Constants.CODE_POST_REQUEST);
+        request.execute();
+    }
+
+    private void refreshCourseIdList(JSONArray questions) throws JSONException {
+        listCourseId = new ArrayList<>();
+        for (int i = 0; i < questions.length(); i++) {
+            JSONObject obj = questions.getJSONObject(i);
+
+            listCourseId.add(obj.getString("course_id"));
         }
     }
 }

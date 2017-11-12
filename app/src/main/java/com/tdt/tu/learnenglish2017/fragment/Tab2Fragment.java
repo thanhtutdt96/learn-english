@@ -32,17 +32,13 @@ import butterknife.ButterKnife;
 
 import static android.content.Context.MODE_PRIVATE;
 
-/**
- * Created by Pham Thanh Tu on 26-Sep-17.
- */
-
 public class Tab2Fragment extends Fragment {
     ArrayList<Course> listUserCourse = new ArrayList<>();
     CourseAdapter adapter;
     @BindView(R.id.listUserCourse)
     ListView listView;
 
-    ArrayList<String> listCourseId = new ArrayList<>();
+    public static ArrayList<String> listCourseId = new ArrayList<>();
     View view;
 
     Integer[] imageId = {
@@ -68,16 +64,9 @@ public class Tab2Fragment extends Fragment {
         init();
         loadUserCourses();
         listViewHandler();
-        getAllCourseId();
         return view;
     }
 
-    private void getAllCourseId() {
-        for (int i = 0; i < listUserCourse.size(); i++) {
-            listCourseId.add(listUserCourse.get(i).getCourseId());
-        }
-
-    }
 
     private void listViewHandler() {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -152,7 +141,6 @@ public class Tab2Fragment extends Fragment {
 
     private void refreshQuestionList(JSONArray questions) throws JSONException {
         listUserCourse.clear();
-
         for (int i = 0; i < questions.length(); i++) {
             JSONObject obj = questions.getJSONObject(i);
 
@@ -164,6 +152,7 @@ public class Tab2Fragment extends Fragment {
                     obj.getString("description")
             ));
         }
+
         adapter = new CourseAdapter(view.getContext(), R.layout.course_row_layout, listUserCourse);
         listView.setAdapter(adapter);
     }
@@ -177,4 +166,5 @@ public class Tab2Fragment extends Fragment {
         super.onResume();
         loadUserCourses();
     }
+
 }

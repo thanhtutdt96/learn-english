@@ -36,4 +36,6 @@ public class Constants {
 
     public static String URL_GET_FAVORITES_BY_EMAIL = ROOT_URL + "api.php?apicall=getfavoritesbyemail";
 
+    public static String URL_GET_COURSE_ID_BY_EMAIL = ROOT_URL + "api.php?apicall=getcourseidbyemail";
+
 }

@@ -45,6 +45,7 @@
             android:layout_marginTop="5dp"
             android:background="@color/colorWhite"
             android:text="Add to favorite" />
+
     </LinearLayout>
 
 
@@ -64,10 +65,10 @@
             android:textStyle="bold" />
 
         <com.bluejamesbond.text.DocumentView
-            android:layout_marginTop="5dp"
             android:id="@+id/txtDescription_Info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             app:documentView_text="Here is the description of this course"
             app:documentView_textAlignment="justified"
             app:documentView_textTypefacePath="fonts/calibri.ttf">
