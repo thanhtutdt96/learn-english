@@ -38,7 +38,7 @@
                 android:background="@color/white">
 
                 <TextView
-                    android:id="@+id/course_title_2"
+                    android:id="@+id/txtCourseName_Lesson"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
@@ -53,9 +53,8 @@
                     android:id="@+id/tabs_Lesson"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:tabGravity="fill"
+                    app:tabGravity="center"
                     app:tabIndicatorColor="@color/colorBlack"
-                    app:tabMode="fixed"
                     app:tabTextAppearance="@style/Base.TextAppearance.AppCompat.Small" />
             </android.support.design.widget.AppBarLayout>
         </RelativeLayout>

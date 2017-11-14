@@ -5,46 +5,25 @@
     android:background="?android:windowBackground"
     tools:context="com.tdt.tu.learnenglish2017.fragment.AnswerFragment">
 
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/answerAppBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <android.support.v7.widget.Toolbar
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/grey_border_bottom">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="New Answer"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
-                android:textColor="@color/colorRed" />
-
-            <ImageView
-                android:id="@+id/imgbackArrow_Answer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:src="@drawable/ic_arrow_back_black_24dp" />
-
-        </android.support.v7.widget.Toolbar>
-
-    </android.support.design.widget.AppBarLayout>
+    <ImageView
+        android:id="@+id/imgbackArrow_Answer"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_gravity="start"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/ic_arrow_back_black_24dp" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/answerAppBar"
+        android:layout_below="@+id/imgbackArrow_Answer"
         android:padding="10dp">
 
         <ImageView
             android:id="@+id/imgAvatar_Answer"
             android:layout_width="37dp"
             android:layout_height="37dp"
-            android:layout_marginTop="20dp"
             android:padding="2dp"
             android:src="@drawable/avatar" />
 
@@ -53,7 +32,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:layout_marginTop="20dp"
             android:layout_toRightOf="@+id/imgAvatar_Answer"
             android:orientation="vertical">
 
@@ -70,7 +48,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="8"
                     android:text="Name"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
                     android:textColor="@color/colorBlack" />
 
                 <TextView
@@ -79,7 +57,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:text="Lesson"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
                     android:textColor="@color/colorRed" />
             </LinearLayout>
 
@@ -88,7 +66,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Date"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
                 android:textColor="@color/colorBlack" />
         </LinearLayout>
 
@@ -105,7 +83,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Title"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
                 android:textColor="@color/colorBlack"
                 android:textStyle="bold" />
 
@@ -141,17 +119,17 @@
                 android:layout_marginTop="10dp"
                 android:gravity="top"
                 android:hint="Write your response..."
-                android:lines="4"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small" />
+                android:lines="2"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption" />
 
             <Button
                 android:id="@+id/btnPost_Answer"
-                android:layout_width="60dp"
-                android:layout_height="30dp"
+                android:layout_width="50dp"
+                android:layout_height="20dp"
                 android:layout_gravity="center"
                 android:background="@color/colorGreen"
                 android:text="Post"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
                 android:textColor="@color/colorWhite" />
         </LinearLayout>
     </RelativeLayout>

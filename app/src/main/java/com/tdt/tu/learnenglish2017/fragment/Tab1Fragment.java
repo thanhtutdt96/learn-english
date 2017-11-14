@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.tdt.tu.learnenglish2017.R;
 import com.tdt.tu.learnenglish2017.activity.LoginActivity;
+import com.tdt.tu.learnenglish2017.helper.Constants;
 import com.tdt.tu.learnenglish2017.helper.SQLiteHandler;
 import com.tdt.tu.learnenglish2017.helper.SessionManager;
 
@@ -60,7 +61,7 @@ public class Tab1Fragment extends Fragment {
         String name = user.get("name");
         String email = user.get("email");
 
-        SharedPreferences prefs = view.getContext().getSharedPreferences("my_prefs",MODE_PRIVATE);
+        SharedPreferences prefs = view.getContext().getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("username", name );
         editor.putString("email", email);

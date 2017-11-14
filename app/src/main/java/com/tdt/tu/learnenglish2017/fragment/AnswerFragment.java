@@ -87,54 +87,6 @@ public class AnswerFragment extends Fragment {
         });
     }
 
-    private class PerformNetworkRequest extends AsyncTask<Void, Void, String> {
-
-        String url;
-        HashMap<String, String> params;
-        int requestCode;
-
-        PerformNetworkRequest(String url, HashMap<String, String> params, int requestCode) {
-            this.url = url;
-            this.params = params;
-            this.requestCode = requestCode;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            try {
-                JSONObject object = new JSONObject(s);
-                if (!object.getBoolean("error")) {
-                    if (!object.getString("message").equals(""))
-                        Toast.makeText(view.getContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
-
-                    refreshQuestionList(object.getJSONArray("answers"));
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        protected String doInBackground(Void... voids) {
-            RequestHandler requestHandler = new RequestHandler();
-
-            if (requestCode == Constants.CODE_POST_REQUEST)
-                return requestHandler.sendPostRequest(url, params);
-
-
-            if (requestCode == Constants.CODE_GET_REQUEST)
-                return requestHandler.sendGetRequest(url);
-
-            return null;
-        }
-    }
-
     private void backArrowHandler() {
         backArrow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -184,11 +136,11 @@ public class AnswerFragment extends Fragment {
         request.execute();
     }
 
-    private void refreshQuestionList(JSONArray questions) throws JSONException {
+    private void refreshAnswerList(JSONArray answers) throws JSONException {
         answerList.clear();
 
-        for (int i = 0; i < questions.length(); i++) {
-            JSONObject obj = questions.getJSONObject(i);
+        for (int i = 0; i < answers.length(); i++) {
+            JSONObject obj = answers.getJSONObject(i);
 
             answerList.add(new Answer(
                     obj.getString("name"),
@@ -203,6 +155,54 @@ public class AnswerFragment extends Fragment {
 
     private void init() {
         ButterKnife.bind(this, view);
+    }
+
+    class PerformNetworkRequest extends AsyncTask<Void, Void, String> {
+
+        String url;
+        HashMap<String, String> params;
+        int requestCode;
+
+        PerformNetworkRequest(String url, HashMap<String, String> params, int requestCode) {
+            this.url = url;
+            this.params = params;
+            this.requestCode = requestCode;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            try {
+                JSONObject object = new JSONObject(s);
+                if (!object.getBoolean("error")) {
+                    if (!object.getString("message").equals(""))
+                        Toast.makeText(view.getContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
+
+                    refreshAnswerList(object.getJSONArray("answers"));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            RequestHandler requestHandler = new RequestHandler();
+
+            if (requestCode == Constants.CODE_POST_REQUEST)
+                return requestHandler.sendPostRequest(url, params);
+
+
+            if (requestCode == Constants.CODE_GET_REQUEST)
+                return requestHandler.sendGetRequest(url);
+
+            return null;
+        }
     }
 
 }

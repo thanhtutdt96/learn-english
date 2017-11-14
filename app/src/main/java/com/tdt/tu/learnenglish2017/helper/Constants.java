@@ -6,17 +6,16 @@ public class Constants {
 
     public static final int CODE_POST_REQUEST = 1025;
 
-    private static String ROOT_URL = "http://192.168.1.55/learn_english_2017/";
-
+    public static final String PREFERENCES_KEY = "MY_PREFS";
     public static final String API_KEY = "AIzaSyD3-fhnusRAieaxCw8sfkZyxJBoWpqr7PY";
-
+    private static String ROOT_URL = "http://192.168.1.55/learn_english_2017/";
     public static String URL_LOGIN = ROOT_URL + "login.php";
 
     public static String URL_REGISTER = ROOT_URL + "register.php";
 
-    public static String URL_ALL_LESSONS = ROOT_URL + "get_lessons_info.php";
+    public static String URL_GET_LESSONS_BY_COURSE_ID = ROOT_URL + "api.php?apicall=getlessonsbycourseid";
 
-    public static String URL_GET_QUESTIONS = ROOT_URL + "api.php?apicall=getquestions";
+    public static String URL_GET_QUESTIONS_BY_COURSE_ID = ROOT_URL + "api.php?apicall=getquestionsbycourseid";
 
     public static String URL_ADD_QUESTION = ROOT_URL + "api.php?apicall=createquestion";
 

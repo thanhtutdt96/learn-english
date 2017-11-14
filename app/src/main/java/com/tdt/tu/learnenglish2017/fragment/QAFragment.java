@@ -1,14 +1,16 @@
-package com.tdt.tu.learnenglish2017.activity;
+package com.tdt.tu.learnenglish2017.fragment;
 
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -20,7 +22,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.tdt.tu.learnenglish2017.R;
-import com.tdt.tu.learnenglish2017.fragment.AnswerFragment;
 import com.tdt.tu.learnenglish2017.helper.Constants;
 import com.tdt.tu.learnenglish2017.helper.QuestionAdapter;
 import com.tdt.tu.learnenglish2017.helper.RequestHandler;
@@ -38,13 +39,13 @@ import java.util.Scanner;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class QAActivity extends AppCompatActivity {
+import static android.content.Context.MODE_PRIVATE;
+
+public class QAFragment extends Fragment {
     @BindView(R.id.listViewQA)
     ListView listView;
     @BindView(R.id.spinLesson)
     Spinner spinner;
-    @BindView(R.id.imgbackArrow_Question)
-    ImageView backArrow;
     @BindView(R.id.imgClose)
     ImageView closeForm;
     @BindView(R.id.askForm)
@@ -58,19 +59,25 @@ public class QAActivity extends AppCompatActivity {
     @BindView(R.id.editContent)
     EditText editContent;
 
-    QuestionAdapter adapter;
     List<Question> questionList = new ArrayList<>();
 
+    View view;
+
+    String courseId;
+    String name;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_qa);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_qa, container, false);
 
         init();
         buttonHandler();
         spinnerHandler();
         loadQuestions();
         listViewHandler();
+
+        return view;
     }
 
     private String prepareQuestionId() {
@@ -84,7 +91,8 @@ public class QAActivity extends AppCompatActivity {
 
 
     private void callFragment(Fragment fragment) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        FragmentManager manager = getFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
         transaction.replace(R.id.qAContainer, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
@@ -96,8 +104,9 @@ public class QAActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Fragment answerFragment = new AnswerFragment();
                 callFragment(answerFragment);
-
+                Toast.makeText(view.getContext(), questionList.get(i).getQuestionId(), Toast.LENGTH_SHORT).show();
                 Bundle bundle = new Bundle();
+                bundle.putString("course_id", courseId);
                 bundle.putString("question_id", questionList.get(i).getQuestionId());
                 bundle.putString("name", questionList.get(i).getName());
                 bundle.putString("date", questionList.get(i).getDate());
@@ -111,12 +120,6 @@ public class QAActivity extends AppCompatActivity {
     }
 
     private void buttonHandler() {
-        backArrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
 
         buttonAsk.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,6 +145,7 @@ public class QAActivity extends AppCompatActivity {
                 askForm.setVisibility(View.GONE);
                 buttonAsk.setVisibility(View.VISIBLE);
                 clearAllValues();
+                loadQuestions();
             }
         });
     }
@@ -153,67 +157,21 @@ public class QAActivity extends AppCompatActivity {
     }
 
     private void init() {
-        ButterKnife.bind(this);
+        ButterKnife.bind(this, view);
+
+        SharedPreferences prefs = view.getContext().getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE);
+        courseId = prefs.getString("course_id", "");
+        name = prefs.getString("username", "");
     }
 
     private void spinnerHandler() {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.lessons_array));
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(view.getContext(), android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.lessons_array));
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
     }
 
-    private class PerformNetworkRequest extends AsyncTask<Void, Void, String> {
-
-        String url;
-        HashMap<String, String> params;
-        int requestCode;
-
-        PerformNetworkRequest(String url, HashMap<String, String> params, int requestCode) {
-            this.url = url;
-            this.params = params;
-            this.requestCode = requestCode;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            try {
-                JSONObject object = new JSONObject(s);
-                if (!object.getBoolean("error")) {
-                    if (!object.getString("message").equals(""))
-                        Toast.makeText(getApplicationContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
-
-                    refreshQuestionList(object.getJSONArray("questions"));
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        protected String doInBackground(Void... voids) {
-            RequestHandler requestHandler = new RequestHandler();
-
-            if (requestCode == Constants.CODE_POST_REQUEST)
-                return requestHandler.sendPostRequest(url, params);
-
-
-            if (requestCode == Constants.CODE_GET_REQUEST)
-                return requestHandler.sendGetRequest(url);
-
-            return null;
-        }
-    }
-
     private void createQuestion() {
-        SharedPreferences prefs = getSharedPreferences("my_prefs", MODE_PRIVATE);
-        String courseId = prefs.getString("course_id", "");
-        String name = prefs.getString("username", "");
+
         String title = editTitle.getText().toString().trim();
         String content = editContent.getText().toString().trim();
         String lesson_number = spinner.getSelectedItem().toString();
@@ -241,7 +199,9 @@ public class QAActivity extends AppCompatActivity {
     }
 
     private void loadQuestions() {
-        PerformNetworkRequest request = new PerformNetworkRequest(Constants.URL_GET_QUESTIONS, null, Constants.CODE_GET_REQUEST);
+        HashMap<String, String> params = new HashMap<>();
+        params.put("course_id", courseId);
+        PerformNetworkRequest request = new PerformNetworkRequest(Constants.URL_GET_QUESTIONS_BY_COURSE_ID, params, Constants.CODE_POST_REQUEST);
         request.execute();
     }
 
@@ -260,8 +220,57 @@ public class QAActivity extends AppCompatActivity {
                     obj.getString("content")
             ));
         }
-        QuestionAdapter adapter = new QuestionAdapter(this, R.layout.question_row_layout, questionList);
+
+        QuestionAdapter adapter = new QuestionAdapter(view.getContext(), R.layout.question_row_layout, questionList);
         listView.setAdapter(adapter);
 
+    }
+
+    private class PerformNetworkRequest extends AsyncTask<Void, Void, String> {
+
+        String url;
+        HashMap<String, String> params;
+        int requestCode;
+
+        PerformNetworkRequest(String url, HashMap<String, String> params, int requestCode) {
+            this.url = url;
+            this.params = params;
+            this.requestCode = requestCode;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            try {
+                JSONObject object = new JSONObject(s);
+                if (!object.getBoolean("error")) {
+                    if (!object.getString("message").equals(""))
+                        Toast.makeText(view.getContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
+
+                    refreshQuestionList(object.getJSONArray("questions"));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            RequestHandler requestHandler = new RequestHandler();
+
+            if (requestCode == Constants.CODE_POST_REQUEST)
+                return requestHandler.sendPostRequest(url, params);
+
+
+            if (requestCode == Constants.CODE_GET_REQUEST)
+                return requestHandler.sendGetRequest(url);
+
+            return null;
+        }
     }
 }

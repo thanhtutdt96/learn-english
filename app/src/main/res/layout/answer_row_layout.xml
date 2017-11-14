@@ -6,8 +6,8 @@
 
     <ImageView
         android:id="@+id/imgAvatar_rowAnswer"
-        android:layout_width="37dp"
-        android:layout_height="37dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:padding="2dp"
         android:src="@drawable/avatar" />
 
@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="8"
                 android:text="Name"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
                 android:textColor="@color/colorBlack" />
         </LinearLayout>
 
@@ -41,7 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Date"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
             android:textColor="@color/colorBlack" />
     </LinearLayout>
 

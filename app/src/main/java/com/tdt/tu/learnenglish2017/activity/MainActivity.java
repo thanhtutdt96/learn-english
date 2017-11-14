@@ -17,10 +17,10 @@ import com.tdt.tu.learnenglish2017.fragment.Tab5Fragment;
 import com.tdt.tu.learnenglish2017.helper.SectionsPagerAdapter;
 
 public class MainActivity extends AppCompatActivity {
+    boolean allowRefresh;
     private SectionsPagerAdapter sectionsPagerAdapter;
     private ViewPager viewPager;
     private AHBottomNavigation bottomNavigation;
-    boolean allowRefresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigation.setDefaultBackgroundColor(fetchColor(R.color.colorWhite));
         bottomNavigation.setAccentColor(fetchColor(R.color.colorAccent));
         bottomNavigation.setInactiveColor(fetchColor(R.color.colorGrey));
-        bottomNavigation.setTitleState(AHBottomNavigation.TitleState.ALWAYS_SHOW);
+        bottomNavigation.setTitleState(AHBottomNavigation.TitleState.SHOW_WHEN_ACTIVE);
     }
 
     private void addBottomNavigationItems() {

@@ -28,8 +28,7 @@
             android:launchMode="singleTop" />
         <activity android:name=".activity.LessonActivity" />
         <activity android:name=".activity.RegisterActivity" />
-        <activity android:name=".activity.QAActivity" />
-        <activity android:name=".activity.CourseInfoActivity"></activity>
+        <activity android:name=".activity.CourseInfoActivity" />
     </application>
 
 </manifest>

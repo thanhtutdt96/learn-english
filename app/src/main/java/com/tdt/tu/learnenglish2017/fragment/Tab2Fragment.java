@@ -33,12 +33,11 @@ import butterknife.ButterKnife;
 import static android.content.Context.MODE_PRIVATE;
 
 public class Tab2Fragment extends Fragment {
+    public static ArrayList<String> listCourseId = new ArrayList<>();
     ArrayList<Course> listUserCourse = new ArrayList<>();
     CourseAdapter adapter;
     @BindView(R.id.listUserCourse)
     ListView listView;
-
-    public static ArrayList<String> listCourseId = new ArrayList<>();
     View view;
 
     Integer[] imageId = {
@@ -74,9 +73,53 @@ public class Tab2Fragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(view.getContext(), LessonActivity.class);
                 intent.putExtra("course_name", listUserCourse.get(i).getCourseName());
+                intent.putExtra("course_id", listUserCourse.get(i).getCourseId());
                 startActivity(intent);
+
+                SharedPreferences.Editor editor = view.getContext().getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).edit();
+                editor.putString("course_id", listUserCourse.get(i).getCourseId());
+                editor.commit();
             }
         });
+    }
+
+    private void loadUserCourses() {
+        SharedPreferences prefs = view.getContext().getSharedPreferences("my_prefs", MODE_PRIVATE);
+        String email = prefs.getString("email", "");
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("email", email);
+
+        PerformNetworkRequest request = new PerformNetworkRequest(Constants.URL_GET_COURSES_BY_EMAIL, params, Constants.CODE_POST_REQUEST);
+        request.execute();
+    }
+
+    private void refreshQuestionList(JSONArray questions) throws JSONException {
+        listUserCourse.clear();
+        for (int i = 0; i < questions.length(); i++) {
+            JSONObject obj = questions.getJSONObject(i);
+
+            listUserCourse.add(new Course(
+                    imageId[i],
+                    obj.getString("course_id"),
+                    obj.getString("course_name"),
+                    obj.getInt("price"),
+                    obj.getString("description")
+            ));
+        }
+
+        adapter = new CourseAdapter(view.getContext(), R.layout.course_row_layout, listUserCourse);
+        listView.setAdapter(adapter);
+    }
+
+    private void init() {
+        ButterKnife.bind(this, view);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadUserCourses();
     }
 
     private class PerformNetworkRequest extends AsyncTask<Void, Void, String> {
@@ -126,45 +169,6 @@ public class Tab2Fragment extends Fragment {
 
             return null;
         }
-    }
-
-    private void loadUserCourses() {
-        SharedPreferences prefs = view.getContext().getSharedPreferences("my_prefs", MODE_PRIVATE);
-        String email = prefs.getString("email", "");
-
-        HashMap<String, String> params = new HashMap<>();
-        params.put("email", email);
-
-        PerformNetworkRequest request = new PerformNetworkRequest(Constants.URL_GET_COURSES_BY_EMAIL, params, Constants.CODE_POST_REQUEST);
-        request.execute();
-    }
-
-    private void refreshQuestionList(JSONArray questions) throws JSONException {
-        listUserCourse.clear();
-        for (int i = 0; i < questions.length(); i++) {
-            JSONObject obj = questions.getJSONObject(i);
-
-            listUserCourse.add(new Course(
-                    imageId[i],
-                    obj.getString("course_id"),
-                    obj.getString("course_name"),
-                    obj.getInt("price"),
-                    obj.getString("description")
-            ));
-        }
-
-        adapter = new CourseAdapter(view.getContext(), R.layout.course_row_layout, listUserCourse);
-        listView.setAdapter(adapter);
-    }
-
-    private void init() {
-        ButterKnife.bind(this, view);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        loadUserCourses();
     }
 
 }

@@ -1,6 +1,5 @@
 package com.tdt.tu.learnenglish2017.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,7 +10,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.tdt.tu.learnenglish2017.R;
-import com.tdt.tu.learnenglish2017.activity.QAActivity;
 import com.tdt.tu.learnenglish2017.helper.MoreAdapter;
 import com.tdt.tu.learnenglish2017.item.More;
 
@@ -36,7 +34,6 @@ public class MoreFragment extends Fragment {
         arrayList = new ArrayList<>();
         arrayList.add(new More(R.drawable.download, "Download this course"));
         arrayList.add(new More(R.drawable.info, "About this course"));
-        arrayList.add(new More(R.drawable.qa, "Q&A"));
         adapter = new MoreAdapter(view.getContext(), R.layout.more_row_layout, arrayList);
         listView.setAdapter(adapter);
 
@@ -48,10 +45,6 @@ public class MoreFragment extends Fragment {
                     case 0:
                         break;
                     case 1:
-                        break;
-                    case 2:
-                        Intent intent=new Intent(view.getContext(), QAActivity.class);
-                        startActivity(intent);
                         break;
                 }
             }
