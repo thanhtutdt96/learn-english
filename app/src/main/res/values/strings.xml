@@ -4,7 +4,7 @@
     <string name="app_name">Learn English 2017</string>
 
     <string-array name="lessons_array">
-        <item>General question</item>
+        <item>General</item>
         <item>Lesson 1</item>
         <item>Lesson 2</item>
         <item>Lesson 3</item>

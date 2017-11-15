@@ -37,6 +37,7 @@ dependencies {
     compile 'com.jakewharton:butterknife:8.8.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.github.bluejamesbond:textjustify-android:2.1.6'
+    compile 'me.biubiubiu.justifytext:library:1.1'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 }

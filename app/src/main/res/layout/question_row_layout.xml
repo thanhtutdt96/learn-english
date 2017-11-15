@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:padding="7dp">
 
     <ImageView
         android:id="@+id/imgAvatar_Question"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:padding="2dp"
-        android:src="@drawable/avatar" />
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/ask" />
 
     <LinearLayout
         android:id="@+id/infoSection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
+        android:layout_marginLeft="8dp"
         android:layout_toRightOf="@+id/imgAvatar_Question"
         android:orientation="vertical">
 

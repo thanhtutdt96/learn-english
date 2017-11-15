@@ -20,7 +20,6 @@
             android:text="Ask a new question"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
             android:textColor="@color/colorWhite" />
-
         <LinearLayout
             android:id="@+id/askForm"
             android:layout_width="match_parent"

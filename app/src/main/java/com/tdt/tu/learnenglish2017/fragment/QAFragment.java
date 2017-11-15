@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +32,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Scanner;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -65,6 +62,7 @@ public class QAFragment extends Fragment {
 
     String courseId;
     String name;
+    Integer numberOfQuestionRow;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -81,11 +79,9 @@ public class QAFragment extends Fragment {
     }
 
     private String prepareQuestionId() {
-        String currentId = questionList.get(questionList.size() - 1).getQuestionId();
-        Scanner scanner = new Scanner(currentId).useDelimiter("[^0-9]+");
-        int integer = scanner.nextInt();
-        integer++;
-        String newId = "Q" + String.valueOf(integer);
+        int i = numberOfQuestionRow;
+        i++;
+        String newId = "Q" + String.valueOf(i);
         return newId;
     }
 
@@ -104,7 +100,7 @@ public class QAFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Fragment answerFragment = new AnswerFragment();
                 callFragment(answerFragment);
-                Toast.makeText(view.getContext(), questionList.get(i).getQuestionId(), Toast.LENGTH_SHORT).show();
+
                 Bundle bundle = new Bundle();
                 bundle.putString("course_id", courseId);
                 bundle.putString("question_id", questionList.get(i).getQuestionId());
@@ -142,10 +138,6 @@ public class QAFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 createQuestion();
-                askForm.setVisibility(View.GONE);
-                buttonAsk.setVisibility(View.VISIBLE);
-                clearAllValues();
-                loadQuestions();
             }
         });
     }
@@ -160,8 +152,11 @@ public class QAFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         SharedPreferences prefs = view.getContext().getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE);
-        courseId = prefs.getString("course_id", "");
-        name = prefs.getString("username", "");
+//        courseId = prefs.getString("course_id", "");
+//        name = prefs.getString("username", "");
+
+        courseId = "CO3";
+        name = "tu";
     }
 
     private void spinnerHandler() {
@@ -176,50 +171,52 @@ public class QAFragment extends Fragment {
         String content = editContent.getText().toString().trim();
         String lesson_number = spinner.getSelectedItem().toString();
 
-        if (lesson_number.equals("General question"))
-            lesson_number = "";
-
-        if (TextUtils.isEmpty(content)) {
-            editContent.setError("Please enter content");
+        if (content.length() == 0) {
+            editContent.setError("You cannot leave your question details blank!");
             editContent.requestFocus();
             return;
+        } else {
+            if (lesson_number.equals("General"))
+                lesson_number = "";
+            HashMap<String, String> params = new HashMap<>();
+            params.put("question_id", prepareQuestionId());
+            params.put("course_id", courseId);
+            params.put("lesson_number", lesson_number);
+            params.put("name", name);
+            params.put("title", title);
+            params.put("content", content);
+
+            PerformNetworkRequest request = new PerformNetworkRequest(Constants.URL_ADD_QUESTION, params, Constants.CODE_POST_REQUEST);
+            request.execute();
+
+            askForm.setVisibility(View.GONE);
+            buttonAsk.setVisibility(View.VISIBLE);
+            clearAllValues();
         }
-
-        HashMap<String, String> params = new HashMap<>();
-        params.put("question_id", prepareQuestionId());
-        params.put("course_id", courseId);
-        params.put("lesson_number", lesson_number);
-        params.put("name", name);
-        params.put("title", title);
-        params.put("content", content);
-        Log.d("map", params.toString());
-
-        PerformNetworkRequest request = new PerformNetworkRequest(Constants.URL_ADD_QUESTION, params, Constants.CODE_POST_REQUEST);
-        request.execute();
     }
 
     private void loadQuestions() {
-        HashMap<String, String> params = new HashMap<>();
-        params.put("course_id", courseId);
-        PerformNetworkRequest request = new PerformNetworkRequest(Constants.URL_GET_QUESTIONS_BY_COURSE_ID, params, Constants.CODE_POST_REQUEST);
+        PerformNetworkRequest request = new PerformNetworkRequest(Constants.URL_GET_QUESTIONS, null, Constants.CODE_GET_REQUEST);
         request.execute();
     }
 
     private void refreshQuestionList(JSONArray questions) throws JSONException {
         questionList.clear();
-
-        for (int i = 0; i < questions.length(); i++) {
+        numberOfQuestionRow = questions.length();
+        for (int i = 0; i < numberOfQuestionRow; i++) {
             JSONObject obj = questions.getJSONObject(i);
-
-            questionList.add(new Question(
-                    obj.getString("question_id"),
-                    obj.getString("name"),
-                    obj.getString("date"),
-                    obj.getString("lesson_number"),
-                    obj.getString("title"),
-                    obj.getString("content")
-            ));
+            if (obj.getString("course_id").equals(courseId)) {
+                questionList.add(new Question(
+                        obj.getString("question_id"),
+                        obj.getString("name"),
+                        obj.getString("date"),
+                        obj.getString("lesson_number"),
+                        obj.getString("title"),
+                        obj.getString("content")
+                ));
+            }
         }
+
 
         QuestionAdapter adapter = new QuestionAdapter(view.getContext(), R.layout.question_row_layout, questionList);
         listView.setAdapter(adapter);

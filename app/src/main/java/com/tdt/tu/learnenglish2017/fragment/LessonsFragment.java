@@ -36,12 +36,13 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class LessonsFragment extends Fragment {
     View view;
+    String courseId;
+
     LessonAdapter adapter;
     ListView listView;
     ArrayList<Lesson> lessonList;
 
     OnHeadlineSelectedListener mCallback;
-    String courseId;
 
     @Override
     public void onAttach(Context context) {

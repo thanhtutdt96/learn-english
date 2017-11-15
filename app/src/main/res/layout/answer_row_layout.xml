@@ -2,20 +2,19 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="10dp">
+    android:padding="7dp">
 
     <ImageView
         android:id="@+id/imgAvatar_rowAnswer"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:padding="2dp"
-        android:src="@drawable/avatar" />
+        android:src="@drawable/answer" />
 
     <LinearLayout
         android:id="@+id/section1_rowAnswer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
+        android:layout_marginLeft="8dp"
         android:layout_toRightOf="@+id/imgAvatar_rowAnswer"
         android:orientation="vertical">
 

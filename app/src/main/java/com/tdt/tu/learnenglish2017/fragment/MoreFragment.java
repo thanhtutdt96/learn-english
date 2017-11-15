@@ -3,6 +3,8 @@ package com.tdt.tu.learnenglish2017.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,16 +42,24 @@ public class MoreFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                switch (i)
-                {
+                switch (i) {
                     case 0:
                         break;
                     case 1:
+                        replaceFragment(new AboutFragment());
                         break;
                 }
             }
         });
 
         return view;
+    }
+
+    private void replaceFragment(Fragment fragment) {
+        FragmentManager manager = getFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.replace(R.id.fragment_more_container, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 }
