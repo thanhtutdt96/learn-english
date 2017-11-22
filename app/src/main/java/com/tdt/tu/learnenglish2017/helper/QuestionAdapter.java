@@ -22,10 +22,6 @@ import butterknife.ButterKnife;
  */
 
 public class QuestionAdapter extends ArrayAdapter<Question> {
-    private Context context;
-    private int resId;
-    private List<Question> list;
-
     @BindView(R.id.txtName_Question)
     TextView name;
     @BindView(R.id.txtDate_Question)
@@ -36,6 +32,11 @@ public class QuestionAdapter extends ArrayAdapter<Question> {
     TextView title;
     @BindView(R.id.txtContent_Question)
     TextView content;
+    @BindView(R.id.txtCommentCount)
+    TextView commentCount;
+    private Context context;
+    private int resId;
+    private List<Question> list;
 
     public QuestionAdapter(@NonNull Context context, int resource, @NonNull List objects) {
         super(context, resource, objects);
@@ -60,6 +61,7 @@ public class QuestionAdapter extends ArrayAdapter<Question> {
         lessonNumber.setText(question.getLesson());
         title.setText(question.getTitle());
         content.setText(question.getContent());
+        commentCount.setText(String.valueOf(question.getCommentCount()));
 
         return convertView;
     }

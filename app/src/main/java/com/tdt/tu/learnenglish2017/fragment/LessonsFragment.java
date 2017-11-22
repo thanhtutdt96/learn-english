@@ -1,22 +1,26 @@
 package com.tdt.tu.learnenglish2017.fragment;
 
-import android.content.Context;
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.Toast;
 
-import com.google.android.youtube.player.YouTubePlayer;
 import com.tdt.tu.learnenglish2017.R;
-import com.tdt.tu.learnenglish2017.activity.LessonActivity;
 import com.tdt.tu.learnenglish2017.helper.Constants;
+import com.tdt.tu.learnenglish2017.helper.DividerDecoration;
 import com.tdt.tu.learnenglish2017.helper.LessonAdapter;
 import com.tdt.tu.learnenglish2017.helper.RequestHandler;
 import com.tdt.tu.learnenglish2017.item.Lesson;
@@ -39,22 +43,8 @@ public class LessonsFragment extends Fragment {
     String courseId;
 
     LessonAdapter adapter;
-    ListView listView;
+    RecyclerView recyclerView;
     ArrayList<Lesson> lessonList;
-
-    OnHeadlineSelectedListener mCallback;
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        try {
-            mCallback = (OnHeadlineSelectedListener) context;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString()
-                    + " must implement OnHeadlineSelectedListener");
-        }
-    }
 
     @Nullable
     @Override
@@ -63,37 +53,62 @@ public class LessonsFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_lesson, container, false);
 
         init();
+        isPermissionGranted();
         loadLessons();
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                String selectedLessonLink = lessonList.get(position).getLink();
-                if (LessonActivity.mYoutubePlayer != null) {
-                    LessonActivity.mYoutubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT);
-                    LessonActivity.mYoutubePlayer.loadVideo(selectedLessonLink);
-                    LessonActivity.mYoutubePlayer.play();
-                }
-            }
-        });
 
         return view;
     }
 
     private void init() {
-        listView = (ListView) view.findViewById(R.id.lessons_ListView);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerLesson);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(view.getContext());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addItemDecoration(new DividerDecoration(view.getContext(), LinearLayoutManager.VERTICAL, 5));
         lessonList = new ArrayList<>();
     }
 
     private void loadLessons() {
-        SharedPreferences preferences = view.getContext().getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE);
-        courseId = preferences.getString("course_id", "");
+//        SharedPreferences preferences = view.getContext().getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE);
+//        courseId = preferences.getString("course_id", "");
+        courseId = "CO2";
 
         HashMap<String, String> params = new HashMap<>();
         params.put("course_id", courseId);
 
         PerformNetworkRequest request = new PerformNetworkRequest(Constants.URL_GET_LESSONS_BY_COURSE_ID, params, Constants.CODE_POST_REQUEST);
         request.execute();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+        }
+    }
+
+    public boolean isPermissionGranted() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (getActivity().checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                return true;
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Permission required")
+                        .setMessage("You must allow this app to access files on your device to download lessons!")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+
+                return false;
+            }
+        } else {
+            return true;
+        }
     }
 
     private void refreshLessonList(JSONArray lessons) throws JSONException {
@@ -112,14 +127,10 @@ public class LessonsFragment extends Fragment {
             editor.putString("link", lessonList.get(0).getLink());
             editor.commit();
 
-            adapter = new LessonAdapter(view.getContext(), R.layout.lesson_row_layout, lessonList);
+            adapter = new LessonAdapter(view.getContext(), lessonList);
 
-            listView.setAdapter(adapter);
+            recyclerView.setAdapter(adapter);
         }
-    }
-
-    public interface OnHeadlineSelectedListener {
-        void onArticleSelected();
     }
 
     class PerformNetworkRequest extends AsyncTask<Void, Void, String> {
@@ -138,7 +149,6 @@ public class LessonsFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            mCallback.onArticleSelected();
         }
 
         @Override

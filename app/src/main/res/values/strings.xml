@@ -17,5 +17,10 @@
         <item>Lesson 10</item>
     </string-array>
 
+    <string name="summary">Summary</string>
+    <string name="mine">Mine</string>
+    <string name="featured">Featured</string>
+    <string name="search">Search</string>
+    <string name="favorite">Favorite</string>
 
 </resources>

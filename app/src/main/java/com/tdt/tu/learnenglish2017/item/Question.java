@@ -11,14 +11,16 @@ public class Question {
     String lesson;
     String title;
     String content;
+    int commentCount;
 
-    public Question(String questionId, String name, String date, String lesson, String title, String content) {
+    public Question(String questionId, String name, String date, String lesson, String title, String content, int commentCount) {
         this.questionId = questionId;
         this.name = name;
         this.date = date;
         this.lesson = lesson;
         this.title = title;
         this.content = content;
+        this.commentCount = commentCount;
     }
 
     public String getQuestionId() {
@@ -67,5 +69,13 @@ public class Question {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public int getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(int commentCount) {
+        this.commentCount = commentCount;
     }
 }

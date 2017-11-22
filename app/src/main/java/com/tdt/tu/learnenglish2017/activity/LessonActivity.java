@@ -17,7 +17,6 @@ import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerFragment;
 import com.tdt.tu.learnenglish2017.R;
 import com.tdt.tu.learnenglish2017.fragment.LessonsFragment;
-import com.tdt.tu.learnenglish2017.fragment.LessonsFragment.OnHeadlineSelectedListener;
 import com.tdt.tu.learnenglish2017.fragment.MoreFragment;
 import com.tdt.tu.learnenglish2017.fragment.QAFragment;
 import com.tdt.tu.learnenglish2017.helper.Constants;
@@ -26,7 +25,7 @@ import com.tdt.tu.learnenglish2017.helper.SectionsPagerAdapter;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class LessonActivity extends AppCompatActivity implements YouTubePlayer.OnInitializedListener, OnHeadlineSelectedListener {
+public class LessonActivity extends AppCompatActivity implements YouTubePlayer.OnInitializedListener {
 
     public static YouTubePlayer mYoutubePlayer;
     Handler handler;
@@ -117,11 +116,6 @@ public class LessonActivity extends AppCompatActivity implements YouTubePlayer.O
 
     protected YouTubePlayer.Provider getYouTubePlayerProvider() {
         return (YouTubePlayerFragment) getFragmentManager().findFragmentById(R.id.youtubePlayerFragment);
-    }
-
-    @Override
-    public void onArticleSelected() {
-
     }
 
     class setupTabsandFragments extends AsyncTask<Void, Void, Void> {

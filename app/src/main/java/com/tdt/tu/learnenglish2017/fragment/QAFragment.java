@@ -212,7 +212,8 @@ public class QAFragment extends Fragment {
                         obj.getString("date"),
                         obj.getString("lesson_number"),
                         obj.getString("title"),
-                        obj.getString("content")
+                        obj.getString("content"),
+                        obj.getInt("comment_count")
                 ));
             }
         }

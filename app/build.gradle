@@ -38,6 +38,8 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.github.bluejamesbond:textjustify-android:2.1.6'
     compile 'me.biubiubiu.justifytext:library:1.1'
+    compile 'com.github.Commit451.YouTubeExtractor:youtubeextractor:2.1.0'
+    compile 'com.github.lzyzsd:circleprogress:1.2.1'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 }

@@ -5,6 +5,7 @@ import android.support.annotation.ColorRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
@@ -16,38 +17,67 @@ import com.tdt.tu.learnenglish2017.fragment.Tab4Fragment;
 import com.tdt.tu.learnenglish2017.fragment.Tab5Fragment;
 import com.tdt.tu.learnenglish2017.helper.SectionsPagerAdapter;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MainActivity extends AppCompatActivity {
-    boolean allowRefresh;
-    private SectionsPagerAdapter sectionsPagerAdapter;
-    private ViewPager viewPager;
-    private AHBottomNavigation bottomNavigation;
+    SectionsPagerAdapter sectionsPagerAdapter;
+    SectionsPagerAdapter adapter;
+    @BindView(R.id.container)
+    ViewPager viewPager;
+    @BindView(R.id.bottomNavigation)
+    AHBottomNavigation bottomNavigation;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        viewPager = (ViewPager) findViewById(R.id.container);
+        init();
         setupViewPager(viewPager);
-
-        bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation);
         addBottomNavigationItems();
         setupBottomNavigationStyle();
-        bottomNavigation.setCurrentItem(0);
+        navigationTabHandler();
 
+    }
+
+    private void navigationTabHandler() {
         bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
             @Override
             public boolean onTabSelected(int position, boolean wasSelected) {
-                if (!wasSelected)
+                if (!wasSelected) {
                     viewPager.setCurrentItem(position);
+                    switchTabColor(position);
+                }
                 return true;
             }
         });
     }
 
+
+    private void init() {
+        ButterKnife.bind(this);
+        sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        adapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        bottomNavigation.setCurrentItem(0);
+    }
+
+    private void switchTabColor(int position) {
+        if (position == 0)
+            toolbar.setBackgroundColor(fetchColor(R.color.colorRed));
+        else if (position == 1)
+            toolbar.setBackgroundColor(fetchColor(R.color.colorOrange));
+        else if (position == 2)
+            toolbar.setBackgroundColor(fetchColor(R.color.colorYellow));
+        else if (position == 3)
+            toolbar.setBackgroundColor(fetchColor(R.color.colorGreen));
+        else if (position == 4)
+            toolbar.setBackgroundColor(fetchColor(R.color.colorBlue));
+    }
+
     private void setupViewPager(ViewPager viewPager) {
-        SectionsPagerAdapter adapter = new SectionsPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new Tab1Fragment());
         adapter.addFragment(new Tab2Fragment());
         adapter.addFragment(new Tab3Fragment());
@@ -57,18 +87,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupBottomNavigationStyle() {
-        bottomNavigation.setDefaultBackgroundColor(fetchColor(R.color.colorWhite));
-        bottomNavigation.setAccentColor(fetchColor(R.color.colorAccent));
-        bottomNavigation.setInactiveColor(fetchColor(R.color.colorGrey));
-        bottomNavigation.setTitleState(AHBottomNavigation.TitleState.SHOW_WHEN_ACTIVE);
+        bottomNavigation.setColoredModeColors(fetchColor(R.color.colorWhite), fetchColor(R.color.colorSpaceGrey));
+        bottomNavigation.setTitleState(AHBottomNavigation.TitleState.ALWAYS_SHOW);
+        bottomNavigation.setColored(true);
     }
 
     private void addBottomNavigationItems() {
-        AHBottomNavigationItem summaryTab = new AHBottomNavigationItem("Summary", R.drawable.ic_dashboard_black_24dp);
-        AHBottomNavigationItem mineTab = new AHBottomNavigationItem("Mine", R.drawable.ic_play_circle_outline_black_24dp);
-        AHBottomNavigationItem featuredTab = new AHBottomNavigationItem("Featured", R.drawable.ic_star_border_black_24dp);
-        AHBottomNavigationItem searchTab = new AHBottomNavigationItem("Search", R.drawable.ic_search_black_24dp);
-        AHBottomNavigationItem favoriteTab = new AHBottomNavigationItem("Favorite", R.drawable.ic_favorite_border_black_24dp);
+        AHBottomNavigationItem summaryTab = new AHBottomNavigationItem(R.string.summary, R.drawable.ic_summary, R.color.colorRed);
+        AHBottomNavigationItem mineTab = new AHBottomNavigationItem(R.string.mine, R.drawable.ic_mine, R.color.colorOrange);
+        AHBottomNavigationItem featuredTab = new AHBottomNavigationItem(R.string.featured, R.drawable.ic_featured, R.color.colorYellow);
+        AHBottomNavigationItem searchTab = new AHBottomNavigationItem(R.string.search, R.drawable.ic_search, R.color.colorGreen);
+        AHBottomNavigationItem favoriteTab = new AHBottomNavigationItem(R.string.favorite, R.drawable.ic_favorite, R.color.colorBlue);
 
         bottomNavigation.addItem(summaryTab);
         bottomNavigation.addItem(mineTab);
@@ -76,7 +105,6 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigation.addItem(searchTab);
         bottomNavigation.addItem(favoriteTab);
     }
-
 
     private int fetchColor(@ColorRes int color) {
         return ContextCompat.getColor(this, color);

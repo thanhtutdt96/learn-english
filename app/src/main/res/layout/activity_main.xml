@@ -20,9 +20,10 @@
                 android:layout_height="wrap_content">
 
                 <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/colorAccent">
+                    android:background="@color/colorRed">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -47,8 +48,8 @@
             android:id="@+id/middlePage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/topBar"
-            android:layout_above="@+id/bottomBar">
+            android:layout_above="@+id/bottomBar"
+            android:layout_below="@+id/topBar">
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/container"
@@ -64,15 +65,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/colorGrey"
-                android:id="@+id/topBorder" />
-
             <com.aurelhubert.ahbottomnavigation.AHBottomNavigation
-                android:id="@+id/bottom_navigation"
-                android:layout_below="@id/topBorder"
+                android:id="@+id/bottomNavigation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </RelativeLayout>

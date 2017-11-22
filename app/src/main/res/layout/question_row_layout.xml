@@ -11,7 +11,7 @@
         android:src="@drawable/ask" />
 
     <LinearLayout
-        android:id="@+id/infoSection"
+        android:id="@+id/section1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
@@ -54,9 +54,10 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/section2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/infoSection"
+        android:layout_below="@id/section1"
         android:layout_marginTop="10dp"
         android:orientation="vertical">
 
@@ -77,5 +78,28 @@
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
             android:textColor="@color/colorBlack" />
     </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/section2"
+        android:layout_marginTop="10dp">
+
+        <ImageView
+            android:id="@+id/imgComment"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/comment" />
+
+        <TextView
+            android:id="@+id/txtCommentCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@id/imgComment"
+            android:text="0"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
+            android:textColor="@color/colorBlack" />
+    </RelativeLayout>
 
 </RelativeLayout>
