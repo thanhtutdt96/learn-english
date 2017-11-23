@@ -7,15 +7,15 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.commit451.youtubeextractor.YouTubeExtractionResult;
-import com.commit451.youtubeextractor.YouTubeExtractor;
 import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.squareup.picasso.Picasso;
@@ -27,18 +27,24 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import at.huber.youtubeExtractor.VideoMeta;
+import at.huber.youtubeExtractor.YouTubeExtractor;
+import at.huber.youtubeExtractor.YtFile;
 
 import static android.content.Context.DOWNLOAD_SERVICE;
+
+//import com.commit451.youtubeextractor.YouTubeExtractionResult;
+//import com.commit451.youtubeextractor.YouTubeExtractor;
+//import retrofit2.Call;
+//import retrofit2.Callback;
+//import retrofit2.Response;
 
 /**
  * Created by Pham Thanh Tu on 18-Oct-17.
  */
 
 public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder> {
-    private final YouTubeExtractor extractor = YouTubeExtractor.create();
+    //private final YouTubeExtractor extractor = YouTubeExtractor.create();
     List<Lesson> list;
     Context context;
     String temp = "https://upload.wikimedia.org/wikipedia/commons/4/41/Sunflower_from_Silesia2.jpg";
@@ -130,46 +136,66 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
         holder.btnDownload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder.btnDownload.setVisibility(View.INVISIBLE);
-                holder.progress.setVisibility(View.VISIBLE);
-                getLinkVideo(holder, lesson.getLink());
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        downloadFromUrl(holder, holder.linkDownload.getText().toString(), lesson.getTitle(), fileNameHandlder(lesson.getTitle()));
-                    }
-                }, 2000);
+
+                //  getYoutubeDownloadUrl(holder, "https://www.youtube.com/watch?v=" + lesson.getLink());
+                getYoutubeDownloadUrl(holder, lesson.getLink());
+
+//                getLinkVideo(holder, lesson.getLink());
+//                new Handler().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        downloadFromUrl(holder, holder.linkDownload.getText().toString(), lesson.getTitle(), fileNameHandlder(lesson.getTitle()));
+//                    }
+//                }, 2000);
             }
         });
     }
 
-    private String fileNameHandlder(String title) {
+
+    private String fileNameHandlder(String videoTitle, YtFile ytFile) {
         String fileName;
-        fileName = title + "." + ".mp4";
+        if (videoTitle.length() > 55) {
+            fileName = videoTitle.substring(0, 55) + "." + ytFile.getFormat().getExt();
+        } else {
+            fileName = videoTitle + "." + ytFile.getFormat().getExt();
+        }
         fileName = fileName.replaceAll("\\\\|>|<|\"|\\||\\*|\\?|%|:|#|/", "");
         return fileName;
     }
 
-    private void getLinkVideo(final ViewHolder holder, String link) {
-        Callback<YouTubeExtractionResult> callback = new Callback<YouTubeExtractionResult>() {
+    private void getYoutubeDownloadUrl(final ViewHolder holder, final String youtubeLink) {
+        new YouTubeExtractor(context) {
             @Override
-            public void onResponse(Call<YouTubeExtractionResult> call, Response<YouTubeExtractionResult> response) {
-                String generatedLink = response.body().getBestAvailableQualityVideoUri().toString();
-                holder.linkDownload.setText(generatedLink);
-                isFinished = true;
+            protected void onPreExecute() {
+                holder.btnDownload.setVisibility(View.INVISIBLE);
+                holder.waitingCircle.setVisibility(View.VISIBLE);
             }
 
             @Override
-            public void onFailure(Call<YouTubeExtractionResult> call, Throwable throwable) {
-                throwable.printStackTrace();
-                Toast.makeText(context, "Failed to get direct link.", Toast.LENGTH_SHORT).show();
-                isFinished = false;
+            public void onExtractionComplete(SparseArray<YtFile> ytFiles, VideoMeta vMeta) {
+                int iTag = 0;
+                if (ytFiles == null) {
+                    Toast.makeText(context, "Error downloading video", Toast.LENGTH_SHORT).show();
+                    holder.btnDownload.setVisibility(View.VISIBLE);
+                    holder.waitingCircle.setVisibility(View.GONE);
+                } else {
+                    holder.waitingCircle.setVisibility(View.GONE);
+                    holder.progressCircle.setVisibility(View.VISIBLE);
+                    for (int i = 0; i < ytFiles.size(); i++) {
+                        if (ytFiles.keyAt(ytFiles.size() - 1) > 22)
+                            iTag = 22;
+                        else
+                            iTag = ytFiles.keyAt(ytFiles.size() - 1);
+                    }
+                    YtFile ytFile = ytFiles.get(iTag);
+                    downloadVideoFromUrl(holder, ytFile.getUrl(), holder.title.getText().toString(), fileNameHandlder(vMeta.getTitle(), ytFile));
+                }
             }
-        };
-        extractor.extract(link).enqueue(callback);
+        }.extract(youtubeLink, true, false);
+
     }
 
-    private void downloadFromUrl(final ViewHolder holder, String youtubeUrl, String downloadTitle, String fileName) {
+    private void downloadVideoFromUrl(final ViewHolder holder, String youtubeUrl, String downloadTitle, String fileName) {
         Uri uri = Uri.parse(youtubeUrl);
         final DownloadManager downloadManager = (DownloadManager) context.getSystemService(DOWNLOAD_SERVICE);
         DownloadManager.Request request = new DownloadManager.Request(uri);
@@ -195,14 +221,14 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {
-                        holder.progress.setProgress(progressNumber);
+                        holder.progressCircle.setProgress(progressNumber);
                     }
                 });
 
             }
 
         }, 0, 10);
-        if (holder.progress.getProgress() == 100) {
+        if (holder.progressCircle.getProgress() == 100) {
             Toast.makeText(context, "Download completed", Toast.LENGTH_SHORT).show();
             holder.btnDownload.setBackground(context.getResources().getDrawable(R.drawable.ic_check_green_24dp));
             holder.btnDownload.setEnabled(false);
@@ -218,7 +244,8 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView title, duration, linkDownload;
         ImageView thumbnail, btnDownload;
-        DonutProgress progress;
+        DonutProgress progressCircle;
+        ProgressBar waitingCircle;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -226,7 +253,8 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
             duration = (TextView) itemView.findViewById(R.id.lesson_duration);
             thumbnail = (ImageView) itemView.findViewById(R.id.lesson_thumbnail);
             btnDownload = (ImageView) itemView.findViewById(R.id.lesson_download);
-            progress = (DonutProgress) itemView.findViewById(R.id.progressCircle);
+            progressCircle = (DonutProgress) itemView.findViewById(R.id.progressCircle);
+            waitingCircle = (ProgressBar) itemView.findViewById(R.id.waitingCircle);
             linkDownload = (TextView) itemView.findViewById(R.id.linkDownload);
 
             itemView.setOnClickListener(new View.OnClickListener() {
