@@ -102,7 +102,7 @@ public class CourseInfoActivity extends AppCompatActivity {
     private void disableBuy() {
         btnBuy.setText("Bought");
         btnBuy.setEnabled(false);
-        btnBuy.setCompoundDrawablesWithIntrinsicBounds(this.getResources().getDrawable(R.drawable.ic_check_green_24dp), null, null, null);
+        btnBuy.setCompoundDrawablesWithIntrinsicBounds(this.getResources().getDrawable(R.drawable.ic_check_orange_24dp), null, null, null);
         btnBuy.setBackgroundColor(getResources().getColor(R.color.colorGrey));
     }
 
@@ -110,7 +110,7 @@ public class CourseInfoActivity extends AppCompatActivity {
         btnFavorite.setText("Added to your favorite");
         btnFavorite.setEnabled(false);
         btnFavorite.setTextColor(getResources().getColor(R.color.colorWhite));
-        btnFavorite.setCompoundDrawablesWithIntrinsicBounds(this.getResources().getDrawable(R.drawable.ic_check_green_24dp), null, null, null);
+        btnFavorite.setCompoundDrawablesWithIntrinsicBounds(this.getResources().getDrawable(R.drawable.ic_check_orange_24dp), null, null, null);
         btnFavorite.setBackgroundColor(getResources().getColor(R.color.colorGrey));
     }
 
@@ -159,6 +159,25 @@ public class CourseInfoActivity extends AppCompatActivity {
         request.execute();
     }
 
+    private void loadCourseIdList() {
+        SharedPreferences prefs = getSharedPreferences("my_prefs", MODE_PRIVATE);
+        String email = prefs.getString("email", "");
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("email", email);
+
+        PerformNetworkRequest request = new PerformNetworkRequest(Constants.URL_GET_COURSE_ID_BY_EMAIL, params, Constants.CODE_POST_REQUEST);
+        request.execute();
+    }
+
+    private void refreshCourseIdList(JSONArray questions) throws JSONException {
+        listCourseId = new ArrayList<>();
+        for (int i = 0; i < questions.length(); i++) {
+            JSONObject obj = questions.getJSONObject(i);
+
+            listCourseId.add(obj.getString("course_id"));
+        }
+    }
 
     public class PerformNetworkRequest extends AsyncTask<Void, Void, String> {
 
@@ -217,27 +236,6 @@ public class CourseInfoActivity extends AppCompatActivity {
                 return requestHandler.sendGetRequest(url);
 
             return null;
-        }
-    }
-
-
-    private void loadCourseIdList() {
-        SharedPreferences prefs = getSharedPreferences("my_prefs", MODE_PRIVATE);
-        String email = prefs.getString("email", "");
-
-        HashMap<String, String> params = new HashMap<>();
-        params.put("email", email);
-
-        PerformNetworkRequest request = new PerformNetworkRequest(Constants.URL_GET_COURSE_ID_BY_EMAIL, params, Constants.CODE_POST_REQUEST);
-        request.execute();
-    }
-
-    private void refreshCourseIdList(JSONArray questions) throws JSONException {
-        listCourseId = new ArrayList<>();
-        for (int i = 0; i < questions.length(); i++) {
-            JSONObject obj = questions.getJSONObject(i);
-
-            listCourseId.add(obj.getString("course_id"));
         }
     }
 }

@@ -1,16 +1,19 @@
 package com.tdt.tu.learnenglish2017.activity;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.FrameLayout;
+import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
@@ -22,24 +25,19 @@ import com.tdt.tu.learnenglish2017.fragment.QAFragment;
 import com.tdt.tu.learnenglish2017.helper.Constants;
 import com.tdt.tu.learnenglish2017.helper.SectionsPagerAdapter;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class LessonActivity extends AppCompatActivity implements YouTubePlayer.OnInitializedListener {
 
     public static YouTubePlayer mYoutubePlayer;
-    Handler handler;
-    String[] links;
-    @BindView(R.id.viewpager)
-    ViewPager viewPager;
-    @BindView(R.id.tabs_Lesson)
-    TabLayout tabLayout;
-    @BindView(R.id.txtCourseName_Lesson)
-    TextView courseTitle;
-    int REQUEST_VIDEO = 1;
-    String courseName;
-    String courseId;
-    String link;
+    public static FrameLayout youtubeLayout;
+    public static VideoView videoView;
+    public static Activity activity;
+    private ViewPager viewPager;
+    private TabLayout tabLayout;
+    private TextView courseTitle;
+    private MediaController mediaController;
+    private int REQUEST_VIDEO = 1;
+    private String courseName;
+    private String courseId;
     private SectionsPagerAdapter sectionsPagerAdapter;
     private YouTubePlayerFragment youTubePlayerFragment;
 
@@ -47,24 +45,48 @@ public class LessonActivity extends AppCompatActivity implements YouTubePlayer.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lesson);
-
         init();
-
-        //createTabs();
-        new setupTabsandFragments().execute();
+        showLoading();
+        createTabs();
         initYoutubePlayer();
+        initVideoPlayer();
+    }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
     }
 
     private void init() {
-        ButterKnife.bind(this);
+        activity = this;
+        youtubeLayout = (FrameLayout) findViewById(R.id.youtubeLayout);
+
+        viewPager = (ViewPager) findViewById(R.id.viewPager);
+        tabLayout = (TabLayout) findViewById(R.id.tabLayout);
+        courseTitle = (TextView) findViewById(R.id.txtCourseName_Lesson);
+        //videoView = (VideoView) findViewById(R.id.videoView);
 
         courseName = this.getIntent().getStringExtra("course_name");
         courseId = this.getIntent().getStringExtra("course_id");
-        courseTitle.setText(courseName);
+        courseTitle.setText("ABC");
+    }
 
-        SharedPreferences preferences = getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE);
-        link = preferences.getString("link", "");
+    private void initVideoPlayer() {
+
+//
+//        videoView.requestFocus();
+//        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+//            @Override
+//            public void onPrepared(MediaPlayer mediaPlayer) {
+//                videoView.start();
+//                mediaPlayer.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
+//                    @Override
+//                    public void onVideoSizeChanged(MediaPlayer mediaPlayer, int i, int i1) {
+//                        mediaController.setAnchorView(videoView);
+//                    }
+//                });
+//            }
+//        });
     }
 
     private void initYoutubePlayer() {
@@ -94,7 +116,7 @@ public class LessonActivity extends AppCompatActivity implements YouTubePlayer.O
     public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
         if (!b) {
             mYoutubePlayer = youTubePlayer;
-            youTubePlayer.loadVideo(link);
+            youTubePlayer.loadVideo(getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).getString("link", ""));
         }
     }
 
@@ -118,27 +140,17 @@ public class LessonActivity extends AppCompatActivity implements YouTubePlayer.O
         return (YouTubePlayerFragment) getFragmentManager().findFragmentById(R.id.youtubePlayerFragment);
     }
 
-    class setupTabsandFragments extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            final ProgressDialog dialog = new ProgressDialog(LessonActivity.this);
-            dialog.setMessage("Loading...");
-            dialog.setCancelable(false);
-            dialog.show();
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    dialog.dismiss();
-                }
-            }, 2000);
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            createTabs();
-
-            return null;
-        }
+    private void showLoading() {
+        final ProgressDialog dialog = new ProgressDialog(LessonActivity.this);
+        dialog.setMessage("Loading...");
+        dialog.setCancelable(false);
+        dialog.show();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                dialog.dismiss();
+            }
+        }, 2000);
     }
+
 }

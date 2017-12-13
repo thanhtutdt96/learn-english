@@ -1,6 +1,7 @@
 package com.tdt.tu.learnenglish2017.fragment;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -46,6 +47,8 @@ public class LessonsFragment extends Fragment {
     RecyclerView recyclerView;
     ArrayList<Lesson> lessonList;
 
+    BroadcastReceiver downloadReceiver;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -55,9 +58,9 @@ public class LessonsFragment extends Fragment {
         init();
         isPermissionGranted();
         loadLessons();
-
         return view;
     }
+
 
     private void init() {
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerLesson);
@@ -66,6 +69,7 @@ public class LessonsFragment extends Fragment {
         recyclerView.addItemDecoration(new DividerDecoration(view.getContext(), LinearLayoutManager.VERTICAL, 5));
         lessonList = new ArrayList<>();
     }
+
 
     private void loadLessons() {
 //        SharedPreferences preferences = view.getContext().getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE);
@@ -128,7 +132,6 @@ public class LessonsFragment extends Fragment {
             editor.commit();
 
             adapter = new LessonAdapter(view.getContext(), lessonList);
-
             recyclerView.setAdapter(adapter);
         }
     }
