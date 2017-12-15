@@ -80,6 +80,45 @@ public class Tab5Fragment extends Fragment {
         });
     }
 
+    private void loadUserFavorites() {
+        SharedPreferences prefs = view.getContext().getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE);
+        String email = prefs.getString("email", "");
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("email", email);
+
+        PerformNetworkRequest request = new PerformNetworkRequest(Constants.URL_GET_FAVORITES_BY_EMAIL, params, Constants.CODE_POST_REQUEST);
+        request.execute();
+    }
+
+    private void refreshQuestionList(JSONArray questions) throws JSONException {
+        listFavorite.clear();
+
+        for (int i = 0; i < questions.length(); i++) {
+            JSONObject obj = questions.getJSONObject(i);
+
+            listFavorite.add(new Course(
+                    imageId[i],
+                    obj.getString("course_id"),
+                    obj.getString("course_name"),
+                    obj.getInt("price"),
+                    obj.getString("description")
+            ));
+        }
+        adapter = new CourseAdapter(view.getContext(), R.layout.course_row_layout, listFavorite);
+        listView.setAdapter(adapter);
+    }
+
+    private void init() {
+        ButterKnife.bind(this, view);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadUserFavorites();
+    }
+
     private class PerformNetworkRequest extends AsyncTask<Void, Void, String> {
 
         String url;
@@ -127,44 +166,5 @@ public class Tab5Fragment extends Fragment {
 
             return null;
         }
-    }
-
-    private void loadUserFavorites() {
-        SharedPreferences prefs = view.getContext().getSharedPreferences("my_prefs", MODE_PRIVATE);
-        String email = prefs.getString("email", "");
-
-        HashMap<String, String> params = new HashMap<>();
-        params.put("email", email);
-
-        PerformNetworkRequest request = new PerformNetworkRequest(Constants.URL_GET_FAVORITES_BY_EMAIL, params, Constants.CODE_POST_REQUEST);
-        request.execute();
-    }
-
-    private void refreshQuestionList(JSONArray questions) throws JSONException {
-        listFavorite.clear();
-
-        for (int i = 0; i < questions.length(); i++) {
-            JSONObject obj = questions.getJSONObject(i);
-
-            listFavorite.add(new Course(
-                    imageId[i],
-                    obj.getString("course_id"),
-                    obj.getString("course_name"),
-                    obj.getInt("price"),
-                    obj.getString("description")
-            ));
-        }
-        adapter = new CourseAdapter(view.getContext(), R.layout.course_row_layout, listFavorite);
-        listView.setAdapter(adapter);
-    }
-
-    private void init() {
-        ButterKnife.bind(this, view);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        loadUserFavorites();
     }
 }

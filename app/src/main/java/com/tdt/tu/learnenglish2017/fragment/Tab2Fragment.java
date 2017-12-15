@@ -84,7 +84,7 @@ public class Tab2Fragment extends Fragment {
     }
 
     private void loadUserCourses() {
-        SharedPreferences prefs = view.getContext().getSharedPreferences("my_prefs", MODE_PRIVATE);
+        SharedPreferences prefs = view.getContext().getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE);
         String email = prefs.getString("email", "");
 
         HashMap<String, String> params = new HashMap<>();
@@ -162,7 +162,6 @@ public class Tab2Fragment extends Fragment {
 
             if (requestCode == Constants.CODE_POST_REQUEST)
                 return requestHandler.sendPostRequest(url, params);
-
 
             if (requestCode == Constants.CODE_GET_REQUEST)
                 return requestHandler.sendGetRequest(url);

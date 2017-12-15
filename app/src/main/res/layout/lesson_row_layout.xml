@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:clickable="true"
     android:focusable="true"
-    android:padding="5dp">
+    android:padding="3dp">
 
     <ImageView
         android:id="@+id/lessonThumbnail"
@@ -48,8 +48,9 @@
         android:layout_width="27dp"
         android:layout_height="27dp"
         android:layout_centerVertical="true"
-        android:layout_marginRight="2dp"
+        android:layout_marginRight="3dp"
         android:layout_toLeftOf="@id/lessonDownload"
+        android:padding="1dp"
         android:src="@drawable/ic_play_arrow_orange_24dp"
         android:visibility="gone" />
 
@@ -60,7 +61,7 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:padding="3dp"
-        android:src="@drawable/ic_download"
+        android:src="@drawable/ic_download_orange"
         android:visibility="visible" />
 
     <ProgressBar
@@ -80,7 +81,7 @@
         android:layout_centerVertical="true"
         android:rotation="270"
         android:visibility="invisible"
-        app:donut_finished_color="@color/colorRed"
+        app:donut_finished_color="@color/colorOrange"
         app:donut_finished_stroke_width="3dp"
         app:donut_text=""
         app:donut_unfinished_stroke_width="3dp"

@@ -1,7 +1,6 @@
 package com.tdt.tu.learnenglish2017.fragment;
 
 import android.Manifest;
-import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -20,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.tdt.tu.learnenglish2017.R;
+import com.tdt.tu.learnenglish2017.activity.LessonActivity;
 import com.tdt.tu.learnenglish2017.helper.Constants;
 import com.tdt.tu.learnenglish2017.helper.DividerDecoration;
 import com.tdt.tu.learnenglish2017.helper.LessonAdapter;
@@ -40,14 +40,12 @@ import static android.content.Context.MODE_PRIVATE;
  */
 
 public class LessonsFragment extends Fragment {
-    View view;
-    String courseId;
-
-    LessonAdapter adapter;
-    RecyclerView recyclerView;
-    ArrayList<Lesson> lessonList;
-
-    BroadcastReceiver downloadReceiver;
+    RecyclerView.LayoutManager layoutManager;
+    private View view;
+    private String courseId;
+    private LessonAdapter adapter;
+    private RecyclerView recyclerView;
+    private ArrayList<Lesson> lessonList = new ArrayList<>();
 
     @Nullable
     @Override
@@ -58,23 +56,24 @@ public class LessonsFragment extends Fragment {
         init();
         isPermissionGranted();
         loadLessons();
+
         return view;
     }
 
-
     private void init() {
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerLesson);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(view.getContext());
+        adapter = new LessonAdapter(view.getContext(), lessonList);
+        layoutManager = new LinearLayoutManager(view.getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new DividerDecoration(view.getContext(), LinearLayoutManager.VERTICAL, 5));
-        lessonList = new ArrayList<>();
+        recyclerView.setAdapter(adapter);
     }
 
 
     private void loadLessons() {
-//        SharedPreferences preferences = view.getContext().getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE);
-//        courseId = preferences.getString("course_id", "");
-        courseId = "CO2";
+
+        SharedPreferences preferences = view.getContext().getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE);
+        courseId = preferences.getString("course_id", "");
 
         HashMap<String, String> params = new HashMap<>();
         params.put("course_id", courseId);
@@ -116,7 +115,6 @@ public class LessonsFragment extends Fragment {
     }
 
     private void refreshLessonList(JSONArray lessons) throws JSONException {
-
         for (int i = 0; i < lessons.length(); i++) {
             JSONObject obj = lessons.getJSONObject(i);
 
@@ -131,13 +129,13 @@ public class LessonsFragment extends Fragment {
             editor.putString("link", lessonList.get(0).getLink());
             editor.commit();
 
-            adapter = new LessonAdapter(view.getContext(), lessonList);
-            recyclerView.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
         }
     }
 
-    class PerformNetworkRequest extends AsyncTask<Void, Void, String> {
 
+    class PerformNetworkRequest extends AsyncTask<Void, Void, String> {
+        int i = 0;
         String url;
         HashMap<String, String> params;
         int requestCode;
@@ -164,12 +162,29 @@ public class LessonsFragment extends Fragment {
                         Toast.makeText(view.getContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
 
                     refreshLessonList(object.getJSONArray("lessons"));
-
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            LessonActivity.buttonDownloadAll.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                    final int lastElement = recyclerView.getAdapter().getItemCount() - 1;
+                    final int lastVisible = layoutManager.findLastVisibleItemPosition();
+                    for (int i = 0; i <= lastElement; i++) {
+                        if (i <= lastVisible) {
+                            recyclerView.findViewHolderForAdapterPosition(i).itemView.findViewById(R.id.lessonDownload).performClick();
+                        } else {
+                            WaitForScroll waitForScroll = new WaitForScroll(i, lastElement);
+                            waitForScroll.execute();
+                        }
+                    }
+
+                }
+            });
         }
+
 
         @Override
         protected String doInBackground(Void... voids) {
@@ -178,11 +193,30 @@ public class LessonsFragment extends Fragment {
             if (requestCode == Constants.CODE_POST_REQUEST)
                 return requestHandler.sendPostRequest(url, params);
 
-
             if (requestCode == Constants.CODE_GET_REQUEST)
                 return requestHandler.sendGetRequest(url);
 
+            return null;
+        }
+    }
 
+    class WaitForScroll extends AsyncTask<Void, Void, Void> {
+
+        int position, lastElement;
+
+        public WaitForScroll(int position, int lastElement) {
+            this.position = position;
+            this.lastElement = lastElement;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            recyclerView.findViewHolderForAdapterPosition(position).itemView.findViewById(R.id.lessonDownload).performClick();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            layoutManager.scrollToPosition(lastElement);
             return null;
         }
     }

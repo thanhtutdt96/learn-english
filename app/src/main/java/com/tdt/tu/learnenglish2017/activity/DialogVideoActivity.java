@@ -28,7 +28,7 @@ public class DialogVideoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.dialog_video_player);
+        setContentView(R.layout.activity_video_player);
         ButterKnife.bind(this);
         try {
             File videoFile = new File(getIntent().getStringExtra("videoPath"));

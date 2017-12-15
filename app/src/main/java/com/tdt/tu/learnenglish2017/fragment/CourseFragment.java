@@ -67,15 +67,6 @@ public class CourseFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-//                SharedPreferences prefs = view.getContext().getSharedPreferences("my_prefs",MODE_PRIVATE);
-//                SharedPreferences.Editor editor = prefs.edit();
-//                editor.putString("course_id", courseList.get(position).getCourseId());
-//                editor.commit();
-//
-//                Intent i = new Intent(view.getContext(), LessonActivity.class);
-//                i.putExtra("courseName", courseList.get(position).getCourseName());
-//                startActivity(i);
                 Intent i = new Intent(view.getContext(), CourseInfoActivity.class);
                 i.putExtra("course_id", courseList.get(position).getCourseId());
                 i.putExtra("course_name", courseList.get(position).getCourseName());
@@ -83,11 +74,41 @@ public class CourseFragment extends Fragment {
                 i.putExtra("description", courseList.get(position).getDescription());
 
                 startActivity(i);
-
             }
         });
     }
 
+    private void loadCourses() {
+        String categoryId = getArguments().getString("category_id", "");
+        HashMap<String, String> params = new HashMap<>();
+        params.put("category_id", categoryId);
+
+        PerformNetworkRequest request = new PerformNetworkRequest(Constants.URL_GET_COURSES_BY_CATEGORY_ID, params, Constants.CODE_POST_REQUEST);
+        request.execute();
+    }
+
+    private void refreshQuestionList(JSONArray questions) throws JSONException {
+        courseList.clear();
+
+        for (int i = 0; i < questions.length(); i++) {
+            JSONObject obj = questions.getJSONObject(i);
+
+            courseList.add(new Course(
+                    imageId[i],
+                    obj.getString("course_id"),
+                    obj.getString("course_name"),
+                    obj.getInt("price"),
+                    obj.getString("description")
+            ));
+        }
+        adapter = new CourseAdapter(view.getContext(), R.layout.course_row_layout, courseList);
+        listView.setAdapter(adapter);
+
+    }
+
+    private void init() {
+        ButterKnife.bind(this, view);
+    }
 
     private class PerformNetworkRequest extends AsyncTask<Void, Void, String> {
 
@@ -135,37 +156,5 @@ public class CourseFragment extends Fragment {
 
             return null;
         }
-    }
-
-    private void loadCourses() {
-        String categoryId = getArguments().getString("category_id", "");
-        HashMap<String, String> params = new HashMap<>();
-        params.put("category_id", categoryId);
-
-        PerformNetworkRequest request = new PerformNetworkRequest(Constants.URL_GET_COURSES_BY_CATEGORY_ID, params, Constants.CODE_POST_REQUEST);
-        request.execute();
-    }
-
-    private void refreshQuestionList(JSONArray questions) throws JSONException {
-        courseList.clear();
-
-        for (int i = 0; i < questions.length(); i++) {
-            JSONObject obj = questions.getJSONObject(i);
-
-            courseList.add(new Course(
-                    imageId[i],
-                    obj.getString("course_id"),
-                    obj.getString("course_name"),
-                    obj.getInt("price"),
-                    obj.getString("description")
-            ));
-        }
-        adapter = new CourseAdapter(view.getContext(), R.layout.course_row_layout, courseList);
-        listView.setAdapter(adapter);
-
-    }
-
-    private void init() {
-        ButterKnife.bind(this, view);
     }
 }

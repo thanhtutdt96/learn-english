@@ -114,7 +114,7 @@ public class AnswerFragment extends Fragment {
     }
 
     private void createAnswer() {
-        SharedPreferences prefs = view.getContext().getSharedPreferences("my_prefs", MODE_PRIVATE);
+        SharedPreferences prefs = view.getContext().getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE);
         String name = prefs.getString("username", "");
         String answer = editAnswer.getText().toString().trim();
 

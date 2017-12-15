@@ -25,24 +25,41 @@
 
     </FrameLayout>
 
-    <TextView
-        android:id="@+id/txtCourseName_Lesson"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
-        android:text="Course Title"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-        android:textColor="@color/colorBlack" />
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/txtCourseName_Lesson"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:text="Course Title"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            android:textColor="@color/colorBlack" />
+
+        <ImageView
+            android:id="@+id/btnDownloadAll"
+            android:layout_width="27dp"
+            android:layout_height="27dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="6dp"
+            android:padding="2dp"
+            android:src="@drawable/ic_download_blue" />
+
+    </RelativeLayout>
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tabLayout"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         app:tabGravity="center"
-        app:tabIndicatorColor="@color/colorBlack"
+        app:tabIndicatorColor="@color/colorOrange"
         app:tabTextAppearance="@style/Base.TextAppearance.AppCompat.Small" />
 
     <android.support.v4.view.ViewPager

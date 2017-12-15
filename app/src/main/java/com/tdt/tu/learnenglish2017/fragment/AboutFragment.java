@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tdt.tu.learnenglish2017.R;
@@ -33,9 +32,6 @@ import static android.content.Context.MODE_PRIVATE;
 public class AboutFragment extends Fragment {
     View view;
     String content;
-
-    @BindView(R.id.imgBackArrow)
-    ImageView backArrow;
     @BindView(R.id.txtContent)
     TextView textView;
 
@@ -44,18 +40,8 @@ public class AboutFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_about, container, false);
         init();
-        backArrowHandler();
         loadAboutContent();
         return view;
-    }
-
-    private void backArrowHandler() {
-        backArrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getFragmentManager().popBackStack();
-            }
-        });
     }
 
     private void init() {
@@ -115,7 +101,6 @@ public class AboutFragment extends Fragment {
 
             if (requestCode == Constants.CODE_POST_REQUEST)
                 return requestHandler.sendPostRequest(url, params);
-
 
             if (requestCode == Constants.CODE_GET_REQUEST)
                 return requestHandler.sendGetRequest(url);

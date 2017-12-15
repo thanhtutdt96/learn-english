@@ -16,7 +16,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bluejamesbond.text.DocumentView;
 import com.tdt.tu.learnenglish2017.R;
 import com.tdt.tu.learnenglish2017.helper.Constants;
 import com.tdt.tu.learnenglish2017.helper.RequestHandler;
@@ -32,12 +31,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class CourseInfoActivity extends AppCompatActivity {
+
     @BindView(R.id.txtCourseName_Info)
     TextView courseName;
     @BindView(R.id.price_Info)
     TextView coursePrice;
     @BindView(R.id.txtDescription_Info)
-    DocumentView courseDescription;
+    TextView courseDescription;
     @BindView(R.id.btnBuy_Info)
     Button btnBuy;
     @BindView(R.id.btnFavorite_Info)
@@ -115,7 +115,7 @@ public class CourseInfoActivity extends AppCompatActivity {
     }
 
     private void setContent() {
-        SharedPreferences prefs = getSharedPreferences("my_prefs", MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE);
         email = prefs.getString("email", "");
         courseId = getIntent().getExtras().getString("course_id", "");
         String name = getIntent().getExtras().getString("course_name", "");
@@ -148,7 +148,7 @@ public class CourseInfoActivity extends AppCompatActivity {
     }
 
     private void addCourseToFavorite() {
-        SharedPreferences prefs = getSharedPreferences("my_prefs", MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE);
         String email = prefs.getString("email", "");
 
         HashMap<String, String> params = new HashMap<>();
@@ -160,7 +160,7 @@ public class CourseInfoActivity extends AppCompatActivity {
     }
 
     private void loadCourseIdList() {
-        SharedPreferences prefs = getSharedPreferences("my_prefs", MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE);
         String email = prefs.getString("email", "");
 
         HashMap<String, String> params = new HashMap<>();
@@ -199,12 +199,6 @@ public class CourseInfoActivity extends AppCompatActivity {
             dialog.setMessage("Please wait...");
             dialog.setCancelable(false);
             dialog.show();
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    dialog.dismiss();
-                }
-            }, 750);
 
         }
 
@@ -223,6 +217,12 @@ public class CourseInfoActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    dialog.dismiss();
+                }
+            }, 750);
         }
 
         @Override

@@ -18,7 +18,7 @@
             android:layout_centerVertical="true"
             android:layout_gravity="start"
             android:layout_marginLeft="5dp"
-            android:src="@drawable/ic_arrow_back_green_24dp" />
+            android:src="@drawable/ic_arrow_back_orange_24dp" />
 
     </RelativeLayout>
 

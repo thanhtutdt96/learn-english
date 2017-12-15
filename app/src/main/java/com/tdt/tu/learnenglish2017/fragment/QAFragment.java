@@ -74,7 +74,6 @@ public class QAFragment extends Fragment {
         spinnerHandler();
         loadQuestions();
         listViewHandler();
-
         return view;
     }
 
@@ -100,6 +99,7 @@ public class QAFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Fragment answerFragment = new AnswerFragment();
                 callFragment(answerFragment);
+
 
                 Bundle bundle = new Bundle();
                 bundle.putString("course_id", courseId);

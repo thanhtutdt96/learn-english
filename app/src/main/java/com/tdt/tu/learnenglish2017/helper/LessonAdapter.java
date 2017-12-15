@@ -2,9 +2,8 @@ package com.tdt.tu.learnenglish2017.helper;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Environment;
-import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.SparseArray;
@@ -23,13 +22,15 @@ import com.tdt.tu.learnenglish2017.R;
 import com.tdt.tu.learnenglish2017.activity.DialogVideoActivity;
 import com.tdt.tu.learnenglish2017.activity.LessonActivity;
 import com.tdt.tu.learnenglish2017.item.Lesson;
-import com.thin.downloadmanager.DefaultRetryPolicy;
-import com.thin.downloadmanager.DownloadManager;
-import com.thin.downloadmanager.DownloadRequest;
-import com.thin.downloadmanager.DownloadStatusListenerV1;
-import com.thin.downloadmanager.ThinDownloadManager;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.List;
 
 import at.huber.youtubeExtractor.VideoMeta;
@@ -44,20 +45,14 @@ import es.dmoral.toasty.Toasty;
 
 public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder> {
 
-    private List<Lesson> list;
+    private List<Lesson> list = new ArrayList<>();
     private Context context;
     private String videoPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LearnEnglish2017/Download/";
-
-    private ThinDownloadManager downloadManager;
-    private int downloadId = 0;
-    private int downloadCount;
 
     public LessonAdapter(Context context, List<Lesson> list) {
         this.context = context;
         this.list = list;
-        downloadManager = new ThinDownloadManager();
     }
-
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.lesson_row_layout, parent, false);
@@ -66,7 +61,7 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
 
         final Lesson lesson = list.get(position);
         holder.title.setText(lesson.getTitle());
@@ -77,13 +72,8 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
         holder.buttonDownload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                downloadCount++;
-                if (downloadCount > 2) {
-                    Toasty.warning(context, "You are allowed to download only 2 lesson at a time!", Toast.LENGTH_SHORT).show();
+                if (checkFileExist(holder, fileNameHandler(holder.title.getText().toString())))
                     return;
-                }
-                holder.progressCircle.setVisibility(View.VISIBLE);
-                holder.buttonDownload.setVisibility(View.INVISIBLE);
                 getYoutubeDownloadUrl(holder, lesson.getLink());
             }
         });
@@ -92,7 +82,6 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, DialogVideoActivity.class);
-                Log.d("videoName", videoPath + getVideoName(fileNameHandler(holder.title.getText().toString())));
                 intent.putExtra("videoPath", videoPath + getVideoName(fileNameHandler(holder.title.getText().toString())));
                 context.startActivity(intent);
             }
@@ -138,65 +127,14 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
                             iTag = ytFiles.keyAt(ytFiles.size() - 1);
                     }
                     YtFile ytFile = ytFiles.get(iTag);
-                    downloadVideoFromUrl(holder, ytFile.getUrl(), fileNameHandler(holder.title.getText().toString(), ytFile));
+                    holder.waitingCircle.setVisibility(View.GONE);
+                    holder.waitingCircle.setEnabled(false);
+                    holder.progressCircle.setVisibility(View.VISIBLE);
+                    DownloadFileFromURLTask task = new DownloadFileFromURLTask(holder, fileNameHandler(holder.title.getText().toString(), ytFile));
+                    task.execute(ytFile.getUrl());
                 }
             }
         }.extract(youtubeLink, true, false);
-
-    }
-
-    private void downloadVideoFromUrl(final ViewHolder holder, String youtubeUrl, String fileName) {
-
-        Uri destinationUri = Uri.parse(videoPath + fileName);
-        Uri downloadUri = Uri.parse(youtubeUrl);
-        final DownloadRequest downloadRequest = new DownloadRequest(downloadUri)
-                .setDestinationURI(destinationUri)
-                .setPriority(DownloadRequest.Priority.HIGH)
-                .setRetryPolicy(new DefaultRetryPolicy())
-                .setStatusListener(new DownloadStatusListenerV1() {
-                    @Override
-                    public void onDownloadComplete(DownloadRequest request) {
-                        int id = request.getDownloadId();
-                        downloadCount = 0;
-                        if (id == downloadId) {
-                            holder.progressCircle.setVisibility(View.INVISIBLE);
-                            holder.buttonDownload.setVisibility(View.VISIBLE);
-                            holder.buttonDownload.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_check_orange_24dp));
-                            holder.buttonOpen.setVisibility(View.VISIBLE);
-                        }
-                    }
-
-                    @Override
-                    public void onDownloadFailed(DownloadRequest request, int errorCode, String errorMessage) {
-                        int id = request.getDownloadId();
-                        if (id == downloadId) {
-                            Toast.makeText(context, "Download id: " + id + " Failed: ErrorCode " + errorCode + ", " + errorMessage, Toast.LENGTH_LONG).show();
-                            holder.progressCircle.setVisibility(View.INVISIBLE);
-                            holder.buttonDownload.setVisibility(View.VISIBLE);
-                        }
-                    }
-
-                    @Override
-                    public void onProgress(DownloadRequest request, long totalBytes, long downloadedBytes, int progress) {
-                        holder.waitingCircle.setVisibility(View.GONE);
-                        holder.progressCircle.setVisibility(View.VISIBLE);
-                        int id = request.getDownloadId();
-
-                        if (id == downloadId) {
-                            holder.progressCircle.setProgress(progress);
-                        }
-                    }
-                });
-        if (downloadManager.query(downloadId) == DownloadManager.STATUS_NOT_FOUND) {
-            downloadId = downloadManager.add(downloadRequest);
-        } else {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    downloadId = downloadManager.add(downloadRequest);
-                }
-            }, 2000);
-        }
 
     }
 
@@ -205,7 +143,7 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
         return list.size();
     }
 
-    private void checkFileExist(ViewHolder holder, String fileName) {
+    private boolean checkFileExist(ViewHolder holder, String fileName) {
 
         File folder = new File(videoPath);
         File[] listOfFiles = folder.listFiles();
@@ -217,9 +155,11 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
                     holder.buttonDownload.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_check_orange_24dp));
                     holder.buttonDownload.setEnabled(false);
                     holder.buttonOpen.setVisibility(View.VISIBLE);
+                    return true;
                 }
             }
         }
+        return false;
     }
 
     private String getVideoName(String fileName) {
@@ -239,13 +179,73 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
         return videoName;
     }
 
+    private class DownloadFileFromURLTask extends AsyncTask<String, String, String> {
+        ViewHolder holder;
+        String fileName;
+
+        public DownloadFileFromURLTask(ViewHolder holder, String fileName) {
+            this.holder = holder;
+            this.fileName = fileName;
+        }
+
+        @Override
+        protected String doInBackground(String... youtubeLink) {
+            int count;
+            try {
+                URL url = new URL(youtubeLink[0]);
+                URLConnection conection = url.openConnection();
+                conection.connect();
+
+                int lengthOfFile = conection.getContentLength();
+
+                InputStream input = new BufferedInputStream(url.openStream(), 8192);
+
+                OutputStream output = new FileOutputStream(videoPath + fileName);
+
+                byte data[] = new byte[1024];
+
+                long total = 0;
+
+                while ((count = input.read(data)) != -1) {
+                    total += count;
+                    publishProgress("" + (int) ((total * 100) / lengthOfFile));
+                    output.write(data, 0, count);
+                }
+
+                output.flush();
+                output.close();
+                input.close();
+
+            } catch (Exception e) {
+                Log.e("Error: ", e.getMessage());
+            }
+
+            return null;
+        }
+
+        protected void onProgressUpdate(String... progress) {
+            holder.progressCircle.setProgress(Integer.parseInt(progress[0]));
+
+        }
+
+        @Override
+        protected void onPostExecute(String file_url) {
+            holder.progressCircle.setVisibility(View.INVISIBLE);
+            holder.progressCircle.setEnabled(false);
+            holder.buttonDownload.setVisibility(View.VISIBLE);
+            holder.buttonDownload.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_check_orange_24dp));
+            holder.buttonDownload.setEnabled(false);
+            holder.buttonOpen.setVisibility(View.VISIBLE);
+        }
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView title, duration;
-        ImageView thumbnail, buttonDownload, buttonOpen;
+        ImageView thumbnail, buttonOpen, buttonDownload;
         DonutProgress progressCircle;
         ProgressBar waitingCircle;
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(final View itemView) {
             super(itemView);
             title = (TextView) itemView.findViewById(R.id.lessonTitle);
             duration = (TextView) itemView.findViewById(R.id.lessonDuration);
@@ -266,7 +266,9 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
                     }
                 }
             });
+
         }
 
     }
+
 }
