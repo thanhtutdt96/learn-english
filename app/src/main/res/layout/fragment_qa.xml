@@ -16,10 +16,11 @@
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_margin="3dp"
-            android:background="@color/colorGreen"
+            android:background="@color/colorOrange"
             android:text="Ask a new question"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
             android:textColor="@color/colorWhite" />
+
         <LinearLayout
             android:id="@+id/askForm"
             android:layout_width="match_parent"
@@ -32,7 +33,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:background="@color/colorGreen"
+                android:background="@color/colorOrange"
                 android:padding="5dp">
 
                 <TextView
@@ -48,7 +49,8 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_alignParentRight="true"
-                    android:src="@drawable/ic_close_black_24dp" />
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_close_white_24dp" />
             </RelativeLayout>
 
             <EditText
@@ -82,7 +84,7 @@
                 android:layout_height="20dp"
                 android:layout_gravity="center"
                 android:layout_marginBottom="5dp"
-                android:background="@color/colorGreen"
+                android:background="@color/colorOrange"
                 android:text="Post"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
                 android:textColor="@color/colorWhite" />
@@ -91,12 +93,11 @@
 
 
         <ListView
-            android:id="@+id/listViewQA"
+            android:id="@+id/listView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="10dp">
 
         </ListView>
-
     </LinearLayout>
 </RelativeLayout>

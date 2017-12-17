@@ -37,24 +37,11 @@ import static android.content.Context.MODE_PRIVATE;
  */
 
 public class Tab5Fragment extends Fragment {
-    ArrayList<Course> listFavorite = new ArrayList<>();
-    CourseAdapter adapter;
     @BindView(R.id.listFavorite)
     ListView listView;
-    View view;
-
-    Integer[] imageId = {
-            R.drawable.google_drive,
-            R.drawable.firefox,
-            R.drawable.adobe_acrobat,
-            R.drawable.spotify,
-            R.drawable.photoshop,
-            R.drawable.dropbox,
-            R.drawable.chrome,
-            R.drawable.spotify,
-            R.drawable.google_drive
-
-    };
+    private ArrayList<Course> listFavorite = new ArrayList<>();
+    private CourseAdapter adapter;
+    private View view;
 
     @Nullable
     @Override
@@ -98,7 +85,7 @@ public class Tab5Fragment extends Fragment {
             JSONObject obj = questions.getJSONObject(i);
 
             listFavorite.add(new Course(
-                    imageId[i],
+                    obj.getString("icon"),
                     obj.getString("course_id"),
                     obj.getString("course_name"),
                     obj.getInt("price"),

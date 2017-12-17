@@ -44,7 +44,6 @@ import es.dmoral.toasty.Toasty;
  */
 
 public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder> {
-
     private List<Lesson> list = new ArrayList<>();
     private Context context;
     private String videoPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LearnEnglish2017/Download/";
@@ -53,6 +52,7 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
         this.context = context;
         this.list = list;
     }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.lesson_row_layout, parent, false);
@@ -69,11 +69,14 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
         Picasso.with(context).load(lesson.getImage()).into(holder.thumbnail);
 
         checkFileExist(holder, fileNameHandler(holder.title.getText().toString()));
+
         holder.buttonDownload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (checkFileExist(holder, fileNameHandler(holder.title.getText().toString())))
+                if (checkFileExist(holder, fileNameHandler(holder.title.getText().toString()))) {
                     return;
+                }
+                holder.buttonDownload.setEnabled(false);
                 getYoutubeDownloadUrl(holder, lesson.getLink());
             }
         });
@@ -86,6 +89,7 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
                 context.startActivity(intent);
             }
         });
+
     }
 
     private String fileNameHandler(String videoTitle, YtFile ytFile) {
@@ -105,7 +109,7 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
     }
 
     private void getYoutubeDownloadUrl(final ViewHolder holder, final String youtubeLink) {
-        new YouTubeExtractor(context) {
+        YouTubeExtractor extractor = new YouTubeExtractor(context) {
             @Override
             protected void onPreExecute() {
                 holder.buttonDownload.setVisibility(View.INVISIBLE);
@@ -116,8 +120,9 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
             public void onExtractionComplete(SparseArray<YtFile> ytFiles, VideoMeta vMeta) {
                 int iTag = 0;
                 if (ytFiles == null) {
-                    Toasty.error(context, "Error downloading video", Toast.LENGTH_SHORT).show();
+                    Toasty.error(context, "Error downloading: " + holder.title.getText().toString(), Toast.LENGTH_SHORT).show();
                     holder.buttonDownload.setVisibility(View.VISIBLE);
+                    holder.buttonDownload.setEnabled(true);
                     holder.waitingCircle.setVisibility(View.GONE);
                 } else {
                     for (int i = 0; i < ytFiles.size(); i++) {
@@ -134,8 +139,8 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
                     task.execute(ytFile.getUrl());
                 }
             }
-        }.extract(youtubeLink, true, false);
-
+        };
+        extractor.extract(youtubeLink, true, false);
     }
 
     @Override
@@ -154,6 +159,7 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
                 if (filename[0].equalsIgnoreCase(fileName)) {
                     holder.buttonDownload.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_check_orange_24dp));
                     holder.buttonDownload.setEnabled(false);
+                    holder.buttonDownload.setClickable(false);
                     holder.buttonOpen.setVisibility(View.VISIBLE);
                     return true;
                 }
@@ -179,7 +185,7 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
         return videoName;
     }
 
-    private class DownloadFileFromURLTask extends AsyncTask<String, String, String> {
+    private class DownloadFileFromURLTask extends AsyncTask<String, Integer, String> {
         ViewHolder holder;
         String fileName;
 
@@ -193,10 +199,10 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
             int count;
             try {
                 URL url = new URL(youtubeLink[0]);
-                URLConnection conection = url.openConnection();
-                conection.connect();
+                URLConnection connection = url.openConnection();
+                connection.connect();
 
-                int lengthOfFile = conection.getContentLength();
+                int lengthOfFile = connection.getContentLength();
 
                 InputStream input = new BufferedInputStream(url.openStream(), 8192);
 
@@ -208,7 +214,7 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
 
                 while ((count = input.read(data)) != -1) {
                     total += count;
-                    publishProgress("" + (int) ((total * 100) / lengthOfFile));
+                    publishProgress((int) ((total * 100) / lengthOfFile));
                     output.write(data, 0, count);
                 }
 
@@ -223,8 +229,8 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
             return null;
         }
 
-        protected void onProgressUpdate(String... progress) {
-            holder.progressCircle.setProgress(Integer.parseInt(progress[0]));
+        protected void onProgressUpdate(Integer... progress) {
+            holder.progressCircle.setProgress(progress[0]);
 
         }
 
@@ -234,7 +240,6 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
             holder.progressCircle.setEnabled(false);
             holder.buttonDownload.setVisibility(View.VISIBLE);
             holder.buttonDownload.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_check_orange_24dp));
-            holder.buttonDownload.setEnabled(false);
             holder.buttonOpen.setVisibility(View.VISIBLE);
         }
     }

@@ -1,25 +1,27 @@
 package com.tdt.tu.learnenglish2017.fragment;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.tdt.tu.learnenglish2017.R;
-import com.tdt.tu.learnenglish2017.activity.LessonActivity;
 import com.tdt.tu.learnenglish2017.helper.Constants;
 import com.tdt.tu.learnenglish2017.helper.DividerDecoration;
 import com.tdt.tu.learnenglish2017.helper.LessonAdapter;
@@ -34,6 +36,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.tdt.tu.learnenglish2017.activity.LessonActivity.buttonDownloadAll;
 
 /**
  * Created by Pham Thanh Tu on 30-Oct-17.
@@ -46,6 +49,8 @@ public class LessonsFragment extends Fragment {
     private LessonAdapter adapter;
     private RecyclerView recyclerView;
     private ArrayList<Lesson> lessonList = new ArrayList<>();
+
+    private BroadcastReceiver receiver;
 
     @Nullable
     @Override
@@ -68,7 +73,6 @@ public class LessonsFragment extends Fragment {
         recyclerView.addItemDecoration(new DividerDecoration(view.getContext(), LinearLayoutManager.VERTICAL, 5));
         recyclerView.setAdapter(adapter);
     }
-
 
     private void loadLessons() {
 
@@ -133,7 +137,6 @@ public class LessonsFragment extends Fragment {
         }
     }
 
-
     class PerformNetworkRequest extends AsyncTask<Void, Void, String> {
         int i = 0;
         String url;
@@ -166,23 +169,46 @@ public class LessonsFragment extends Fragment {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            LessonActivity.buttonDownloadAll.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-                    final int lastElement = recyclerView.getAdapter().getItemCount() - 1;
-                    final int lastVisible = layoutManager.findLastVisibleItemPosition();
-                    for (int i = 0; i <= lastElement; i++) {
-                        if (i <= lastVisible) {
-                            recyclerView.findViewHolderForAdapterPosition(i).itemView.findViewById(R.id.lessonDownload).performClick();
-                        } else {
-                            WaitForScroll waitForScroll = new WaitForScroll(i, lastElement);
-                            waitForScroll.execute();
-                        }
-                    }
 
+            buttonDownloadAll.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(final View view) {
+                    buttonDownloadAll.setEnabled(false);
+                    layoutManager.scrollToPosition(0);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                            final int lastElement = recyclerView.getAdapter().getItemCount() - 1;
+                            final int lastVisible = layoutManager.findLastVisibleItemPosition();
+                            int number = 2;
+
+                            try {
+                                for (i = 0; i <= lastElement; i++) {
+                                    if (i <= lastVisible) {
+                                        recyclerView.findViewHolderForAdapterPosition(i).itemView.findViewById(R.id.lessonDownload).performClick();
+                                    } else {
+                                        if (lastVisible * number >= lastElement) {
+                                            WaitForScroll waitForScroll = new WaitForScroll(i, lastElement);
+                                            waitForScroll.execute();
+                                        } else {
+                                            WaitForScroll waitForScroll = new WaitForScroll(i, lastVisible * number);
+                                            waitForScroll.execute();
+                                            if (i == lastVisible * number)
+                                                number++;
+                                        }
+                                    }
+                                }
+                            } catch (Exception e) {
+                                Log.d("DownloadError", e.getMessage());
+                                e.printStackTrace();
+                            }
+
+                        }
+                    }, 50);
                 }
             });
+            buttonDownloadAll.setEnabled(false);
         }
 
 
@@ -210,13 +236,18 @@ public class LessonsFragment extends Fragment {
         }
 
         @Override
+        protected void onPreExecute() {
+            layoutManager.scrollToPosition(lastElement);
+            super.onPreExecute();
+        }
+
+        @Override
         protected void onPostExecute(Void aVoid) {
             recyclerView.findViewHolderForAdapterPosition(position).itemView.findViewById(R.id.lessonDownload).performClick();
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            layoutManager.scrollToPosition(lastElement);
             return null;
         }
     }

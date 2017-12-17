@@ -39,7 +39,7 @@ import butterknife.ButterKnife;
 import static android.content.Context.MODE_PRIVATE;
 
 public class QAFragment extends Fragment {
-    @BindView(R.id.listViewQA)
+    @BindView(R.id.listView)
     ListView listView;
     @BindView(R.id.spinLesson)
     Spinner spinner;
@@ -74,6 +74,7 @@ public class QAFragment extends Fragment {
         spinnerHandler();
         loadQuestions();
         listViewHandler();
+
         return view;
     }
 
@@ -99,7 +100,6 @@ public class QAFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Fragment answerFragment = new AnswerFragment();
                 callFragment(answerFragment);
-
 
                 Bundle bundle = new Bundle();
                 bundle.putString("course_id", courseId);
@@ -152,11 +152,8 @@ public class QAFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         SharedPreferences prefs = view.getContext().getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE);
-//        courseId = prefs.getString("course_id", "");
-//        name = prefs.getString("username", "");
-
-        courseId = "CO3";
-        name = "tu";
+        courseId = prefs.getString("course_id", "");
+        name = prefs.getString("username", "");
     }
 
     private void spinnerHandler() {
@@ -222,6 +219,12 @@ public class QAFragment extends Fragment {
         QuestionAdapter adapter = new QuestionAdapter(view.getContext(), R.layout.question_row_layout, questionList);
         listView.setAdapter(adapter);
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadQuestions();
     }
 
     private class PerformNetworkRequest extends AsyncTask<Void, Void, String> {

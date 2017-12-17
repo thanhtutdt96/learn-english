@@ -33,26 +33,12 @@ import butterknife.ButterKnife;
 import static android.content.Context.MODE_PRIVATE;
 
 public class Tab2Fragment extends Fragment {
-    public static ArrayList<String> listCourseId = new ArrayList<>();
-    ArrayList<Course> listUserCourse = new ArrayList<>();
-    CourseAdapter adapter;
+
     @BindView(R.id.listUserCourse)
     ListView listView;
-    View view;
-
-    Integer[] imageId = {
-            R.drawable.google_drive,
-            R.drawable.firefox,
-            R.drawable.adobe_acrobat,
-            R.drawable.spotify,
-            R.drawable.photoshop,
-            R.drawable.dropbox,
-            R.drawable.chrome,
-            R.drawable.spotify,
-            R.drawable.google_drive
-
-    };
-
+    private View view;
+    private ArrayList<Course> listUserCourse = new ArrayList<>();
+    private CourseAdapter adapter;
 
     @Nullable
     @Override
@@ -100,7 +86,7 @@ public class Tab2Fragment extends Fragment {
             JSONObject obj = questions.getJSONObject(i);
 
             listUserCourse.add(new Course(
-                    imageId[i],
+                    obj.getString("icon"),
                     obj.getString("course_id"),
                     obj.getString("course_name"),
                     obj.getInt("price"),

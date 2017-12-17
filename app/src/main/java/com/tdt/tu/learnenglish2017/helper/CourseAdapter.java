@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.tdt.tu.learnenglish2017.R;
 import com.tdt.tu.learnenglish2017.item.Course;
 
@@ -26,15 +27,15 @@ import butterknife.ButterKnife;
  */
 
 public class CourseAdapter extends ArrayAdapter<Course> {
-    private Context context;
-    private int resId;
-    private List<Course> list;
     @BindView(R.id.course_icon)
     ImageView icon;
     @BindView(R.id.course_title)
     TextView title;
     @BindView(R.id.course_price)
     TextView price;
+    private Context context;
+    private int resId;
+    private List<Course> list;
 
 
     public CourseAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<Course> objects) {
@@ -55,7 +56,7 @@ public class CourseAdapter extends ArrayAdapter<Course> {
 
         ButterKnife.bind(this, convertView);
 
-        icon.setImageResource(course.getImageId());
+        Picasso.with(context).load(course.getImage()).into(icon);
         title.setText(course.getCourseName());
         SpannableString priceUnit = new SpannableString("đ" + String.valueOf(course.getPrice()));
         priceUnit.setSpan(new UnderlineSpan(), 0, 1, 0);

@@ -33,25 +33,12 @@ import butterknife.ButterKnife;
  */
 
 public class CourseFragment extends Fragment {
+
     @BindView(R.id.listCourse)
     ListView listView;
-    ArrayList<Course> courseList = new ArrayList<>();
-    CourseAdapter adapter;
-
-    Integer[] imageId = {
-            R.drawable.google_drive,
-            R.drawable.firefox,
-            R.drawable.adobe_acrobat,
-            R.drawable.spotify,
-            R.drawable.photoshop,
-            R.drawable.dropbox,
-            R.drawable.chrome,
-            R.drawable.spotify,
-            R.drawable.google_drive
-
-    };
-
-    View view;
+    private ArrayList<Course> courseList = new ArrayList<>();
+    private CourseAdapter adapter;
+    private View view;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -94,7 +81,7 @@ public class CourseFragment extends Fragment {
             JSONObject obj = questions.getJSONObject(i);
 
             courseList.add(new Course(
-                    imageId[i],
+                    obj.getString("icon"),
                     obj.getString("course_id"),
                     obj.getString("course_name"),
                     obj.getInt("price"),

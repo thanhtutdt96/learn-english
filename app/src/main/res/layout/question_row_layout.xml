@@ -1,57 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:padding="7dp">
 
-    <ImageView
-        android:id="@+id/imgAvatar_Question"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:src="@drawable/ask" />
-
-    <LinearLayout
-        android:id="@+id/section1"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_toRightOf="@+id/imgAvatar_Question"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/imgAvatar_Question"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_question" />
 
         <LinearLayout
+            android:id="@+id/section1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:textColor="@color/colorBlack"
-            android:weightSum="15">
+            android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@+id/imgAvatar_Question"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:textColor="@color/colorBlack"
+                android:weightSum="15">
+
+                <TextView
+                    android:id="@+id/txtName_Question"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="11"
+                    android:text="Name"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
+                    android:textColor="@color/colorBlack" />
+
+                <TextView
+                    android:id="@+id/txtlessonNumber_Question"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:text="Lesson"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
+                    android:textColor="@color/colorOrange" />
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/txtName_Question"
-                android:layout_width="0dp"
+                android:id="@+id/txtDate_Question"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="11"
-                android:text="Name"
+                android:text="Date"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
                 android:textColor="@color/colorBlack" />
-
-            <TextView
-                android:id="@+id/txtlessonNumber_Question"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="4"
-                android:text="Lesson"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-                android:textColor="@color/colorRed" />
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/txtDate_Question"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Date"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-            android:textColor="@color/colorBlack" />
-    </LinearLayout>
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/section2"
@@ -89,7 +95,7 @@
             android:id="@+id/imgComment"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:src="@drawable/comment" />
+            android:src="@drawable/ic_chat" />
 
         <TextView
             android:id="@+id/txtCommentCount"
@@ -102,4 +108,4 @@
             android:textColor="@color/colorBlack" />
     </RelativeLayout>
 
-</RelativeLayout>
+</LinearLayout>

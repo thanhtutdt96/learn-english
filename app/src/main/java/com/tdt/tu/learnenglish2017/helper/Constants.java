@@ -42,4 +42,7 @@ public class Constants {
 
     public static String URL_GET_DESCRIPTION_BY_COURSE_ID = ROOT_URL + "api.php?apicall=getdescriptionbycourseid";
 
+    public static String URL_GET_SEARCH_RESULTS = ROOT_URL + "api.php?apicall=getsearchresults";
+
+
 }

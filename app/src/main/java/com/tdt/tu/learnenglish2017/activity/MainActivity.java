@@ -5,6 +5,8 @@ import android.support.annotation.ColorRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.RelativeLayout;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
@@ -21,11 +23,12 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
     SectionsPagerAdapter sectionsPagerAdapter;
-    SectionsPagerAdapter adapter;
     @BindView(R.id.container)
     ViewPager viewPager;
     @BindView(R.id.bottomNavigation)
     AHBottomNavigation bottomNavigation;
+    @BindView(R.id.topBar)
+    RelativeLayout topBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +50,11 @@ public class MainActivity extends AppCompatActivity {
                 if (!wasSelected) {
                     viewPager.setCurrentItem(position);
                 }
+                if (position == 0)
+                    topBar.setVisibility(View.VISIBLE);
+                else if (position != 0)
+                    topBar.setVisibility(View.GONE);
+
                 return true;
             }
         });
@@ -56,17 +64,16 @@ public class MainActivity extends AppCompatActivity {
     private void init() {
         ButterKnife.bind(this);
         sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        adapter = new SectionsPagerAdapter(getSupportFragmentManager());
         bottomNavigation.setCurrentItem(0);
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        adapter.addFragment(new Tab1Fragment());
-        adapter.addFragment(new Tab2Fragment());
-        adapter.addFragment(new Tab3Fragment());
-        adapter.addFragment(new Tab4Fragment());
-        adapter.addFragment(new Tab5Fragment());
-        viewPager.setAdapter(adapter);
+        sectionsPagerAdapter.addFragment(new Tab1Fragment());
+        sectionsPagerAdapter.addFragment(new Tab2Fragment());
+        sectionsPagerAdapter.addFragment(new Tab3Fragment());
+        sectionsPagerAdapter.addFragment(new Tab4Fragment());
+        sectionsPagerAdapter.addFragment(new Tab5Fragment());
+        viewPager.setAdapter(sectionsPagerAdapter);
     }
 
     private void setupBottomNavigationStyle() {

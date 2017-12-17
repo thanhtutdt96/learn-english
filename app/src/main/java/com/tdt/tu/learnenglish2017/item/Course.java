@@ -1,26 +1,26 @@
 package com.tdt.tu.learnenglish2017.item;
 
 public class Course {
-    private int imageId;
+    private String image;
     private String courseId;
     private String courseName;
     private int price;
     private String description;
 
-    public Course(int imageId, String courseId, String courseName, int price, String description) {
-        this.imageId = imageId;
+    public Course(String image, String courseId, String courseName, int price, String description) {
+        this.image = image;
         this.courseId = courseId;
         this.courseName = courseName;
         this.price = price;
         this.description = description;
     }
 
-    public int getImageId() {
-        return imageId;
+    public String getImage() {
+        return image;
     }
 
-    public void setImageId(int imageId) {
-        this.imageId = imageId;
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public String getCourseId() {
