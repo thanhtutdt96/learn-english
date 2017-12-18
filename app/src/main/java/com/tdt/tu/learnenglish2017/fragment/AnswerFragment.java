@@ -66,12 +66,13 @@ public class AnswerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_answer, container, false);
-        init();
 
+        init();
         backArrowHandler();
         setQuestionSection();
         loadAnswers();
         buttonHandler();
+
         return view;
     }
 
@@ -146,13 +147,14 @@ public class AnswerFragment extends Fragment {
                     obj.getString("content")
             ));
         }
-        adapter = new AnswerAdapter(view.getContext(), R.layout.answer_row_layout, answerList);
-        listView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
 
     }
 
     private void init() {
         ButterKnife.bind(this, view);
+        adapter = new AnswerAdapter(view.getContext(), R.layout.answer_row_layout, answerList);
+        listView.setAdapter(adapter);
     }
 
     class PerformNetworkRequest extends AsyncTask<Void, Void, String> {

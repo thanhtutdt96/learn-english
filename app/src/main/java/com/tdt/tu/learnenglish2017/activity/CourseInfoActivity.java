@@ -43,6 +43,8 @@ public class CourseInfoActivity extends AppCompatActivity {
     TextView btnFavorite;
 
     String courseId;
+    String description;
+    String name;
     String email;
     ArrayList<String> listCourseId;
 
@@ -74,8 +76,15 @@ public class CourseInfoActivity extends AppCompatActivity {
                 builder.setNegativeButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        SharedPreferences.Editor editor = getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).edit();
+                        editor.putString("course_id", courseId);
+                        editor.putString("description", description);
+                        editor.commit();
+
                         Intent intent = new Intent(CourseInfoActivity.this, LessonActivity.class);
+                        intent.putExtra("course_name", name);
                         startActivity(intent);
+
                     }
                 });
                 builder.setPositiveButton("No", new DialogInterface.OnClickListener() {
@@ -117,9 +126,9 @@ public class CourseInfoActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE);
         email = prefs.getString("email", "");
         courseId = getIntent().getExtras().getString("course_id", "");
-        String name = getIntent().getExtras().getString("course_name", "");
+        name = getIntent().getExtras().getString("course_name", "");
         int price = getIntent().getExtras().getInt("price", 0);
-        String description = getIntent().getExtras().getString("description", "");
+        description = getIntent().getExtras().getString("description", "");
         courseName.setText(name);
 
         SpannableString priceUnit = new SpannableString("đ" + String.valueOf(getIntent().getExtras().getInt("price", 0)));

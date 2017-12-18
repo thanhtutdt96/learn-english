@@ -5,21 +5,21 @@ package com.tdt.tu.learnenglish2017.item;
  */
 
 public class Category {
-    int icon;
+    String icon;
     String id;
     String title;
 
-    public Category(int icon, String id, String title) {
+    public Category(String icon, String id, String title) {
         this.icon = icon;
         this.id = id;
         this.title = title;
     }
 
-    public int getIcon() {
+    public String getIcon() {
         return icon;
     }
 
-    public void setIcon(int icon) {
+    public void setIcon(String icon) {
         this.icon = icon;
     }
 

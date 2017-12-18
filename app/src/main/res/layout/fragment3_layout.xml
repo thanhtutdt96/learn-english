@@ -4,30 +4,30 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?android:windowBackground"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/sectionFeatured"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:padding="10dp">
 
         <TextView
             android:id="@+id/txtFeatured"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Featured courses"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            android:text="@string/featured_courses"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
             android:textColor="@color/colorBlack" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerFeatured"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/txtFeatured"
-            android:scrollbars="horizontal">
-
-        </android.support.v7.widget.RecyclerView>
+            android:layout_below="@+id/txtFeatured"
+            android:layout_marginTop="10dp"
+            android:scrollbars="none" />
 
     </RelativeLayout>
 
@@ -35,24 +35,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/sectionFeatured"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="10dp"
+        android:padding="10dp">
 
         <TextView
             android:id="@+id/txtCategory"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Categories"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            android:text="@string/categories"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
             android:textColor="@color/colorBlack" />
 
-        <ListView
-            android:id="@+id/listCategory"
-            android:layout_width="match_parent"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerCategories"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/txtCategory"
-            android:layout_marginTop="5dp"
-            android:divider="@null">
+            android:layout_below="@+id/txtCategory"
+            android:layout_marginTop="10dp"
+            android:scrollbars="none" />
 
-        </ListView>
     </RelativeLayout>
 </RelativeLayout>

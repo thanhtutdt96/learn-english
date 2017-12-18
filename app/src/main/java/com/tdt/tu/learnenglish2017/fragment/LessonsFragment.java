@@ -1,18 +1,11 @@
 package com.tdt.tu.learnenglish2017.fragment;
 
-import android.Manifest;
-import android.content.BroadcastReceiver;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -45,12 +38,9 @@ import static com.tdt.tu.learnenglish2017.activity.LessonActivity.buttonDownload
 public class LessonsFragment extends Fragment {
     RecyclerView.LayoutManager layoutManager;
     private View view;
-    private String courseId;
     private LessonAdapter adapter;
     private RecyclerView recyclerView;
     private ArrayList<Lesson> lessonList = new ArrayList<>();
-
-    private BroadcastReceiver receiver;
 
     @Nullable
     @Override
@@ -59,7 +49,6 @@ public class LessonsFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_lesson, container, false);
 
         init();
-        isPermissionGranted();
         loadLessons();
 
         return view;
@@ -74,48 +63,16 @@ public class LessonsFragment extends Fragment {
         recyclerView.setAdapter(adapter);
     }
 
-    private void loadLessons() {
 
+    private void loadLessons() {
         SharedPreferences preferences = view.getContext().getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE);
-        courseId = preferences.getString("course_id", "");
+        String courseId = preferences.getString("course_id", "");
 
         HashMap<String, String> params = new HashMap<>();
         params.put("course_id", courseId);
 
         PerformNetworkRequest request = new PerformNetworkRequest(Constants.URL_GET_LESSONS_BY_COURSE_ID, params, Constants.CODE_POST_REQUEST);
         request.execute();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-        }
-    }
-
-    public boolean isPermissionGranted() {
-        if (Build.VERSION.SDK_INT >= 23) {
-            if (getActivity().checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    == PackageManager.PERMISSION_GRANTED) {
-                return true;
-            } else {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("Permission required")
-                        .setMessage("You must allow this app to access files on your device to download lessons!")
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                            }
-                        })
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
-
-                return false;
-            }
-        } else {
-            return true;
-        }
     }
 
     private void refreshLessonList(JSONArray lessons) throws JSONException {

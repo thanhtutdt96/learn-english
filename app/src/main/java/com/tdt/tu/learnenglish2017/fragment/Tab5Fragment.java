@@ -92,12 +92,13 @@ public class Tab5Fragment extends Fragment {
                     obj.getString("description")
             ));
         }
-        adapter = new CourseAdapter(view.getContext(), R.layout.course_row_layout, listFavorite);
-        listView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 
     private void init() {
         ButterKnife.bind(this, view);
+        adapter = new CourseAdapter(view.getContext(), R.layout.course_row_layout, listFavorite);
+        listView.setAdapter(adapter);
     }
 
     @Override

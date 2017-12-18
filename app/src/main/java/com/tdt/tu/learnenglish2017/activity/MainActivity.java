@@ -1,9 +1,16 @@
 package com.tdt.tu.learnenglish2017.activity;
 
+import android.Manifest;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.ColorRes;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -17,6 +24,8 @@ import com.tdt.tu.learnenglish2017.fragment.Tab3Fragment;
 import com.tdt.tu.learnenglish2017.fragment.Tab4Fragment;
 import com.tdt.tu.learnenglish2017.fragment.Tab5Fragment;
 import com.tdt.tu.learnenglish2017.helper.SectionsPagerAdapter;
+
+import java.io.File;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,11 +45,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         init();
+        isPermissionGranted();
         setupViewPager(viewPager);
         addBottomNavigationItems();
         setupBottomNavigationStyle();
         navigationTabHandler();
-
+        createAppFolder();
     }
 
     private void navigationTabHandler() {
@@ -98,5 +108,44 @@ public class MainActivity extends AppCompatActivity {
 
     private int fetchColor(@ColorRes int color) {
         return ContextCompat.getColor(this, color);
+    }
+
+    private void createAppFolder() {
+        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LearnEnglish2017/Download";
+        File appFolder = new File(path);
+        if (!appFolder.exists()) {
+            appFolder.mkdirs();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            createAppFolder();
+        }
+    }
+
+    public boolean isPermissionGranted() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                return true;
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Permission required")
+                        .setMessage("You must allow this app to access files on your device to download lessons!")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+
+                return false;
+            }
+        } else {
+            return true;
+        }
     }
 }

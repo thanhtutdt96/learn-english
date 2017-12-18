@@ -16,10 +16,11 @@
         android:layout_centerVertical="true" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginLeft="8dp"
+        android:layout_toLeftOf="@+id/openVideo"
         android:layout_toRightOf="@id/lessonThumbnail"
         android:orientation="vertical"
         android:padding="2dp">
@@ -28,6 +29,8 @@
             android:id="@+id/lessonTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="2"
             android:text="Title"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
             android:textColor="@android:color/black" />
@@ -48,6 +51,7 @@
         android:layout_width="27dp"
         android:layout_height="27dp"
         android:layout_centerVertical="true"
+        android:layout_marginLeft="3dp"
         android:layout_marginRight="3dp"
         android:layout_toLeftOf="@id/lessonDownload"
         android:padding="1dp"

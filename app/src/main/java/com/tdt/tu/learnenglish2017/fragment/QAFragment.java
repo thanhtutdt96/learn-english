@@ -57,7 +57,7 @@ public class QAFragment extends Fragment {
     EditText editContent;
 
     List<Question> questionList = new ArrayList<>();
-
+    QuestionAdapter adapter;
     View view;
 
     String courseId;
@@ -150,6 +150,8 @@ public class QAFragment extends Fragment {
 
     private void init() {
         ButterKnife.bind(this, view);
+        adapter = new QuestionAdapter(view.getContext(), R.layout.question_row_layout, questionList);
+        listView.setAdapter(adapter);
 
         SharedPreferences prefs = view.getContext().getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE);
         courseId = prefs.getString("course_id", "");
@@ -214,11 +216,7 @@ public class QAFragment extends Fragment {
                 ));
             }
         }
-
-
-        QuestionAdapter adapter = new QuestionAdapter(view.getContext(), R.layout.question_row_layout, questionList);
-        listView.setAdapter(adapter);
-
+        adapter.notifyDataSetChanged();
     }
 
     @Override

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -36,6 +37,8 @@ public class CourseFragment extends Fragment {
 
     @BindView(R.id.listCourse)
     ListView listView;
+    @BindView(R.id.backArrow)
+    ImageView backArrow;
     private ArrayList<Course> courseList = new ArrayList<>();
     private CourseAdapter adapter;
     private View view;
@@ -45,9 +48,19 @@ public class CourseFragment extends Fragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_course, container, false);
         init();
+        buttonHandler();
         loadCourses();
         listViewHandler();
         return view;
+    }
+
+    private void buttonHandler() {
+        backArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getFragmentManager().popBackStack();
+            }
+        });
     }
 
     private void listViewHandler() {
@@ -88,13 +101,14 @@ public class CourseFragment extends Fragment {
                     obj.getString("description")
             ));
         }
-        adapter = new CourseAdapter(view.getContext(), R.layout.course_row_layout, courseList);
-        listView.setAdapter(adapter);
 
+        adapter.notifyDataSetChanged();
     }
 
     private void init() {
         ButterKnife.bind(this, view);
+        adapter = new CourseAdapter(view.getContext(), R.layout.course_row_layout, courseList);
+        listView.setAdapter(adapter);
     }
 
     private class PerformNetworkRequest extends AsyncTask<Void, Void, String> {

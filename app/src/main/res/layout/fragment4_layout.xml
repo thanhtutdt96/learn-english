@@ -9,7 +9,7 @@
     <RelativeLayout
         android:id="@+id/topBar"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="68dp"
         android:background="@color/colorOrange">
 
     </RelativeLayout>
@@ -19,13 +19,15 @@
         style="@style/MaterialSearchBarLight"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="6dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="10dp"
         app:mt_backIconTint="@color/colorOrange"
-        app:mt_clearIconTint="@color/colorOrange"
+        app:mt_clearIconTint="@color/colorOrange" 
         app:mt_dividerColor="@color/colorOrange"
-        app:mt_hint="Enter your keyword"
+        app:mt_hint="Search..."
         app:mt_maxSuggestionsCount="3"
-        app:mt_placeholder="Search..."
+        app:mt_placeholder=""
         app:mt_placeholderColor="@color/colorOrange"
         app:mt_searchIconTint="@color/colorOrange" />
 

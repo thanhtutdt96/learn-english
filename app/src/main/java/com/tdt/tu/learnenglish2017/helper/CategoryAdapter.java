@@ -1,52 +1,61 @@
 package com.tdt.tu.learnenglish2017.helper;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.tdt.tu.learnenglish2017.R;
 import com.tdt.tu.learnenglish2017.item.Category;
-import com.tdt.tu.learnenglish2017.item.Course;
 
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
-public class CategoryAdapter extends ArrayAdapter<Category> {
+public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
+
     Context context;
-    int resId;
     List<Category> list;
-    ImageView icon;
-    TextView title;
 
-    public CategoryAdapter(@NonNull Context context, int resource, @NonNull List<Category> objects) {
-        super(context, resource, objects);
+    public CategoryAdapter(Context context, List<Category> list) {
         this.context = context;
-        this.resId = resource;
-        this.list = objects;
+        this.list = list;
     }
 
-    @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        if (convertView == null) {
-            LayoutInflater inflater = LayoutInflater.from(context);
-            convertView = inflater.inflate(resId, parent, false);
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.category_card_layout, parent, false);
+
+        return new ViewHolder(itemView);
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        Category category = list.get(position);
+        Picasso.with(context).load(category.getIcon()).into(holder.icon);
+        holder.title.setText(category.getTitle());
+    }
+
+    @Override
+    public int getItemCount() {
+        return list.size();
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.thumbnail)
+        ImageView icon;
+        @BindView(R.id.title)
+        TextView title;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
         }
-
-        Category category=list.get(position);
-
-        icon=(ImageView)convertView.findViewById(R.id.imgCategory);
-        title=(TextView)convertView.findViewById(R.id.txtCategory);
-
-        icon.setImageResource(category.getIcon());
-        title.setText(category.getTitle());
-        return convertView;
     }
 }

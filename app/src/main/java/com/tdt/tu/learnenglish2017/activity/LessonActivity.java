@@ -34,6 +34,8 @@ public class LessonActivity extends AppCompatActivity implements YouTubePlayer.O
     private YouTubePlayerFragment youTubePlayerFragment;
 
     private int REQUEST_VIDEO = 1;
+    private String courseId;
+    private String description;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

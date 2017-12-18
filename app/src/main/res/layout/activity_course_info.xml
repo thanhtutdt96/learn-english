@@ -61,8 +61,7 @@
             android:gravity="center"
             android:text="Course description"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
-            android:textColor="@color/colorBlack"
-            android:textStyle="bold" />
+            android:textColor="@color/colorBlack" />
 
         <TextView
             android:id="@+id/txtDescription_Info"
@@ -70,7 +69,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:text="Here is the description of this course"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption">
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Small">
 
         </TextView>
 

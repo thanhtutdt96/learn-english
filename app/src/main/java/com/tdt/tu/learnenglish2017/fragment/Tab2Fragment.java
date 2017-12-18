@@ -57,14 +57,14 @@ public class Tab2Fragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(view.getContext(), LessonActivity.class);
-                intent.putExtra("course_name", listUserCourse.get(i).getCourseName());
-                intent.putExtra("course_id", listUserCourse.get(i).getCourseId());
-                startActivity(intent);
-
                 SharedPreferences.Editor editor = view.getContext().getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).edit();
                 editor.putString("course_id", listUserCourse.get(i).getCourseId());
+                editor.putString("description", listUserCourse.get(i).getDescription());
                 editor.commit();
+
+                Intent intent = new Intent(view.getContext(), LessonActivity.class);
+                intent.putExtra("course_name", listUserCourse.get(i).getCourseName());
+                startActivity(intent);
             }
         });
     }
@@ -94,12 +94,13 @@ public class Tab2Fragment extends Fragment {
             ));
         }
 
-        adapter = new CourseAdapter(view.getContext(), R.layout.course_row_layout, listUserCourse);
-        listView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 
     private void init() {
         ButterKnife.bind(this, view);
+        adapter = new CourseAdapter(view.getContext(), R.layout.course_row_layout, listUserCourse);
+        listView.setAdapter(adapter);
     }
 
     @Override

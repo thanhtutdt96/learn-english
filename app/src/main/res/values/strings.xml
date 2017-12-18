@@ -22,5 +22,7 @@
     <string name="featured">Featured</string>
     <string name="search">Search</string>
     <string name="favorite">Favorite</string>
+    <string name="featured_courses">Featured courses</string>
+    <string name="categories">Categories</string>
 
 </resources>
