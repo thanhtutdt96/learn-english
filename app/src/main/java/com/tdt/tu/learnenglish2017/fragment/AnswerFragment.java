@@ -1,5 +1,6 @@
 package com.tdt.tu.learnenglish2017.fragment;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -91,6 +92,9 @@ public class AnswerFragment extends Fragment {
         backArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setAction("refreshList");
+                view.getContext().sendBroadcast(intent);
                 getFragmentManager().popBackStack();
             }
         });

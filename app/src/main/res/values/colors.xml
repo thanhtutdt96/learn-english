@@ -8,11 +8,12 @@
     <color name="colorPurple">#7E57C2</color>
     <color name="colorOrange">#FFB347</color>
     <color name="colorWhite">#FFFFFF</color>
-    <color name="colorGreen">#4CAF50</color>
+    <color name="colorGreen">#77DD77</color>
+    <color name="colorDarkGreen">#03C03C</color>
     <color name="colorBlack">#000000</color>
     <color name="colorSpaceGrey">#36000000</color>
-    <color name="colorBlue">#1565C0</color>
-    <color name="colorYellow">#FFC107</color>
+    <color name="colorBlue">#779ECB</color>
+    <color name="colorYellow">#FDFD96</color>
 
 
     <color name="bg_login">#26ae90</color>

@@ -1,5 +1,9 @@
 package com.tdt.tu.learnenglish2017.fragment;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -35,6 +39,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dmoral.toasty.Toasty;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -62,7 +67,9 @@ public class QAFragment extends Fragment {
 
     String courseId;
     String name;
-    Integer numberOfQuestionRow;
+    int numberOfQuestionRow;
+
+    BroadcastReceiver receiver;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -225,6 +232,30 @@ public class QAFragment extends Fragment {
         loadQuestions();
     }
 
+    private void initReceiver() {
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                loadQuestions();
+            }
+        };
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("refreshList");
+        view.getContext().registerReceiver(receiver, intentFilter);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        initReceiver();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        view.getContext().unregisterReceiver(receiver);
+    }
+
     private class PerformNetworkRequest extends AsyncTask<Void, Void, String> {
 
         String url;
@@ -249,7 +280,7 @@ public class QAFragment extends Fragment {
                 JSONObject object = new JSONObject(s);
                 if (!object.getBoolean("error")) {
                     if (!object.getString("message").equals(""))
-                        Toast.makeText(view.getContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
+                        Toasty.success(view.getContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
 
                     refreshQuestionList(object.getJSONArray("questions"));
                 }

@@ -18,6 +18,7 @@ import com.tdt.tu.learnenglish2017.R;
 import com.tdt.tu.learnenglish2017.fragment.AboutFragment;
 import com.tdt.tu.learnenglish2017.fragment.LessonsFragment;
 import com.tdt.tu.learnenglish2017.fragment.QAFragment;
+import com.tdt.tu.learnenglish2017.fragment.QuizFragment;
 import com.tdt.tu.learnenglish2017.helper.Constants;
 import com.tdt.tu.learnenglish2017.helper.SectionsPagerAdapter;
 
@@ -70,13 +71,15 @@ public class LessonActivity extends AppCompatActivity implements YouTubePlayer.O
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.getTabAt(0).setText("Lesson");
         tabLayout.getTabAt(1).setText("Q&A");
-        tabLayout.getTabAt(2).setText("About");
+        tabLayout.getTabAt(2).setText("Quiz");
+        tabLayout.getTabAt(3).setText("About");
     }
 
     private void setupViewPager(ViewPager viewPager) {
         SectionsPagerAdapter adapter = new SectionsPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new LessonsFragment());
         adapter.addFragment(new QAFragment());
+        adapter.addFragment(new QuizFragment());
         adapter.addFragment(new AboutFragment());
         viewPager.setAdapter(adapter);
     }

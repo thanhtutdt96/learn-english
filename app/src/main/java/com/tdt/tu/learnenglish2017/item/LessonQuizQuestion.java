@@ -4,21 +4,21 @@ package com.tdt.tu.learnenglish2017.item;
  * Created by 1stks on 19-Dec-17.
  */
 
-public class FirstQuizQuestion {
+public class LessonQuizQuestion {
     private int id;
     private String question;
     private String optionA;
     private String optionB;
     private String optionC;
-    private String optionD;
+    private String answer;
 
-    public FirstQuizQuestion(int id, String question, String optionA, String optionB, String optionC, String optionD) {
+    public LessonQuizQuestion(int id, String question, String optionA, String optionB, String optionC, String answer) {
         this.id = id;
         this.question = question;
         this.optionA = optionA;
         this.optionB = optionB;
         this.optionC = optionC;
-        this.optionD = optionD;
+        this.answer = answer;
     }
 
     public int getId() {
@@ -61,11 +61,11 @@ public class FirstQuizQuestion {
         this.optionC = optionC;
     }
 
-    public String getOptionD() {
-        return optionD;
+    public String getAnswer() {
+        return answer;
     }
 
-    public void setOptionD(String optionD) {
-        this.optionD = optionD;
+    public void setAnswer(String answer) {
+        this.answer = answer;
     }
 }

@@ -40,12 +40,14 @@ public class Constants {
 
     public static String URL_GET_COURSE_ID_BY_EMAIL = ROOT_URL + "api.php?apicall=getcourseidbyemail";
 
-    public static String URL_GET_DESCRIPTION_BY_COURSE_ID = ROOT_URL + "api.php?apicall=getdescriptionbycourseid";
-
     public static String URL_GET_SEARCH_RESULTS = ROOT_URL + "api.php?apicall=getsearchresults";
 
     public static String URL_GET_FEATURED_COURSES = ROOT_URL + "api.php?apicall=getfeaturedcourses";
 
     public static String URL_GET_FIRST_QUIZ_QUESTIONS = ROOT_URL + "api.php?apicall=getfirstquizquestions";
+
+    public static String URL_GET_LESSON_QUIZ_QUESTIONS = ROOT_URL + "api.php?apicall=getlessonquizquestions";
+
+    public static String URL_GET_LESSON_NUMBERS_BY_COURSE_ID = ROOT_URL + "api.php?apicall=getlessonnumbersbycourseid";
 
 }

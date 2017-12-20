@@ -51,7 +51,6 @@ public class Tab3Fragment extends Fragment {
     private CategoryAdapter categoryAdapter;
     private FeaturedCourseAdapter courseAdapter;
     private View view;
-    private int recyclerViewItemPosition;
 
     @Nullable
     @Override
