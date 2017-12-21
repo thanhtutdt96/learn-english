@@ -8,10 +8,8 @@
     tools:context="com.tdt.tu.learnenglish2017.activity.LessonActivity">
 
     <FrameLayout
-        android:id="@+id/youtubeLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="visible">
+        android:layout_height="wrap_content">
 
         <fragment
             android:id="@+id/youtubePlayerFragment"

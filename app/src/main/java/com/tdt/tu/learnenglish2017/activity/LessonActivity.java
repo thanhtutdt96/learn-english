@@ -22,6 +22,8 @@ import com.tdt.tu.learnenglish2017.fragment.QuizFragment;
 import com.tdt.tu.learnenglish2017.helper.Constants;
 import com.tdt.tu.learnenglish2017.helper.SectionsPagerAdapter;
 
+import es.dmoral.toasty.Toasty;
+
 public class LessonActivity extends AppCompatActivity implements YouTubePlayer.OnInitializedListener {
 
     public static YouTubePlayer mYoutubePlayer;
@@ -35,8 +37,6 @@ public class LessonActivity extends AppCompatActivity implements YouTubePlayer.O
     private YouTubePlayerFragment youTubePlayerFragment;
 
     private int REQUEST_VIDEO = 1;
-    private String courseId;
-    private String description;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +97,7 @@ public class LessonActivity extends AppCompatActivity implements YouTubePlayer.O
         if (youTubeInitializationResult.isUserRecoverableError())
             youTubeInitializationResult.getErrorDialog(LessonActivity.this, REQUEST_VIDEO);
         else
-            Toast.makeText(this, "Error loading video!", Toast.LENGTH_SHORT).show();
+            Toasty.error(this, "Error loading video!", Toast.LENGTH_SHORT).show();
 
     }
 

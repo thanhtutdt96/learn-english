@@ -72,6 +72,7 @@ public class CourseFragment extends Fragment {
                 i.putExtra("course_name", courseList.get(position).getCourseName());
                 i.putExtra("price", courseList.get(position).getPrice());
                 i.putExtra("description", courseList.get(position).getDescription());
+                i.putExtra("link", courseList.get(position).getLink());
 
                 startActivity(i);
             }
@@ -98,7 +99,8 @@ public class CourseFragment extends Fragment {
                     obj.getString("course_id"),
                     obj.getString("course_name"),
                     obj.getInt("price"),
-                    obj.getString("description")
+                    obj.getString("description"),
+                    obj.getString("link")
             ));
         }
 

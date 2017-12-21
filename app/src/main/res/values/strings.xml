@@ -24,5 +24,11 @@
     <string name="favorite">Favorite</string>
     <string name="featured_courses">Featured courses</string>
     <string name="categories">Categories</string>
+    <string name="course_name">Course Name</string>
+    <string name="free">Free</string>
+    <string name="enroll_now">Enroll Now</string>
+    <string name="add_to_favorite">Add to favorite</string>
+    <string name="course_description">Course description</string>
+    <string name="here_is_the_description_of_this_course">Here is the description of this course</string>
 
 </resources>

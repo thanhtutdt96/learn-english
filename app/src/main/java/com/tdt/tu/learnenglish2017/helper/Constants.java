@@ -44,6 +44,8 @@ public class Constants {
 
     public static String URL_GET_FEATURED_COURSES = ROOT_URL + "api.php?apicall=getfeaturedcourses";
 
+    public static String URL_GET_TOP_COURSES = ROOT_URL + "api.php?apicall=gettopcourses";
+
     public static String URL_GET_FIRST_QUIZ_QUESTIONS = ROOT_URL + "api.php?apicall=getfirstquizquestions";
 
     public static String URL_GET_LESSON_QUIZ_QUESTIONS = ROOT_URL + "api.php?apicall=getlessonquizquestions";

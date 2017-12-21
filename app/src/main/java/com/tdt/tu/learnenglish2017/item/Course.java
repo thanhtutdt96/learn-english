@@ -6,13 +6,15 @@ public class Course {
     private String courseName;
     private int price;
     private String description;
+    private String link;
 
-    public Course(String image, String courseId, String courseName, int price, String description) {
+    public Course(String image, String courseId, String courseName, int price, String description, String link) {
         this.image = image;
         this.courseId = courseId;
         this.courseName = courseName;
         this.price = price;
         this.description = description;
+        this.link = link;
     }
 
     public String getImage() {
@@ -53,5 +55,13 @@ public class Course {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
     }
 }

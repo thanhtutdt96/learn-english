@@ -60,9 +60,9 @@ public class MainActivity extends AppCompatActivity {
                 if (!wasSelected) {
                     viewPager.setCurrentItem(position);
                 }
-                if (position == 0)
+                if (position == 4)
                     topBar.setVisibility(View.VISIBLE);
-                else if (position != 0)
+                else
                     topBar.setVisibility(View.GONE);
 
                 return true;
@@ -93,17 +93,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addBottomNavigationItems() {
-        AHBottomNavigationItem summaryTab = new AHBottomNavigationItem(R.string.summary, R.drawable.ic_summary, R.color.colorOrange);
-        AHBottomNavigationItem mineTab = new AHBottomNavigationItem(R.string.mine, R.drawable.ic_mine, R.color.colorOrange);
         AHBottomNavigationItem featuredTab = new AHBottomNavigationItem(R.string.featured, R.drawable.ic_featured, R.color.colorOrange);
         AHBottomNavigationItem searchTab = new AHBottomNavigationItem(R.string.search, R.drawable.ic_search, R.color.colorOrange);
+        AHBottomNavigationItem mineTab = new AHBottomNavigationItem(R.string.mine, R.drawable.ic_mine, R.color.colorOrange);
         AHBottomNavigationItem favoriteTab = new AHBottomNavigationItem(R.string.favorite, R.drawable.ic_favorite, R.color.colorOrange);
+        AHBottomNavigationItem summaryTab = new AHBottomNavigationItem(R.string.summary, R.drawable.ic_summary, R.color.colorOrange);
 
-        bottomNavigation.addItem(summaryTab);
-        bottomNavigation.addItem(mineTab);
         bottomNavigation.addItem(featuredTab);
         bottomNavigation.addItem(searchTab);
+        bottomNavigation.addItem(mineTab);
         bottomNavigation.addItem(favoriteTab);
+        bottomNavigation.addItem(summaryTab);
+
     }
 
     private int fetchColor(@ColorRes int color) {
