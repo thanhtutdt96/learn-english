@@ -155,7 +155,7 @@ public class CourseInfoActivity extends AppCompatActivity implements YouTubePlay
         priceUnit.setSpan(new UnderlineSpan(), 0, 1, 0);
         if (price == 0) {
             coursePrice.setText("Free");
-            btnBuy.setText("Get");
+            btnBuy.setText("Enroll now");
         } else
             coursePrice.setText(priceUnit);
         courseDescription.setText(description);
@@ -202,7 +202,6 @@ public class CourseInfoActivity extends AppCompatActivity implements YouTubePlay
         listCourseId = new ArrayList<>();
         for (int i = 0; i < questions.length(); i++) {
             JSONObject obj = questions.getJSONObject(i);
-
             listCourseId.add(obj.getString("course_id"));
         }
     }
