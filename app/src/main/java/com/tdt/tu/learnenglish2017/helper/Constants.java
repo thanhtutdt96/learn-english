@@ -10,7 +10,7 @@ public class Constants {
 
     public static final String API_KEY = "AIzaSyD3-fhnusRAieaxCw8sfkZyxJBoWpqr7PY";
 
-    private static String ROOT_URL = "http://192.168.1.55/learn_english_2017/";
+    private static String ROOT_URL = "http://10.0.5.106/learn_english_2017/";
 
     public static String URL_LOGIN = ROOT_URL + "login.php";
 
@@ -59,5 +59,9 @@ public class Constants {
     public static String URL_GET_LESSON_QUIZ_RESULTS = ROOT_URL + "api.php?apicall=getlessonquizresults";
 
     public static String URL_GET_LESSON_NUMBERS_BY_COURSE_ID = ROOT_URL + "api.php?apicall=getlessonnumbersbycourseid";
+
+    public static String URL_ADD_FIRST_QUIZ_RESULT = ROOT_URL + "api.php?apicall=createfirstquizresult";
+
+    public static String URL_GET_FIRST_QUIZ_RESULTS = ROOT_URL + "api.php?apicall=getfirstquizresults";
 
 }

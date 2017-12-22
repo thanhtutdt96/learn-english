@@ -52,7 +52,6 @@ public class FirstQuizResultActivity extends AppCompatActivity implements View.O
     private String rank;
     private int score;
     private String email;
-    private String lessonId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,8 +154,8 @@ public class FirstQuizResultActivity extends AppCompatActivity implements View.O
 
         HashMap<String, String> params = new HashMap<>();
         params.put("email", email);
-//        LoadQuizResult loadQuizResult = new LoadQuizResult(Constants.URL_GET_LESSON_QUIZ_RESULTS, params, Constants.CODE_POST_REQUEST);
-        //   loadQuizResult.execute();
+        LoadQuizResult loadQuizResult = new LoadQuizResult(Constants.URL_GET_FIRST_QUIZ_RESULTS, params, Constants.CODE_POST_REQUEST);
+        loadQuizResult.execute();
 
         alertDialog.show();
     }
@@ -167,8 +166,8 @@ public class FirstQuizResultActivity extends AppCompatActivity implements View.O
         params.put("score", String.valueOf(score));
         params.put("rank", rank);
 
-        //     SaveQuizResult saveQuizResult = new SaveQuizResult(Constants.URL_ADD_LESSON_QUIZ_RESULT, params, Constants.CODE_POST_REQUEST);
-        //  saveQuizResult.execute();
+        SaveQuizResult saveQuizResult = new SaveQuizResult(Constants.URL_ADD_FIRST_QUIZ_RESULT, params, Constants.CODE_POST_REQUEST);
+        saveQuizResult.execute();
     }
 
     private void refreshResultList(JSONArray answers) throws JSONException {
