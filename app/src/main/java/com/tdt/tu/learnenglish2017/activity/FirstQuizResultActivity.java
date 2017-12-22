@@ -30,8 +30,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dmoral.toasty.Toasty;
 
-public class LessonQuizResultActivity extends AppCompatActivity implements View.OnClickListener {
+public class FirstQuizResultActivity extends AppCompatActivity implements View.OnClickListener {
     @BindView(R.id.ivHome)
     ImageView ivHome;
     @BindView(R.id.btnRedo)
@@ -66,9 +67,8 @@ public class LessonQuizResultActivity extends AppCompatActivity implements View.
     private void init() {
         ButterKnife.bind(this);
 
-        score = getIntent().getIntExtra("lesson_quiz_score", 0);
+        score = getIntent().getIntExtra("first_quiz_score", 0);
         email = getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).getString("email", "");
-        lessonId = getIntent().getStringExtra("lesson_id");
         setContent();
 
         ivHome.setOnClickListener(this);
@@ -155,9 +155,8 @@ public class LessonQuizResultActivity extends AppCompatActivity implements View.
 
         HashMap<String, String> params = new HashMap<>();
         params.put("email", email);
-        params.put("lesson_id", "L1");
-        LoadQuizResult loadQuizResult = new LoadQuizResult(Constants.URL_GET_LESSON_QUIZ_RESULTS, params, Constants.CODE_POST_REQUEST);
-        loadQuizResult.execute();
+//        LoadQuizResult loadQuizResult = new LoadQuizResult(Constants.URL_GET_LESSON_QUIZ_RESULTS, params, Constants.CODE_POST_REQUEST);
+        //   loadQuizResult.execute();
 
         alertDialog.show();
     }
@@ -165,12 +164,11 @@ public class LessonQuizResultActivity extends AppCompatActivity implements View.
     private void saveQuizResult() {
         HashMap<String, String> params = new HashMap<>();
         params.put("email", email);
-        params.put("lesson_id", lessonId);
         params.put("score", String.valueOf(score));
         params.put("rank", rank);
 
-        SaveQuizResult saveQuizResult = new SaveQuizResult(Constants.URL_ADD_LESSON_QUIZ_RESULT, params, Constants.CODE_POST_REQUEST);
-        saveQuizResult.execute();
+        //     SaveQuizResult saveQuizResult = new SaveQuizResult(Constants.URL_ADD_LESSON_QUIZ_RESULT, params, Constants.CODE_POST_REQUEST);
+        //  saveQuizResult.execute();
     }
 
     private void refreshResultList(JSONArray answers) throws JSONException {
@@ -212,7 +210,7 @@ public class LessonQuizResultActivity extends AppCompatActivity implements View.
                 JSONObject object = new JSONObject(s);
                 if (!object.getBoolean("error")) {
                     if (!object.getString("message").equals(""))
-                        Toast.makeText(LessonQuizResultActivity.this, object.getString("message"), Toast.LENGTH_SHORT).show();
+                        Toasty.info(FirstQuizResultActivity.this, object.getString("message"), Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -258,7 +256,7 @@ public class LessonQuizResultActivity extends AppCompatActivity implements View.
                 JSONObject object = new JSONObject(s);
                 if (!object.getBoolean("error")) {
                     if (!object.getString("message").equals(""))
-                        Toast.makeText(LessonQuizResultActivity.this, object.getString("message"), Toast.LENGTH_SHORT).show();
+                        Toasty.info(FirstQuizResultActivity.this, object.getString("message"), Toast.LENGTH_SHORT).show();
 
                     refreshResultList(object.getJSONArray("results"));
                 }

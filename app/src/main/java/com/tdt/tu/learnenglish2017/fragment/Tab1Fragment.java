@@ -1,6 +1,7 @@
 package com.tdt.tu.learnenglish2017.fragment;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import com.tdt.tu.learnenglish2017.R;
 import com.tdt.tu.learnenglish2017.activity.CourseInfoActivity;
+import com.tdt.tu.learnenglish2017.activity.LessonActivity;
 import com.tdt.tu.learnenglish2017.helper.CategoryAdapter;
 import com.tdt.tu.learnenglish2017.helper.Constants;
 import com.tdt.tu.learnenglish2017.helper.FeaturedCourseAdapter;
@@ -36,6 +38,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.content.Context.MODE_PRIVATE;
+
 /**
  * Created by Pham Thanh Tu on 26-Sep-17.
  */
@@ -51,6 +55,8 @@ public class Tab1Fragment extends Fragment {
     private List<Category> categoryList = new ArrayList<>();
     private List<Course> featuredList = new ArrayList<>();
     private List<Course> topList = new ArrayList<>();
+    private ArrayList<String> listCourseId = new ArrayList<>();
+
     private CategoryAdapter categoryAdapter;
     private FeaturedCourseAdapter featuredAdapter;
     private FeaturedCourseAdapter topAdapter;
@@ -210,14 +216,12 @@ public class Tab1Fragment extends Fragment {
                 if (childView != null && gestureDetector.onTouchEvent(e)) {
                     recyclerViewItemPosition = recyclerFeatured.getChildAdapterPosition(childView);
 
-                    Intent i = new Intent(view.getContext(), CourseInfoActivity.class);
-                    i.putExtra("course_id", featuredList.get(recyclerViewItemPosition).getCourseId());
-                    i.putExtra("course_name", featuredList.get(recyclerViewItemPosition).getCourseName());
-                    i.putExtra("price", featuredList.get(recyclerViewItemPosition).getPrice());
-                    i.putExtra("description", featuredList.get(recyclerViewItemPosition).getDescription());
-                    i.putExtra("link", featuredList.get(recyclerViewItemPosition).getLink());
+                    String email = view.getContext().getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).getString("email", "");
+                    HashMap<String, String> params = new HashMap<>();
+                    params.put("email", email);
 
-                    startActivity(i);
+                    LoadUserCourseIds loadUserCourseIds = new LoadUserCourseIds(Constants.URL_GET_USER_COURSE_IDS_BY_EMAIL, params, Constants.CODE_POST_REQUEST, featuredList, recyclerViewItemPosition);
+                    loadUserCourseIds.execute();
                 }
                 return false;
             }
@@ -249,14 +253,13 @@ public class Tab1Fragment extends Fragment {
                 int recyclerViewItemPosition;
                 if (childView != null && gestureDetector.onTouchEvent(e)) {
                     recyclerViewItemPosition = recyclerTopCourse.getChildAdapterPosition(childView);
-                    Intent i = new Intent(view.getContext(), CourseInfoActivity.class);
-                    i.putExtra("course_id", topList.get(recyclerViewItemPosition).getCourseId());
-                    i.putExtra("course_name", topList.get(recyclerViewItemPosition).getCourseName());
-                    i.putExtra("price", topList.get(recyclerViewItemPosition).getPrice());
-                    i.putExtra("description", topList.get(recyclerViewItemPosition).getDescription());
-                    i.putExtra("link", topList.get(recyclerViewItemPosition).getLink());
 
-                    startActivity(i);
+                    String email = view.getContext().getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).getString("email", "");
+                    HashMap<String, String> params = new HashMap<>();
+                    params.put("email", email);
+
+                    LoadUserCourseIds loadUserCourseIds = new LoadUserCourseIds(Constants.URL_GET_USER_COURSE_IDS_BY_EMAIL, params, Constants.CODE_POST_REQUEST, topList, recyclerViewItemPosition);
+                    loadUserCourseIds.execute();
                 }
                 return false;
             }
@@ -278,6 +281,45 @@ public class Tab1Fragment extends Fragment {
         transaction.replace(R.id.fragment3_container, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    private void refreshCourseIdList(JSONArray questions) throws JSONException {
+        listCourseId.clear();
+        for (int i = 0; i < questions.length(); i++) {
+            JSONObject obj = questions.getJSONObject(i);
+            listCourseId.add(obj.getString("course_id"));
+        }
+    }
+
+    private void switchActivity(List<Course> list, int position) {
+        if (checkEnrolledCourse(list, position)) {
+            SharedPreferences.Editor editor = view.getContext().getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).edit();
+            editor.putString("course_id", list.get(position).getCourseId());
+            editor.putString("description", list.get(position).getDescription());
+            editor.commit();
+
+            Intent intent = new Intent(view.getContext(), LessonActivity.class);
+            intent.putExtra("course_name", list.get(position).getCourseName());
+            startActivity(intent);
+        } else {
+            Intent intent = new Intent(view.getContext(), CourseInfoActivity.class);
+            intent.putExtra("course_id", list.get(position).getCourseId());
+            intent.putExtra("course_name", list.get(position).getCourseName());
+            intent.putExtra("price", list.get(position).getPrice());
+            intent.putExtra("description", list.get(position).getDescription());
+            intent.putExtra("link", list.get(position).getLink());
+
+            startActivity(intent);
+        }
+    }
+
+    private boolean checkEnrolledCourse(List<Course> list, int position) {
+        for (String courseId : listCourseId) {
+            if (courseId.equals(list.get(position).getCourseId())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private class LoadCategory extends AsyncTask<Void, Void, String> {
@@ -421,6 +463,53 @@ public class Tab1Fragment extends Fragment {
             if (requestCode == Constants.CODE_POST_REQUEST)
                 return requestHandler.sendPostRequest(url, params);
 
+
+            if (requestCode == Constants.CODE_GET_REQUEST)
+                return requestHandler.sendGetRequest(url);
+
+            return null;
+        }
+    }
+
+    public class LoadUserCourseIds extends AsyncTask<Void, Void, String> {
+
+        String url;
+        HashMap<String, String> params;
+        int requestCode;
+        List<Course> list;
+        int position;
+
+        LoadUserCourseIds(String url, HashMap<String, String> params, int requestCode, List<Course> list, int position) {
+            this.url = url;
+            this.params = params;
+            this.requestCode = requestCode;
+            this.list = list;
+            this.position = position;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            try {
+                JSONObject object = new JSONObject(s);
+                if (!object.getBoolean("error")) {
+                    if (!object.getString("message").equals(""))
+                        Toast.makeText(view.getContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
+                    refreshCourseIdList(object.getJSONArray("course_ids"));
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            switchActivity(list, position);
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            RequestHandler requestHandler = new RequestHandler();
+
+            if (requestCode == Constants.CODE_POST_REQUEST)
+                return requestHandler.sendPostRequest(url, params);
 
             if (requestCode == Constants.CODE_GET_REQUEST)
                 return requestHandler.sendGetRequest(url);

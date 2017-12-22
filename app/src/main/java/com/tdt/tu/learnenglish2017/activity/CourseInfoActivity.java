@@ -36,18 +36,20 @@ import es.dmoral.toasty.Toasty;
 
 public class CourseInfoActivity extends AppCompatActivity implements YouTubePlayer.OnInitializedListener {
 
-    @BindView(R.id.txtCourseName_Info)
+    @BindView(R.id.txtCourseName)
     TextView courseName;
-    @BindView(R.id.price_Info)
+    @BindView(R.id.txtPrice)
     TextView coursePrice;
-    @BindView(R.id.txtDescription_Info)
+    @BindView(R.id.txtDescription)
     TextView courseDescription;
-    @BindView(R.id.btnBuy_Info)
+    @BindView(R.id.btnBuy)
     Button btnBuy;
-    @BindView(R.id.btnFavorite_Info)
+    @BindView(R.id.btnFavorite)
     TextView btnFavorite;
     @BindView(R.id.ivBack)
     ImageView ivBack;
+    @BindView(R.id.btnRemove)
+    Button btnRemove;
 
     private YouTubePlayerFragment youTubePlayerFragment;
     private int REQUEST_VIDEO = 1;
@@ -58,7 +60,7 @@ public class CourseInfoActivity extends AppCompatActivity implements YouTubePlay
     private String email;
     private int price;
     private String link;
-    private ArrayList<String> listCourseId;
+    private ArrayList<String> favoriteCourseIdList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,46 +70,21 @@ public class CourseInfoActivity extends AppCompatActivity implements YouTubePlay
         init();
         setContent();
         initYoutubePlayer();
-        loadCourseIdList();
+        loadFavoriteCourseId();
     }
 
     private void buttonHandler() {
-        for (String tmp : listCourseId) {
-            if (tmp.equals(courseId)) {
-                disableBuy();
-                disableFavorite();
+        for (String courseId : favoriteCourseIdList) {
+            if (courseId.equals(this.courseId)) {
+                btnFavorite.setVisibility(View.GONE);
+                btnRemove.setVisibility(View.VISIBLE);
             }
         }
         btnBuy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                buyCourse();
-                disableBuy();
-                final AlertDialog.Builder builder = new AlertDialog.Builder(CourseInfoActivity.this);
-                builder.setMessage("Do you want to open this course and learn now?");
-                builder.setCancelable(false);
-                builder.setNegativeButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        SharedPreferences.Editor editor = getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).edit();
-                        editor.putString("course_id", courseId);
-                        editor.putString("description", description);
-                        editor.commit();
-
-                        Intent intent = new Intent(CourseInfoActivity.this, LessonActivity.class);
-                        intent.putExtra("course_name", name);
-                        startActivity(intent);
-
-                    }
-                });
-                builder.setPositiveButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                    }
-                });
-                AlertDialog dialog = builder.create();
-                dialog.show();
+                addCourseToUserCourse();
+                buyHandler();
             }
         });
 
@@ -115,10 +92,16 @@ public class CourseInfoActivity extends AppCompatActivity implements YouTubePlay
             @Override
             public void onClick(View view) {
                 addCourseToFavorite();
-                disableFavorite();
+                favoriteHandler();
             }
         });
-
+        btnRemove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                removeCourseFromFavorite();
+                removeHandler();
+            }
+        });
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -127,19 +110,67 @@ public class CourseInfoActivity extends AppCompatActivity implements YouTubePlay
         });
     }
 
-    private void disableBuy() {
-        btnBuy.setText("Bought");
+    private void buyHandler() {
+        btnBuy.setText("Enrolled");
         btnBuy.setEnabled(false);
-        btnBuy.setCompoundDrawablesWithIntrinsicBounds(this.getResources().getDrawable(R.drawable.ic_check_orange_24dp), null, null, null);
         btnBuy.setBackgroundColor(getResources().getColor(R.color.colorGrey));
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(CourseInfoActivity.this);
+        builder.setMessage("Do you want to open this course and learn now?");
+        builder.setCancelable(false);
+        builder.setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                SharedPreferences.Editor editor = getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).edit();
+                editor.putString("course_id", courseId);
+                editor.putString("description", description);
+                editor.commit();
+
+                Intent intent = new Intent(CourseInfoActivity.this, LessonActivity.class);
+                intent.putExtra("course_name", name);
+                startActivity(intent);
+
+            }
+        });
+        builder.setPositiveButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        Intent intent = new Intent();
+        intent.setAction("refresh_user_courses");
+        sendBroadcast(intent);
     }
 
-    private void disableFavorite() {
-        btnFavorite.setText("Added to your favorite");
-        btnFavorite.setEnabled(false);
-        btnFavorite.setTextColor(getResources().getColor(R.color.colorWhite));
-        btnFavorite.setCompoundDrawablesWithIntrinsicBounds(this.getResources().getDrawable(R.drawable.ic_check_orange_24dp), null, null, null);
-        btnFavorite.setBackgroundColor(getResources().getColor(R.color.colorGrey));
+    private void favoriteHandler() {
+        btnFavorite.setVisibility(View.GONE);
+        btnRemove.setVisibility(View.VISIBLE);
+
+        Intent intent = new Intent();
+        intent.setAction("refresh_user_favorites");
+        sendBroadcast(intent);
+    }
+
+    private void removeCourseFromFavorite() {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("course_id", courseId);
+
+        PerformNetworkRequest request = new PerformNetworkRequest(Constants.URL_REMOVE_COURSE_FROM_FAVORITE, params, Constants.CODE_POST_REQUEST);
+        request.execute();
+    }
+
+    private void removeHandler() {
+        btnFavorite.setVisibility(View.VISIBLE);
+        btnRemove.setVisibility(View.GONE);
+
+        Intent intent = new Intent();
+        intent.setAction("refresh_user_favorites");
+        sendBroadcast(intent);
     }
 
     private void setContent() {
@@ -166,7 +197,7 @@ public class CourseInfoActivity extends AppCompatActivity implements YouTubePlay
         ButterKnife.bind(this);
     }
 
-    private void buyCourse() {
+    private void addCourseToUserCourse() {
         HashMap<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("course_id", courseId);
@@ -187,23 +218,15 @@ public class CourseInfoActivity extends AppCompatActivity implements YouTubePlay
         request.execute();
     }
 
-    private void loadCourseIdList() {
+    private void loadFavoriteCourseId() {
         SharedPreferences prefs = getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE);
         String email = prefs.getString("email", "");
 
         HashMap<String, String> params = new HashMap<>();
         params.put("email", email);
 
-        PerformNetworkRequest request = new PerformNetworkRequest(Constants.URL_GET_COURSE_ID_BY_EMAIL, params, Constants.CODE_POST_REQUEST);
+        PerformNetworkRequest request = new PerformNetworkRequest(Constants.URL_GET_FAVORITE_COURSE_IDS_BY_EMAIL, params, Constants.CODE_POST_REQUEST);
         request.execute();
-    }
-
-    private void refreshCourseIdList(JSONArray questions) throws JSONException {
-        listCourseId = new ArrayList<>();
-        for (int i = 0; i < questions.length(); i++) {
-            JSONObject obj = questions.getJSONObject(i);
-            listCourseId.add(obj.getString("course_id"));
-        }
     }
 
     @Override
@@ -234,6 +257,14 @@ public class CourseInfoActivity extends AppCompatActivity implements YouTubePlay
 
     protected YouTubePlayer.Provider getYouTubePlayerProvider() {
         return (YouTubePlayerFragment) getFragmentManager().findFragmentById(R.id.youtubePlayerFragment);
+    }
+
+    private void refreshCourseIdList(JSONArray questions) throws JSONException {
+        favoriteCourseIdList.clear();
+        for (int i = 0; i < questions.length(); i++) {
+            JSONObject obj = questions.getJSONObject(i);
+            favoriteCourseIdList.add(obj.getString("course_id"));
+        }
     }
 
     public class PerformNetworkRequest extends AsyncTask<Void, Void, String> {

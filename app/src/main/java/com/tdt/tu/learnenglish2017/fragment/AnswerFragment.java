@@ -93,7 +93,7 @@ public class AnswerFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent();
-                intent.setAction("refreshList");
+                intent.setAction("refresh_qa_list");
                 view.getContext().sendBroadcast(intent);
                 getFragmentManager().popBackStack();
             }

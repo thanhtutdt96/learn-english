@@ -38,7 +38,11 @@ public class Constants {
 
     public static String URL_GET_FAVORITES_BY_EMAIL = ROOT_URL + "api.php?apicall=getfavoritesbyemail";
 
-    public static String URL_GET_COURSE_ID_BY_EMAIL = ROOT_URL + "api.php?apicall=getcourseidbyemail";
+    public static String URL_GET_USER_COURSE_IDS_BY_EMAIL = ROOT_URL + "api.php?apicall=getusercourseidsbyemail";
+
+    public static String URL_GET_FAVORITE_COURSE_IDS_BY_EMAIL = ROOT_URL + "api.php?apicall=getfavoritecourseidsbyemail";
+
+    public static String URL_REMOVE_COURSE_FROM_FAVORITE = ROOT_URL + "api.php?apicall=removecoursefromfavorite";
 
     public static String URL_GET_SEARCH_RESULTS = ROOT_URL + "api.php?apicall=getsearchresults";
 
@@ -49,6 +53,10 @@ public class Constants {
     public static String URL_GET_FIRST_QUIZ_QUESTIONS = ROOT_URL + "api.php?apicall=getfirstquizquestions";
 
     public static String URL_GET_LESSON_QUIZ_QUESTIONS = ROOT_URL + "api.php?apicall=getlessonquizquestions";
+
+    public static String URL_ADD_LESSON_QUIZ_RESULT = ROOT_URL + "api.php?apicall=createlessonquizresult";
+
+    public static String URL_GET_LESSON_QUIZ_RESULTS = ROOT_URL + "api.php?apicall=getlessonquizresults";
 
     public static String URL_GET_LESSON_NUMBERS_BY_COURSE_ID = ROOT_URL + "api.php?apicall=getlessonnumbersbycourseid";
 

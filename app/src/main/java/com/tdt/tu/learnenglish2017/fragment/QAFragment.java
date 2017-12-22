@@ -240,7 +240,7 @@ public class QAFragment extends Fragment {
             }
         };
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("refreshList");
+        intentFilter.addAction("refresh_qa_list");
         view.getContext().registerReceiver(receiver, intentFilter);
     }
 

@@ -4,7 +4,7 @@ package com.tdt.tu.learnenglish2017.item;
  * Created by 1stks on 19-Dec-17.
  */
 
-public class LessonQuizQuestion {
+public class QuizQuestion {
     private int id;
     private String question;
     private String optionA;
@@ -12,7 +12,7 @@ public class LessonQuizQuestion {
     private String optionC;
     private String answer;
 
-    public LessonQuizQuestion(int id, String question, String optionA, String optionB, String optionC, String answer) {
+    public QuizQuestion(int id, String question, String optionA, String optionB, String optionC, String answer) {
         this.id = id;
         this.question = question;
         this.optionA = optionA;

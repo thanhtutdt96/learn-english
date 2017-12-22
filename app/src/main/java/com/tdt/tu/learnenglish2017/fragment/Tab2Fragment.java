@@ -3,6 +3,7 @@ package com.tdt.tu.learnenglish2017.fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 import com.mancj.materialsearchbar.MaterialSearchBar;
 import com.tdt.tu.learnenglish2017.R;
 import com.tdt.tu.learnenglish2017.activity.CourseInfoActivity;
+import com.tdt.tu.learnenglish2017.activity.LessonActivity;
 import com.tdt.tu.learnenglish2017.helper.Constants;
 import com.tdt.tu.learnenglish2017.helper.CourseAdapter;
 import com.tdt.tu.learnenglish2017.helper.RequestHandler;
@@ -34,6 +36,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.content.Context.MODE_PRIVATE;
+
 /**
  * Created by Pham Thanh Tu on 26-Sep-17.
  */
@@ -46,6 +50,7 @@ public class Tab2Fragment extends Fragment implements MaterialSearchBar.OnSearch
 
     private View view;
     private List<Course> courseList = new ArrayList<>();
+    private ArrayList<String> listCourseId = new ArrayList<>();
     private CourseAdapter adapter;
 
     @Nullable
@@ -91,14 +96,12 @@ public class Tab2Fragment extends Fragment implements MaterialSearchBar.OnSearch
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(view.getContext(), CourseInfoActivity.class);
-                intent.putExtra("course_id", courseList.get(i).getCourseId());
-                intent.putExtra("course_name", courseList.get(i).getCourseName());
-                intent.putExtra("price", courseList.get(i).getPrice());
-                intent.putExtra("description", courseList.get(i).getDescription());
-                intent.putExtra("link", courseList.get(i).getLink());
+                String email = view.getContext().getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).getString("email", "");
+                HashMap<String, String> params = new HashMap<>();
+                params.put("email", email);
 
-                startActivity(intent);
+                LoadUserCourseIds loadUserCourseIds = new LoadUserCourseIds(Constants.URL_GET_USER_COURSE_IDS_BY_EMAIL, params, Constants.CODE_POST_REQUEST, i);
+                loadUserCourseIds.execute();
             }
         });
     }
@@ -107,8 +110,8 @@ public class Tab2Fragment extends Fragment implements MaterialSearchBar.OnSearch
         HashMap<String, String> params = new HashMap<>();
         params.put("search_query", searchQuery);
 
-        PerformNetworkRequest request = new PerformNetworkRequest(Constants.URL_GET_SEARCH_RESULTS, params, Constants.CODE_POST_REQUEST);
-        request.execute();
+        LoadSearchResults loadSearchResults = new LoadSearchResults(Constants.URL_GET_SEARCH_RESULTS, params, Constants.CODE_POST_REQUEST);
+        loadSearchResults.execute();
     }
 
     private void refreshQuestionList(JSONArray results) throws JSONException {
@@ -129,14 +132,53 @@ public class Tab2Fragment extends Fragment implements MaterialSearchBar.OnSearch
         adapter.notifyDataSetChanged();
     }
 
-    private class PerformNetworkRequest extends AsyncTask<Void, Void, String> {
+    private void refreshCourseIdList(JSONArray questions) throws JSONException {
+        listCourseId.clear();
+        for (int i = 0; i < questions.length(); i++) {
+            JSONObject obj = questions.getJSONObject(i);
+            listCourseId.add(obj.getString("course_id"));
+        }
+    }
+
+    private void switchActivity(int position) {
+        if (checkEnrolledCourse(position)) {
+            SharedPreferences.Editor editor = view.getContext().getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).edit();
+            editor.putString("course_id", courseList.get(position).getCourseId());
+            editor.putString("description", courseList.get(position).getDescription());
+            editor.commit();
+
+            Intent intent = new Intent(view.getContext(), LessonActivity.class);
+            intent.putExtra("course_name", courseList.get(position).getCourseName());
+            startActivity(intent);
+        } else {
+            Intent intent = new Intent(view.getContext(), CourseInfoActivity.class);
+            intent.putExtra("course_id", courseList.get(position).getCourseId());
+            intent.putExtra("course_name", courseList.get(position).getCourseName());
+            intent.putExtra("price", courseList.get(position).getPrice());
+            intent.putExtra("description", courseList.get(position).getDescription());
+            intent.putExtra("link", courseList.get(position).getLink());
+
+            startActivity(intent);
+        }
+    }
+
+    private boolean checkEnrolledCourse(int position) {
+        for (String courseId : listCourseId) {
+            if (courseId.equals(courseList.get(position).getCourseId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private class LoadSearchResults extends AsyncTask<Void, Void, String> {
 
         String url;
         HashMap<String, String> params;
         int requestCode;
         ProgressDialog dialog;
 
-        PerformNetworkRequest(String url, HashMap<String, String> params, int requestCode) {
+        LoadSearchResults(String url, HashMap<String, String> params, int requestCode) {
             this.url = url;
             this.params = params;
             this.requestCode = requestCode;
@@ -166,6 +208,51 @@ public class Tab2Fragment extends Fragment implements MaterialSearchBar.OnSearch
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            RequestHandler requestHandler = new RequestHandler();
+
+            if (requestCode == Constants.CODE_POST_REQUEST)
+                return requestHandler.sendPostRequest(url, params);
+
+            if (requestCode == Constants.CODE_GET_REQUEST)
+                return requestHandler.sendGetRequest(url);
+
+            return null;
+        }
+    }
+
+    public class LoadUserCourseIds extends AsyncTask<Void, Void, String> {
+
+        String url;
+        HashMap<String, String> params;
+        int requestCode;
+        int position;
+
+        LoadUserCourseIds(String url, HashMap<String, String> params, int requestCode, int position) {
+            this.url = url;
+            this.params = params;
+            this.requestCode = requestCode;
+            this.position = position;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            try {
+                JSONObject object = new JSONObject(s);
+                if (!object.getBoolean("error")) {
+                    if (!object.getString("message").equals(""))
+                        Toast.makeText(view.getContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
+                    refreshCourseIdList(object.getJSONArray("course_ids"));
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            switchActivity(position);
         }
 
         @Override

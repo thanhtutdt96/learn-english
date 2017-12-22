@@ -44,7 +44,16 @@
                     android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
                     android:textColor="@color/colorWhite" />
 
-
+                <ImageView
+                    android:id="@+id/ivHistory"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
+                    android:src="@drawable/ic_history_white_24dp"
+                    android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
+                    android:textColor="@color/colorWhite" />
             </RelativeLayout>
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>

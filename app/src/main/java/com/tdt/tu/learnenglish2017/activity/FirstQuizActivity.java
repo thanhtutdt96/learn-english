@@ -33,7 +33,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class LessonQuizActivity extends AppCompatActivity implements View.OnClickListener {
+public class FirstQuizActivity extends AppCompatActivity implements View.OnClickListener {
 
     @BindView(R.id.ivHome)
     ImageView txtQuit;
@@ -133,9 +133,9 @@ public class LessonQuizActivity extends AppCompatActivity implements View.OnClic
         if (questionNumber < 10)
             displayQuestion();
         else {
-            Intent intent = new Intent(this, LessonQuizResultActivity.class);
-            intent.putExtra("lesson_quiz_score", score);
-            intent.putExtra("lesson_id", lessonId);
+            Intent intent = new Intent(this, FirstQuizResultActivity.class);
+            intent.putExtra("first_quiz_score", score);
+
             startActivity(intent);
             finish();
         }
@@ -245,16 +245,11 @@ public class LessonQuizActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void loadData() {
-        lessonId = getIntent().getStringExtra("lesson_id");
-        HashMap<String, String> params = new HashMap<>();
-        params.put("lesson_id", lessonId);
-
-        LoadLessonQuizQuestions loadLessonQuizQuestions = new LoadLessonQuizQuestions(Constants.URL_GET_LESSON_QUIZ_QUESTIONS, params, Constants.CODE_POST_REQUEST);
-        loadLessonQuizQuestions.execute();
-
+        LoadFirstQuizQuestions loadFirstQuizQuestions = new LoadFirstQuizQuestions(Constants.URL_GET_FIRST_QUIZ_QUESTIONS, null, Constants.CODE_POST_REQUEST);
+        loadFirstQuizQuestions.execute();
     }
 
-    private void refreshLessonQuizQuestionsList(JSONArray questions) throws JSONException {
+    private void refreshFirstQuizQuestionsList(JSONArray questions) throws JSONException {
         questionList.clear();
         for (int i = 0; i < questions.length(); i++) {
             JSONObject obj = questions.getJSONObject(i);
@@ -316,13 +311,13 @@ public class LessonQuizActivity extends AppCompatActivity implements View.OnClic
         resumeTimer();
     }
 
-    private class LoadLessonQuizQuestions extends AsyncTask<Void, Void, String> {
+    private class LoadFirstQuizQuestions extends AsyncTask<Void, Void, String> {
 
         String url;
         HashMap<String, String> params;
         int requestCode;
 
-        LoadLessonQuizQuestions(String url, HashMap<String, String> params, int requestCode) {
+        LoadFirstQuizQuestions(String url, HashMap<String, String> params, int requestCode) {
             this.url = url;
             this.params = params;
             this.requestCode = requestCode;
@@ -340,9 +335,9 @@ public class LessonQuizActivity extends AppCompatActivity implements View.OnClic
                 JSONObject object = new JSONObject(s);
                 if (!object.getBoolean("error")) {
                     if (!object.getString("message").equals(""))
-                        Toast.makeText(LessonQuizActivity.this, object.getString("message"), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(FirstQuizActivity.this, object.getString("message"), Toast.LENGTH_SHORT).show();
 
-                    refreshLessonQuizQuestionsList(object.getJSONArray("questions"));
+                    refreshFirstQuizQuestionsList(object.getJSONArray("questions"));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

@@ -1,6 +1,9 @@
 package com.tdt.tu.learnenglish2017.fragment;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -40,6 +43,8 @@ public class Tab3Fragment extends Fragment {
     private ArrayList<Course> listUserCourse = new ArrayList<>();
     private CourseAdapter adapter;
 
+    private BroadcastReceiver receiver;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -52,6 +57,29 @@ public class Tab3Fragment extends Fragment {
         return view;
     }
 
+    private void initReceiver() {
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                loadUserCourses();
+            }
+        };
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("refresh_qa_list");
+        view.getContext().registerReceiver(receiver, intentFilter);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        initReceiver();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        view.getContext().unregisterReceiver(receiver);
+    }
 
     private void listViewHandler() {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -102,12 +130,6 @@ public class Tab3Fragment extends Fragment {
         ButterKnife.bind(this, view);
         adapter = new CourseAdapter(view.getContext(), R.layout.course_row_layout, listUserCourse);
         listView.setAdapter(adapter);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        loadUserCourses();
     }
 
     private class PerformNetworkRequest extends AsyncTask<Void, Void, String> {
