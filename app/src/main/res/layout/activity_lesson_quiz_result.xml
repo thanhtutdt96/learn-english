@@ -76,7 +76,7 @@
                 android:layout_above="@id/txtTotal"
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center"
-                android:text="Quiz completed !"
+                android:text="Lesson quiz completed !"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
                 android:textColor="@color/colorOrange" />
 
@@ -117,11 +117,10 @@
                 android:layout_width="270dp"
                 android:layout_height="270dp"
                 android:layout_centerInParent="true"
-                android:rotation="0"
-                app:donut_finished_color="@color/colorGreen"
+                android:rotation="270"
                 app:donut_finished_stroke_width="18dp"
                 app:donut_max="10"
-                app:donut_progress="100"
+                app:donut_progress="0"
                 app:donut_text=""
                 app:donut_unfinished_stroke_width="18dp" />
 

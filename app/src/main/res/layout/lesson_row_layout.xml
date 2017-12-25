@@ -5,6 +5,7 @@
     android:id="@+id/course_row"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/lesson_selector"
     android:clickable="true"
     android:focusable="true"
     android:padding="3dp">
@@ -42,7 +43,7 @@
             android:layout_marginTop="2dp"
             android:text="Duration"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-            android:textColor="@android:color/darker_gray" />
+            android:textColor="#757575" />
 
     </LinearLayout>
 

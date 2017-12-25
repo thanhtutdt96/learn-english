@@ -1,5 +1,6 @@
 package com.tdt.tu.learnenglish2017.fragment;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -27,6 +28,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import es.dmoral.toasty.Toasty;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.tdt.tu.learnenglish2017.activity.LessonActivity.buttonDownloadAll;
@@ -90,6 +93,10 @@ public class LessonsFragment extends Fragment {
             editor.putString("link", lessonList.get(0).getLink());
             editor.commit();
 
+            Intent intent = new Intent();
+            intent.setAction("load_first_video");
+            view.getContext().sendBroadcast(intent);
+
             adapter.notifyDataSetChanged();
         }
     }
@@ -119,7 +126,7 @@ public class LessonsFragment extends Fragment {
                 JSONObject object = new JSONObject(s);
                 if (!object.getBoolean("error")) {
                     if (!object.getString("message").equals(""))
-                        Toast.makeText(view.getContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
+                        Toasty.info(view.getContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
 
                     refreshLessonList(object.getJSONArray("lessons"));
                 }

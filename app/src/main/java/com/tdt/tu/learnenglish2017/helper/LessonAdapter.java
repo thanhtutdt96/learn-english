@@ -43,10 +43,12 @@ import es.dmoral.toasty.Toasty;
  * Created by Pham Thanh Tu on 18-Oct-17.
  */
 
-public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder> {
+public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder> implements View.OnClickListener {
     private List<Lesson> list = new ArrayList<>();
     private Context context;
     private String videoPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LearnEnglish2017/Download/";
+
+    private int selectedPosition = 0;
 
     public LessonAdapter(Context context, List<Lesson> list) {
         this.context = context;
@@ -89,7 +91,7 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
                 context.startActivity(intent);
             }
         });
-
+        holder.itemView.setSelected(selectedPosition == position);
     }
 
     private String fileNameHandler(String videoTitle, YtFile ytFile) {
@@ -185,6 +187,14 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
         return videoName;
     }
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.lessonDownload:
+                break;
+        }
+    }
+
     private class DownloadFileFromURLTask extends AsyncTask<String, Integer, String> {
         ViewHolder holder;
         String fileName;
@@ -263,6 +273,12 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    if (getAdapterPosition() == RecyclerView.NO_POSITION)
+                        return;
+                    notifyItemChanged(selectedPosition);
+                    selectedPosition = getLayoutPosition();
+                    notifyItemChanged(selectedPosition);
+
                     String selectedLessonLink = list.get(getLayoutPosition()).getLink();
                     if (LessonActivity.mYoutubePlayer != null) {
                         LessonActivity.mYoutubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT);

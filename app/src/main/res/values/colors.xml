@@ -15,6 +15,9 @@
     <color name="colorBlue">#AEC6CF</color>
     <color name="colorYellow">#FDFD96</color>
 
+    <color name="item_selected">#CCE8FF</color>
+    <color name="item_pressed">#CCE8FF</color>
+    <color name="item_hovered">#E5F3FF</color>
 
     <color name="bg_login">#26ae90</color>
     <color name="bg_register">#2e3237</color>

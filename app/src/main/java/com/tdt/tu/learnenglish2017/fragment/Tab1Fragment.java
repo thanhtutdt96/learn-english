@@ -37,6 +37,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dmoral.toasty.Toasty;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -55,7 +56,7 @@ public class Tab1Fragment extends Fragment {
     private List<Category> categoryList = new ArrayList<>();
     private List<Course> featuredList = new ArrayList<>();
     private List<Course> topList = new ArrayList<>();
-    private ArrayList<String> listCourseId = new ArrayList<>();
+    private List<String> listCourseId = new ArrayList<>();
 
     private CategoryAdapter categoryAdapter;
     private FeaturedCourseAdapter featuredAdapter;
@@ -346,7 +347,7 @@ public class Tab1Fragment extends Fragment {
                 JSONObject object = new JSONObject(s);
                 if (!object.getBoolean("error")) {
                     if (!object.getString("message").equals(""))
-                        Toast.makeText(view.getContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
+                        Toasty.info(view.getContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
 
                     refreshCategoryList(object.getJSONArray("categories"));
                 }
@@ -397,7 +398,7 @@ public class Tab1Fragment extends Fragment {
                 JSONObject object = new JSONObject(s);
                 if (!object.getBoolean("error")) {
                     if (!object.getString("message").equals(""))
-                        Toast.makeText(view.getContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
+                        Toasty.info(view.getContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
 
                     refreshFeaturedList(object.getJSONArray("courses"));
                 }
@@ -446,7 +447,7 @@ public class Tab1Fragment extends Fragment {
                 JSONObject object = new JSONObject(s);
                 if (!object.getBoolean("error")) {
                     if (!object.getString("message").equals(""))
-                        Toast.makeText(view.getContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
+                        Toasty.info(view.getContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
 
                     refreshTopList(object.getJSONArray("courses"));
                 }
@@ -494,7 +495,7 @@ public class Tab1Fragment extends Fragment {
                 JSONObject object = new JSONObject(s);
                 if (!object.getBoolean("error")) {
                     if (!object.getString("message").equals(""))
-                        Toast.makeText(view.getContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
+                        Toasty.info(view.getContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
                     refreshCourseIdList(object.getJSONArray("course_ids"));
                 }
 

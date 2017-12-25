@@ -32,6 +32,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dmoral.toasty.Toasty;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -154,7 +155,7 @@ public class QuizFragment extends Fragment {
                 JSONObject object = new JSONObject(s);
                 if (!object.getBoolean("error")) {
                     if (!object.getString("message").equals(""))
-                        Toast.makeText(view.getContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
+                        Toasty.info(view.getContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
 
                     refreshQuizList(object.getJSONArray("quizzes"));
                 }

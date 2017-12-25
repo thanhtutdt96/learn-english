@@ -1,5 +1,6 @@
 package com.tdt.tu.learnenglish2017.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -32,6 +33,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dmoral.toasty.Toasty;
 
 public class FirstQuizActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -80,7 +82,7 @@ public class FirstQuizActivity extends AppCompatActivity implements View.OnClick
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_lesson_quiz);
+        setContentView(R.layout.activity_first_quiz);
         init();
         loadData();
     }
@@ -245,7 +247,7 @@ public class FirstQuizActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void loadData() {
-        LoadFirstQuizQuestions loadFirstQuizQuestions = new LoadFirstQuizQuestions(Constants.URL_GET_FIRST_QUIZ_QUESTIONS, null, Constants.CODE_POST_REQUEST);
+        LoadFirstQuizQuestions loadFirstQuizQuestions = new LoadFirstQuizQuestions(Constants.URL_GET_FIRST_QUIZ_QUESTIONS, null, Constants.CODE_GET_REQUEST);
         loadFirstQuizQuestions.execute();
     }
 
@@ -316,6 +318,7 @@ public class FirstQuizActivity extends AppCompatActivity implements View.OnClick
         String url;
         HashMap<String, String> params;
         int requestCode;
+        ProgressDialog dialog;
 
         LoadFirstQuizQuestions(String url, HashMap<String, String> params, int requestCode) {
             this.url = url;
@@ -326,16 +329,21 @@ public class FirstQuizActivity extends AppCompatActivity implements View.OnClick
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            dialog = new ProgressDialog(FirstQuizActivity.this);
+            dialog.setMessage("Please wait...");
+            dialog.setCancelable(false);
+            dialog.show();
         }
 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            dialog.dismiss();
             try {
                 JSONObject object = new JSONObject(s);
                 if (!object.getBoolean("error")) {
                     if (!object.getString("message").equals(""))
-                        Toast.makeText(FirstQuizActivity.this, object.getString("message"), Toast.LENGTH_SHORT).show();
+                        Toasty.info(FirstQuizActivity.this, object.getString("message"), Toast.LENGTH_SHORT).show();
 
                     refreshFirstQuizQuestionsList(object.getJSONArray("questions"));
                 }

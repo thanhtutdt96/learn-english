@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.tdt.tu.learnenglish2017.R;
+import com.tdt.tu.learnenglish2017.activity.FirstQuizActivity;
 import com.tdt.tu.learnenglish2017.activity.LoginActivity;
 import com.tdt.tu.learnenglish2017.helper.Constants;
 import com.tdt.tu.learnenglish2017.helper.SQLiteHandler;
@@ -19,31 +21,38 @@ import com.tdt.tu.learnenglish2017.helper.SessionManager;
 
 import java.util.HashMap;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by Pham Thanh Tu on 26-Sep-17.
  */
 
-public class Tab5Fragment extends Fragment {
-    private TextView txtName;
-    private TextView txtEmail;
-    private Button btnLogout;
+public class Tab5Fragment extends Fragment implements View.OnClickListener {
+    @BindView(R.id.name)
+    TextView txtName;
+    @BindView(R.id.email)
+    TextView txtEmail;
+    @BindView(R.id.btnLogout)
+    Button btnLogout;
+    @BindView(R.id.cvDoQuiz)
+    CardView cvDoQuiz;
 
     private SQLiteHandler db;
     private SessionManager session;
-    private Button button1;
+
+    private View view;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment5_layout, container, false);
+        ButterKnife.bind(this, view);
 
-        txtName = (TextView) view.findViewById(R.id.name);
-        txtEmail = (TextView) view.findViewById(R.id.email);
-        btnLogout = (Button) view.findViewById(R.id.btnLogout);
-
+        cvDoQuiz.setOnClickListener(this);
         // SqLite database handler
         db = new SQLiteHandler(view.getContext());
 
@@ -66,18 +75,9 @@ public class Tab5Fragment extends Fragment {
         editor.putString("email", email);
         editor.commit();
 
-        // Displaying the user details on the screen
         txtName.setText(name);
         txtEmail.setText(email);
 
-        // Logout button click event
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                logoutUser();
-            }
-        });
         return view;
     }
 
@@ -86,8 +86,18 @@ public class Tab5Fragment extends Fragment {
 
         db.deleteUsers();
 
-        // Launching the login activity
         Intent intent = new Intent(getActivity(), LoginActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btnLogout:
+                logoutUser();
+            case R.id.cvDoQuiz:
+                Intent intent = new Intent(view.getContext(), FirstQuizActivity.class);
+                startActivity(intent);
+        }
     }
 }

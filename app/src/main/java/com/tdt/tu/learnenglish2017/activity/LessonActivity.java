@@ -37,6 +37,7 @@ public class LessonActivity extends AppCompatActivity implements YouTubePlayer.O
     private YouTubePlayerFragment youTubePlayerFragment;
 
     private int REQUEST_VIDEO = 1;
+    private String link;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +57,8 @@ public class LessonActivity extends AppCompatActivity implements YouTubePlayer.O
         courseTitle = (TextView) findViewById(R.id.txtCourseName_Lesson);
         buttonDownloadAll = (ImageView) findViewById(R.id.btnDownloadAll);
 
-        courseTitle.setText(this.getIntent().getStringExtra("course_name"));
+        courseTitle.setText(getIntent().getStringExtra("course_name"));
+        link = getIntent().getStringExtra("link");
     }
 
     private void initYoutubePlayer() {
@@ -88,7 +90,7 @@ public class LessonActivity extends AppCompatActivity implements YouTubePlayer.O
     public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
         if (!b) {
             mYoutubePlayer = youTubePlayer;
-            youTubePlayer.loadVideo(getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).getString("link", ""));
+            youTubePlayer.loadVideo(link);
         }
     }
 

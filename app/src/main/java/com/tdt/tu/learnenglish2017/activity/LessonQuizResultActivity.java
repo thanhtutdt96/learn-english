@@ -1,5 +1,6 @@
 package com.tdt.tu.learnenglish2017.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dmoral.toasty.Toasty;
 
 public class LessonQuizResultActivity extends AppCompatActivity implements View.OnClickListener {
     @BindView(R.id.ivHome)
@@ -86,29 +88,29 @@ public class LessonQuizResultActivity extends AppCompatActivity implements View.
     private void setRank(int score) {
         if (score == 10) {
             rank = "EXCELLENT";
-            txtRank.setTextColor(getResources().getColor(R.color.colorDarkGreen));
-            txtResult.setTextColor(getResources().getColor(R.color.colorDarkGreen));
-            circleResult.setUnfinishedStrokeColor(getResources().getColor(R.color.colorDarkGreen));
+            txtRank.setTextColor(getResources().getColor(R.color.colorBlue));
+            txtResult.setTextColor(getResources().getColor(R.color.colorBlue));
+            circleResult.setFinishedStrokeColor(getResources().getColor(R.color.colorBlue));
         } else if (score < 10 && score >= 8) {
             rank = "GOOD";
             txtRank.setTextColor(getResources().getColor(R.color.colorGreen));
             txtResult.setTextColor(getResources().getColor(R.color.colorGreen));
-            circleResult.setUnfinishedStrokeColor(getResources().getColor(R.color.colorGreen));
+            circleResult.setFinishedStrokeColor(getResources().getColor(R.color.colorGreen));
         } else if (score < 8 && score >= 5) {
             rank = "AVERAGE";
-            txtRank.setTextColor(getResources().getColor(R.color.colorYellow));
-            txtResult.setTextColor(getResources().getColor(R.color.colorYellow));
-            circleResult.setUnfinishedStrokeColor(getResources().getColor(R.color.colorYellow));
+            txtRank.setTextColor(getResources().getColor(R.color.colorOrange));
+            txtResult.setTextColor(getResources().getColor(R.color.colorOrange));
+            circleResult.setFinishedStrokeColor(getResources().getColor(R.color.colorOrange));
         } else if (score < 5 && score >= 2) {
             rank = "POOR";
             txtRank.setTextColor(getResources().getColor(R.color.colorRed));
             txtResult.setTextColor(getResources().getColor(R.color.colorRed));
-            circleResult.setUnfinishedStrokeColor(getResources().getColor(R.color.colorRed));
+            circleResult.setFinishedStrokeColor(getResources().getColor(R.color.colorRed));
         } else if (score < 2 && score >= 0) {
             rank = "BAD";
             txtRank.setTextColor(getResources().getColor(R.color.colorRed));
             txtResult.setTextColor(getResources().getColor(R.color.colorRed));
-            circleResult.setUnfinishedStrokeColor(getResources().getColor(R.color.colorRed));
+            circleResult.setFinishedStrokeColor(getResources().getColor(R.color.colorRed));
         }
         txtRank.setText(rank);
     }
@@ -155,7 +157,7 @@ public class LessonQuizResultActivity extends AppCompatActivity implements View.
 
         HashMap<String, String> params = new HashMap<>();
         params.put("email", email);
-        params.put("lesson_id", "L1");
+        params.put("lesson_id", lessonId);
         LoadQuizResult loadQuizResult = new LoadQuizResult(Constants.URL_GET_LESSON_QUIZ_RESULTS, params, Constants.CODE_POST_REQUEST);
         loadQuizResult.execute();
 
@@ -193,6 +195,7 @@ public class LessonQuizResultActivity extends AppCompatActivity implements View.
         String url;
         HashMap<String, String> params;
         int requestCode;
+        ProgressDialog dialog;
 
         SaveQuizResult(String url, HashMap<String, String> params, int requestCode) {
             this.url = url;
@@ -203,16 +206,21 @@ public class LessonQuizResultActivity extends AppCompatActivity implements View.
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            dialog = new ProgressDialog(LessonQuizResultActivity.this);
+            dialog.setMessage("Please wait...");
+            dialog.setCancelable(false);
+            dialog.show();
         }
 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            dialog.dismiss();
             try {
                 JSONObject object = new JSONObject(s);
                 if (!object.getBoolean("error")) {
                     if (!object.getString("message").equals(""))
-                        Toast.makeText(LessonQuizResultActivity.this, object.getString("message"), Toast.LENGTH_SHORT).show();
+                        Toasty.info(LessonQuizResultActivity.this, object.getString("message"), Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -239,6 +247,7 @@ public class LessonQuizResultActivity extends AppCompatActivity implements View.
         String url;
         HashMap<String, String> params;
         int requestCode;
+        ProgressDialog dialog;
 
         LoadQuizResult(String url, HashMap<String, String> params, int requestCode) {
             this.url = url;
@@ -249,16 +258,21 @@ public class LessonQuizResultActivity extends AppCompatActivity implements View.
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            dialog = new ProgressDialog(LessonQuizResultActivity.this);
+            dialog.setMessage("Please wait...");
+            dialog.setCancelable(false);
+            dialog.show();
         }
 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            dialog.dismiss();
             try {
                 JSONObject object = new JSONObject(s);
                 if (!object.getBoolean("error")) {
                     if (!object.getString("message").equals(""))
-                        Toast.makeText(LessonQuizResultActivity.this, object.getString("message"), Toast.LENGTH_SHORT).show();
+                        Toasty.info(LessonQuizResultActivity.this, object.getString("message"), Toast.LENGTH_SHORT).show();
 
                     refreshResultList(object.getJSONArray("results"));
                 }

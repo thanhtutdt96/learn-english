@@ -30,6 +30,8 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import es.dmoral.toasty.Toasty;
+
 public class LoginActivity extends Activity {
     private static final String TAG = RegisterActivity.class.getSimpleName();
     private Button btnLogin;
@@ -81,7 +83,7 @@ public class LoginActivity extends Activity {
                     checkLogin(email, password);
                 } else {
                     // Prompt user to enter credentials
-                    Toast.makeText(getApplicationContext(),
+                    Toasty.warning(getApplicationContext(),
                             "Please enter the credentials!", Toast.LENGTH_LONG)
                             .show();
                 }

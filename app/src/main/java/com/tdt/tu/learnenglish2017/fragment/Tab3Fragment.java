@@ -32,6 +32,7 @@ import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dmoral.toasty.Toasty;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -92,6 +93,7 @@ public class Tab3Fragment extends Fragment {
 
                 Intent intent = new Intent(view.getContext(), LessonActivity.class);
                 intent.putExtra("course_name", listUserCourse.get(i).getCourseName());
+                intent.putExtra("link", listUserCourse.get(i).getLink());
                 startActivity(intent);
             }
         });
@@ -157,7 +159,7 @@ public class Tab3Fragment extends Fragment {
                 JSONObject object = new JSONObject(s);
                 if (!object.getBoolean("error")) {
                     if (!object.getString("message").equals(""))
-                        Toast.makeText(view.getContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
+                        Toasty.info(view.getContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
 
                     refreshQuestionList(object.getJSONArray("courses"));
                 }

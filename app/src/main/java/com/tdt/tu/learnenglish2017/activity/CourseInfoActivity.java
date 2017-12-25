@@ -298,7 +298,7 @@ public class CourseInfoActivity extends AppCompatActivity implements YouTubePlay
                 JSONObject object = new JSONObject(s);
                 if (!object.getBoolean("error")) {
                     if (!object.getString("message").equals(""))
-                        Toast.makeText(CourseInfoActivity.this, object.getString("message"), Toast.LENGTH_SHORT).show();
+                        Toasty.info(CourseInfoActivity.this, object.getString("message"), Toast.LENGTH_SHORT).show();
                     refreshCourseIdList(object.getJSONArray("course_ids"));
                     buttonHandler();
                 }

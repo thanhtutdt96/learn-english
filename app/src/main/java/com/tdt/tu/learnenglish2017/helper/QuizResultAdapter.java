@@ -54,7 +54,20 @@ public class QuizResultAdapter extends ArrayAdapter<QuizResult> {
 
         txtDate.setText(result.getDate());
         txtScore.setText(String.valueOf(result.getScore()));
-        txtRank.setText(result.getRank());
+        String rank = result.getRank();
+        txtRank.setText(rank);
+
+        if (rank.equalsIgnoreCase("EXCELLENT"))
+            txtRank.setTextColor(context.getResources().getColor(R.color.colorBlue));
+        else if (rank.equalsIgnoreCase("GOOD"))
+            txtRank.setTextColor(context.getResources().getColor(R.color.colorGreen));
+        else if (rank.equalsIgnoreCase("AVERAGE"))
+            txtRank.setTextColor(context.getResources().getColor(R.color.colorOrange));
+        else if (rank.equalsIgnoreCase("POOR"))
+            txtRank.setTextColor(context.getResources().getColor(R.color.colorRed));
+        else if (rank.equalsIgnoreCase("BAD"))
+            txtRank.setTextColor(context.getResources().getColor(R.color.colorRed));
+
 
         return convertView;
     }

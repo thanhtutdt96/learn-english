@@ -1,5 +1,6 @@
 package com.tdt.tu.learnenglish2017.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -32,6 +33,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dmoral.toasty.Toasty;
 
 public class LessonQuizActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -321,6 +323,7 @@ public class LessonQuizActivity extends AppCompatActivity implements View.OnClic
         String url;
         HashMap<String, String> params;
         int requestCode;
+        ProgressDialog dialog;
 
         LoadLessonQuizQuestions(String url, HashMap<String, String> params, int requestCode) {
             this.url = url;
@@ -331,16 +334,21 @@ public class LessonQuizActivity extends AppCompatActivity implements View.OnClic
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            dialog = new ProgressDialog(LessonQuizActivity.this);
+            dialog.setMessage("Please wait...");
+            dialog.setCancelable(false);
+            dialog.show();
         }
 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            dialog.dismiss();
             try {
                 JSONObject object = new JSONObject(s);
                 if (!object.getBoolean("error")) {
                     if (!object.getString("message").equals(""))
-                        Toast.makeText(LessonQuizActivity.this, object.getString("message"), Toast.LENGTH_SHORT).show();
+                        Toasty.info(LessonQuizActivity.this, object.getString("message"), Toast.LENGTH_SHORT).show();
 
                     refreshLessonQuizQuestionsList(object.getJSONArray("questions"));
                 }
