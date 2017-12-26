@@ -66,4 +66,9 @@ public class Constants {
 
     public static String URL_GET_COURSE_SUGGESTIONS = ROOT_URL + "api.php?apicall=getcoursesuggestions";
 
+    public static String URL_SAVE_WATCHED_LESSON = ROOT_URL + "api.php?apicall=savewatchedlesson";
+
+    public static String URL_LOAD_WATCHED_LESSONS = ROOT_URL + "api.php?apicall=loadwatchedlessons";
+
+
 }

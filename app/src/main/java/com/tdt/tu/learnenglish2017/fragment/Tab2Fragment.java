@@ -51,7 +51,7 @@ public class Tab2Fragment extends Fragment implements MaterialSearchBar.OnSearch
 
     private View view;
     private List<Course> courseList = new ArrayList<>();
-    private ArrayList<String> listCourseId = new ArrayList<>();
+    private List<String> listCourseId = new ArrayList<>();
     private CourseAdapter adapter;
 
     @Nullable

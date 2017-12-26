@@ -29,6 +29,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -60,7 +61,7 @@ public class CourseInfoActivity extends AppCompatActivity implements YouTubePlay
     private String email;
     private int price;
     private String link;
-    private ArrayList<String> favoriteCourseIdList = new ArrayList<>();
+    private List<String> favoriteCourseIdList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

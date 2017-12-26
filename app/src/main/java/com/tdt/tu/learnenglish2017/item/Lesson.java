@@ -5,10 +5,27 @@ package com.tdt.tu.learnenglish2017.item;
  */
 
 public class Lesson {
+    String id;
     String image;
     String title;
     String duration;
     String link;
+
+    public Lesson(String id, String image, String title, String duration, String link) {
+        this.id = id;
+        this.image = image;
+        this.title = title;
+        this.duration = duration;
+        this.link = link;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getImage() {
         return image;
@@ -41,13 +58,4 @@ public class Lesson {
     public void setLink(String link) {
         this.link = link;
     }
-
-    public Lesson(String image, String title, String duration, String link) {
-        this.image = image;
-        this.title = title;
-        this.duration = duration;
-        this.link = link;
-
-    }
-
 }

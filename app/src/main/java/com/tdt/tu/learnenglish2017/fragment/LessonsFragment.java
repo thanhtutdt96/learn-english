@@ -83,6 +83,7 @@ public class LessonsFragment extends Fragment {
             JSONObject obj = lessons.getJSONObject(i);
 
             lessonList.add(new Lesson(
+                    obj.getString("lesson_id"),
                     "http://img.youtube.com/vi/" + obj.getString("link") + "/default.jpg",
                     obj.getString("lesson_name"),
                     obj.getString("duration"),

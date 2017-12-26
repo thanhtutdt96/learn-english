@@ -30,6 +30,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,8 +45,8 @@ import static android.content.Context.MODE_PRIVATE;
 public class Tab4Fragment extends Fragment {
     @BindView(R.id.listFavorite)
     ListView listView;
-    private ArrayList<Course> listFavorite = new ArrayList<>();
-    private ArrayList<String> listCourseId = new ArrayList<>();
+    private List<Course> listFavorite = new ArrayList<>();
+    private List<String> listCourseId = new ArrayList<>();
 
     private CourseAdapter adapter;
     private View view;

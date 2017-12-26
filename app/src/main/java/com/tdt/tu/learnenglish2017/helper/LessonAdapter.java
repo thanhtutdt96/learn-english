@@ -23,6 +23,10 @@ import com.tdt.tu.learnenglish2017.activity.DialogVideoActivity;
 import com.tdt.tu.learnenglish2017.activity.LessonActivity;
 import com.tdt.tu.learnenglish2017.item.Lesson;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -31,6 +35,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import at.huber.youtubeExtractor.VideoMeta;
@@ -38,17 +43,21 @@ import at.huber.youtubeExtractor.YouTubeExtractor;
 import at.huber.youtubeExtractor.YtFile;
 import es.dmoral.toasty.Toasty;
 
+import static android.content.Context.MODE_PRIVATE;
+
 
 /**
  * Created by Pham Thanh Tu on 18-Oct-17.
  */
 
-public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder> implements View.OnClickListener {
+public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder> {
     private List<Lesson> list = new ArrayList<>();
     private Context context;
     private String videoPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LearnEnglish2017/Download/";
 
     private int selectedPosition = 0;
+
+    private List<String> watchedList = new ArrayList<>();
 
     public LessonAdapter(Context context, List<Lesson> list) {
         this.context = context;
@@ -66,11 +75,14 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 
         final Lesson lesson = list.get(position);
+
         holder.title.setText(lesson.getTitle());
         holder.duration.setText(lesson.getDuration());
+        holder.lessonId.setText(lesson.getId());
         Picasso.with(context).load(lesson.getImage()).into(holder.thumbnail);
 
         checkFileExist(holder, fileNameHandler(holder.title.getText().toString()));
+        loadWatchedLessons(holder.lessonId.getText().toString(), holder);
 
         holder.buttonDownload.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,7 +103,30 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
                 context.startActivity(intent);
             }
         });
-        holder.itemView.setSelected(selectedPosition == position);
+
+        holder.itemView.setActivated(selectedPosition == position);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                holder.watchedCheck.setVisibility(View.VISIBLE);
+                holder.thumbnail.setAlpha(0.5f);
+                saveWatchedLesson(holder.lessonId.getText().toString());
+
+                if (holder.getAdapterPosition() == RecyclerView.NO_POSITION)
+                    return;
+                notifyItemChanged(selectedPosition);
+                selectedPosition = holder.getLayoutPosition();
+                notifyItemChanged(selectedPosition);
+
+                String selectedLessonLink = list.get(holder.getLayoutPosition()).getLink();
+                if (LessonActivity.mYoutubePlayer != null) {
+                    LessonActivity.mYoutubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT);
+                    LessonActivity.mYoutubePlayer.loadVideo(selectedLessonLink);
+                    LessonActivity.mYoutubePlayer.play();
+                }
+            }
+        });
     }
 
     private String fileNameHandler(String videoTitle, YtFile ytFile) {
@@ -187,11 +222,31 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
         return videoName;
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.lessonDownload:
-                break;
+    private void loadWatchedLessons(String lessonId, ViewHolder viewHolder) {
+        String email = context.getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).getString("email", "");
+        HashMap<String, String> params = new HashMap<>();
+        params.put("email", email);
+
+        LoadWatchedLessons loadWatchedLessons = new LoadWatchedLessons(Constants.URL_LOAD_WATCHED_LESSONS, params, Constants.CODE_POST_REQUEST, lessonId, viewHolder);
+        loadWatchedLessons.execute();
+    }
+
+    private void saveWatchedLesson(String lessonId) {
+        String email = context.getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).getString("email", "");
+        HashMap<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("lesson_id", lessonId);
+
+        SaveWatchedLesson saveWatchedLesson = new SaveWatchedLesson(Constants.URL_SAVE_WATCHED_LESSON, params, Constants.CODE_POST_REQUEST);
+        saveWatchedLesson.execute();
+    }
+
+    private void refreshWatched(JSONArray lessons) throws JSONException {
+        watchedList.clear();
+
+        for (int i = 0; i < lessons.length(); i++) {
+            JSONObject obj = lessons.getJSONObject(i);
+            watchedList.add(obj.getString("lesson_id"));
         }
     }
 
@@ -255,8 +310,8 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView title, duration;
-        ImageView thumbnail, buttonOpen, buttonDownload;
+        TextView title, duration, lessonId;
+        ImageView thumbnail, buttonOpen, buttonDownload, watchedCheck;
         DonutProgress progressCircle;
         ProgressBar waitingCircle;
 
@@ -269,27 +324,116 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
             progressCircle = (DonutProgress) itemView.findViewById(R.id.progressCircle);
             waitingCircle = (ProgressBar) itemView.findViewById(R.id.waitingCircle);
             buttonOpen = (ImageView) itemView.findViewById(R.id.openVideo);
+            watchedCheck = (ImageView) itemView.findViewById(R.id.ivWatched);
+            lessonId = (TextView) itemView.findViewById(R.id.lessonId);
+        }
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (getAdapterPosition() == RecyclerView.NO_POSITION)
-                        return;
-                    notifyItemChanged(selectedPosition);
-                    selectedPosition = getLayoutPosition();
-                    notifyItemChanged(selectedPosition);
+    }
 
-                    String selectedLessonLink = list.get(getLayoutPosition()).getLink();
-                    if (LessonActivity.mYoutubePlayer != null) {
-                        LessonActivity.mYoutubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT);
-                        LessonActivity.mYoutubePlayer.loadVideo(selectedLessonLink);
-                        LessonActivity.mYoutubePlayer.play();
-                    }
-                }
-            });
+    private class SaveWatchedLesson extends AsyncTask<Void, Void, String> {
+
+        String url;
+        HashMap<String, String> params;
+        int requestCode;
+
+        SaveWatchedLesson(String url, HashMap<String, String> params, int requestCode) {
+            this.url = url;
+            this.params = params;
+            this.requestCode = requestCode;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
 
         }
 
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            try {
+                JSONObject object = new JSONObject(s);
+                if (!object.getBoolean("error")) {
+                    if (!object.getString("message").equals(""))
+                        Toasty.info(context, object.getString("message"), Toast.LENGTH_SHORT).show();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            RequestHandler requestHandler = new RequestHandler();
+
+            if (requestCode == Constants.CODE_POST_REQUEST)
+                return requestHandler.sendPostRequest(url, params);
+
+            if (requestCode == Constants.CODE_GET_REQUEST)
+                return requestHandler.sendGetRequest(url);
+
+            return null;
+        }
+    }
+
+    private class LoadWatchedLessons extends AsyncTask<Void, Void, String> {
+
+        String url;
+        HashMap<String, String> params;
+        int requestCode;
+        String lessonId;
+        ViewHolder viewHolder;
+
+        LoadWatchedLessons(String url, HashMap<String, String> params, int requestCode, String lessonId, ViewHolder viewHolder) {
+            this.url = url;
+            this.params = params;
+            this.requestCode = requestCode;
+            this.lessonId = lessonId;
+            this.viewHolder = viewHolder;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            try {
+                JSONObject object = new JSONObject(s);
+                if (!object.getBoolean("error")) {
+                    if (!object.getString("message").equals(""))
+                        Toasty.info(context, object.getString("message"), Toast.LENGTH_SHORT).show();
+
+                    refreshWatched(object.getJSONArray("lessons"));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            for (String tmp : watchedList) {
+                if (tmp.equals(lessonId)) {
+                    viewHolder.thumbnail.setAlpha(0.5f);
+                    viewHolder.watchedCheck.setVisibility(View.VISIBLE);
+                }
+            }
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            RequestHandler requestHandler = new RequestHandler();
+
+            if (requestCode == Constants.CODE_POST_REQUEST)
+                return requestHandler.sendPostRequest(url, params);
+
+            if (requestCode == Constants.CODE_GET_REQUEST)
+                return requestHandler.sendGetRequest(url);
+
+            return null;
+        }
     }
 
 }
