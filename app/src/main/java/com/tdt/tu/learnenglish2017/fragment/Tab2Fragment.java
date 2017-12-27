@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -123,7 +124,7 @@ public class Tab2Fragment extends Fragment {
                 } else {
                     searchBar.showProgress();
 
-                    FilterHelper.findSuggestions(newQuery, 5,
+                    FilterHelper.findSuggestions(newQuery, 3,
                             250, new FilterHelper.OnFindSuggestionsListener() {
                                 @Override
                                 public void onResults(List<CourseSuggestion> results) {
@@ -160,6 +161,19 @@ public class Tab2Fragment extends Fragment {
             @Override
             public void onFocusCleared() {
 
+            }
+        });
+
+        searchBar.setOnMenuItemClickListener(new FloatingSearchView.OnMenuItemClickListener() {
+            @Override
+            public void onActionMenuItemSelected(MenuItem item) {
+                if (item.getItemId() == R.id.action_home) {
+                    listViewTopSearch.setVisibility(View.VISIBLE);
+                    txtTopSearches.setVisibility(View.VISIBLE);
+                    listViewSearchResult.setVisibility(View.GONE);
+                    searchBar.clearQuery();
+                    searchBar.clearSuggestions();
+                }
             }
         });
     }

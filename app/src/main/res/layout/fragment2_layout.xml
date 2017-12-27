@@ -20,6 +20,7 @@
         app:floatingSearch_dismissOnOutsideTouch="true"
         app:floatingSearch_hintTextColor="#C8C8CE"
         app:floatingSearch_leftActionMode="showSearch"
+        app:floatingSearch_menu="@menu/menu_search_view"
         app:floatingSearch_searchBarMarginLeft="25dp"
         app:floatingSearch_searchBarMarginRight="25dp"
         app:floatingSearch_searchBarMarginTop="15dp"
