@@ -8,29 +8,37 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.mancj.materialsearchbar.MaterialSearchBar;
+import com.arlib.floatingsearchview.FloatingSearchView;
+import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.tdt.tu.learnenglish2017.R;
 import com.tdt.tu.learnenglish2017.activity.CourseInfoActivity;
 import com.tdt.tu.learnenglish2017.activity.LessonActivity;
 import com.tdt.tu.learnenglish2017.helper.Constants;
 import com.tdt.tu.learnenglish2017.helper.CourseAdapter;
+import com.tdt.tu.learnenglish2017.helper.FilterHelper;
 import com.tdt.tu.learnenglish2017.helper.RequestHandler;
 import com.tdt.tu.learnenglish2017.item.Course;
+import com.tdt.tu.learnenglish2017.item.CourseSuggestion;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import butterknife.BindView;
@@ -43,16 +51,24 @@ import static android.content.Context.MODE_PRIVATE;
  * Created by Pham Thanh Tu on 26-Sep-17.
  */
 
-public class Tab2Fragment extends Fragment implements MaterialSearchBar.OnSearchActionListener {
-    @BindView(R.id.listView)
-    ListView listView;
+public class Tab2Fragment extends Fragment {
+    public static List<CourseSuggestion> suggestionList = new ArrayList<>();
+    @BindView(R.id.listSearchResult)
+    ListView listViewSearchResult;
+    @BindView(R.id.listTopSearch)
+    ListView listViewTopSearch;
     @BindView(R.id.searchBar)
-    MaterialSearchBar searchBar;
-
+    FloatingSearchView searchBar;
+    @BindView(R.id.txtTopSearches)
+    TextView txtTopSearches;
     private View view;
     private List<Course> courseList = new ArrayList<>();
     private List<String> listCourseId = new ArrayList<>();
+    private List<String> listTopSearch = new ArrayList<>();
     private CourseAdapter adapter;
+
+    private ArrayList<CourseSuggestion> historyList = new ArrayList<>();
+    private ArrayList<String> duplicateSuggestions = new ArrayList<>();
 
     @Nullable
     @Override
@@ -60,6 +76,7 @@ public class Tab2Fragment extends Fragment implements MaterialSearchBar.OnSearch
         view = inflater.inflate(R.layout.fragment2_layout, container, false);
 
         init();
+        loadSearchSuggestions();
         listViewHandler();
 
         return view;
@@ -68,33 +85,115 @@ public class Tab2Fragment extends Fragment implements MaterialSearchBar.OnSearch
     private void init() {
         ButterKnife.bind(this, view);
         adapter = new CourseAdapter(view.getContext(), R.layout.course_row_layout, courseList);
-        listView.setAdapter(adapter);
-        searchBar.setOnSearchActionListener(this);
+        listViewSearchResult.setAdapter(adapter);
+
+        listTopSearch.add("free");
+        listTopSearch.add("conversation");
+        listTopSearch.add("english");
+        listTopSearch.add("vocabulary");
+        listTopSearch.add("toeic");
+        listTopSearch.add("ielts");
+        listTopSearch.add("job");
+        listTopSearch.add("food");
+        listTopSearch.add("advanced");
+        listTopSearch.add("sport");
+        listViewTopSearch.setAdapter(new ArrayAdapter<>(view.getContext(), R.layout.top_searches_row_layout, listTopSearch));
+
+        setupSearchBar();
+
+        listViewTopSearch.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String searchText = listTopSearch.get(i);
+                searchBar.setSearchText(searchText);
+                searchHandler(searchText);
+                InputMethodManager inputMethodManager = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(searchBar.getWindowToken(), 0);
+            }
+        });
     }
 
-    @Override
-    public void onSearchStateChanged(boolean enabled) {
-        courseList.clear();
-        adapter.notifyDataSetChanged();
+    private void setupSearchBar() {
+        searchBar.bringToFront();
+        searchBar.setOnQueryChangeListener(new FloatingSearchView.OnQueryChangeListener() {
+            @Override
+            public void onSearchTextChanged(String oldQuery, String newQuery) {
+                if (!oldQuery.equals("") && newQuery.equals("")) {
+                    searchBar.clearSuggestions();
+                } else {
+                    searchBar.showProgress();
+
+                    FilterHelper.findSuggestions(newQuery, 5,
+                            250, new FilterHelper.OnFindSuggestionsListener() {
+                                @Override
+                                public void onResults(List<CourseSuggestion> results) {
+                                    searchBar.swapSuggestions(results);
+                                    searchBar.hideProgress();
+                                }
+                            });
+                }
+            }
+        });
+
+        searchBar.setOnSearchListener(new FloatingSearchView.OnSearchListener() {
+            @Override
+            public void onSuggestionClicked(SearchSuggestion searchSuggestion) {
+                CourseSuggestion suggestion = (CourseSuggestion) searchSuggestion;
+                saveHistory(suggestion.getBody());
+                searchHandler(suggestion.getBody());
+
+            }
+
+            @Override
+            public void onSearchAction(String currentQuery) {
+                saveHistory(currentQuery);
+                searchHandler(currentQuery);
+            }
+        });
+
+        searchBar.setOnFocusChangeListener(new FloatingSearchView.OnFocusChangeListener() {
+            @Override
+            public void onFocus() {
+                searchBar.swapSuggestions(historyList);
+            }
+
+            @Override
+            public void onFocusCleared() {
+
+            }
+        });
     }
 
-    @Override
-    public void onSearchConfirmed(CharSequence text) {
-        searchBar.clearFocus();
-        InputMethodManager inputMethodManager = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(searchBar.getWindowToken(), 0);
-        if (text.toString().equalsIgnoreCase("Free")) {
+    private void saveHistory(String searchQuery) {
+        CourseSuggestion suggestion = new CourseSuggestion(searchQuery);
+        suggestion.setIsHistory(true);
+
+        for (CourseSuggestion tmp : historyList) {
+            if (tmp.getBody().equalsIgnoreCase(searchQuery)) {
+                return;
+            }
+        }
+
+        if (historyList.size() >= 3) {
+            historyList.remove(historyList.size() - 1);
+            historyList.add(suggestion);
+        } else {
+            historyList.add(suggestion);
+        }
+    }
+
+    private void searchHandler(String query) {
+        listViewTopSearch.setVisibility(View.GONE);
+        txtTopSearches.setVisibility(View.GONE);
+        listViewSearchResult.setVisibility(View.VISIBLE);
+        if (query.equalsIgnoreCase("Free")) {
             loadSearchResults("" + 0);
         } else
-            loadSearchResults(text.toString());
-    }
-
-    @Override
-    public void onButtonClicked(int buttonCode) {
+            loadSearchResults(query);
     }
 
     private void listViewHandler() {
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listViewSearchResult.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String email = view.getContext().getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).getString("email", "");
@@ -170,6 +269,37 @@ public class Tab2Fragment extends Fragment implements MaterialSearchBar.OnSearch
             }
         }
         return false;
+    }
+
+    private void loadSearchSuggestions() {
+        LoadSearchSuggestions loadSearchSuggestions = new LoadSearchSuggestions(Constants.URL_GET_SEARCH_SUGGESTIONS, null, Constants.CODE_GET_REQUEST);
+        loadSearchSuggestions.execute();
+    }
+
+    private void refreshSuggestions(JSONArray suggestions) throws JSONException {
+        suggestionList.clear();
+
+        for (int i = 0; i < suggestions.length(); i++) {
+            JSONObject obj = suggestions.getJSONObject(i);
+
+            String[] courseNames = obj.getString("course_name").toLowerCase().split("\\s+");
+            String[] tags = obj.getString("tag").split(",");
+            String[] descriptions = obj.getString("description").toLowerCase().split("\\s*,\\s*|\\s+|\\s*\\.\\s*");
+
+            Log.d("Suggestion", Arrays.toString(descriptions));
+
+            for (int j = 0; j < courseNames.length; j++) {
+                duplicateSuggestions.add(courseNames[j]);
+            }
+
+            for (int k = 0; k < tags.length; k++) {
+                duplicateSuggestions.add(tags[k]);
+            }
+
+            for (int m = 0; m < descriptions.length; m++) {
+                duplicateSuggestions.add(descriptions[m]);
+            }
+        }
     }
 
     private class LoadSearchResults extends AsyncTask<Void, Void, String> {
@@ -269,4 +399,57 @@ public class Tab2Fragment extends Fragment implements MaterialSearchBar.OnSearch
             return null;
         }
     }
+
+    private class LoadSearchSuggestions extends AsyncTask<Void, Void, String> {
+
+        String url;
+        HashMap<String, String> params;
+        int requestCode;
+
+        LoadSearchSuggestions(String url, HashMap<String, String> params, int requestCode) {
+            this.url = url;
+            this.params = params;
+            this.requestCode = requestCode;
+        }
+
+        @Override
+        protected void onPostExecute(final String s) {
+            super.onPostExecute(s);
+            try {
+                JSONObject object = new JSONObject(s);
+                if (!object.getBoolean("error")) {
+                    if (!object.getString("message").equals(""))
+                        Toasty.info(view.getContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
+
+                    refreshSuggestions(object.getJSONArray("suggestions"));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            LinkedHashSet<String> linkedHashSet = new LinkedHashSet<>();
+            linkedHashSet.addAll(duplicateSuggestions);
+            duplicateSuggestions.clear();
+            duplicateSuggestions.addAll(linkedHashSet);
+
+            for (String suggestion : duplicateSuggestions) {
+                suggestionList.add(new CourseSuggestion(suggestion));
+            }
+
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            RequestHandler requestHandler = new RequestHandler();
+
+            if (requestCode == Constants.CODE_POST_REQUEST)
+                return requestHandler.sendPostRequest(url, params);
+
+            if (requestCode == Constants.CODE_GET_REQUEST)
+                return requestHandler.sendGetRequest(url);
+
+            return null;
+        }
+    }
+
 }

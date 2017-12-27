@@ -2,40 +2,59 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:focusableInTouchMode="true"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:id="@+id/topBar"
         android:layout_width="match_parent"
-        android:layout_height="68dp"
-        android:background="@color/colorOrange">
+        android:layout_height="75dp"></RelativeLayout>
 
-    </RelativeLayout>
-
-    <com.mancj.materialsearchbar.MaterialSearchBar
+    <com.arlib.floatingsearchview.FloatingSearchView
         android:id="@+id/searchBar"
-        style="@style/MaterialSearchBarLight"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="10dp"
-        app:mt_backIconTint="@color/colorOrange"
-        app:mt_clearIconTint="@color/colorOrange"
-        app:mt_dividerColor="@color/colorOrange"
-        app:mt_hint="Search..."
-        app:mt_maxSuggestionsCount="3"
-        app:mt_placeholder=""
-        app:mt_placeholderColor="@color/colorOrange"
-        app:mt_searchIconTint="@color/colorOrange" />
+        app:floatingSearch_backgroundColor="#F1F1F3"
+        app:floatingSearch_close_search_on_keyboard_dismiss="true"
+        app:floatingSearch_dimBackground="false"
+        app:floatingSearch_dismissFocusOnItemSelection="true"
+        app:floatingSearch_dismissOnOutsideTouch="true"
+        app:floatingSearch_hintTextColor="#C8C8CE"
+        app:floatingSearch_leftActionMode="showSearch"
+        app:floatingSearch_searchBarMarginLeft="25dp"
+        app:floatingSearch_searchBarMarginRight="25dp"
+        app:floatingSearch_searchBarMarginTop="15dp"
+        app:floatingSearch_searchHint="Search"
+        app:floatingSearch_showSearchKey="true"
+        app:floatingSearch_suggestionsListAnimDuration="250">
+
+    </com.arlib.floatingsearchview.FloatingSearchView>
 
     <ListView
-        android:id="@+id/listView"
+        android:id="@+id/listSearchResult"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/topBar"
-        android:layout_margin="10dp"></ListView>
+        android:layout_margin="10dp"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/txtTopSearches"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/listTopSearch"
+        android:layout_marginBottom="5dp"
+        android:gravity="center"
+        android:text="Top Searches"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+        android:textColor="@color/colorBlack" />
+
+    <ListView
+        android:id="@+id/listTopSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_margin="5dp"
+        android:divider="@null"
+        android:visibility="visible" />
 
 </RelativeLayout>
