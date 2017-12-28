@@ -54,7 +54,10 @@
             android:layout_marginTop="20dp"
             android:background="@color/colorOrange"
             android:text="Login"
-            android:textColor="@color/colorWhite" />
+            android:textAllCaps="true"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            android:textColor="@color/colorWhite"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/btnResetPassword"
