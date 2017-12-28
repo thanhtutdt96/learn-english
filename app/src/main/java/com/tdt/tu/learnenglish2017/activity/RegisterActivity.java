@@ -63,9 +63,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnRegister:
-                finish();
-                break;
-            case R.id.btnLogin:
                 String email = inputEmail.getText().toString().trim();
                 String password = inputPassword.getText().toString().trim();
 
@@ -99,6 +96,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         }
                     }
                 });
+                break;
+            case R.id.btnLogin:
+                finish();
                 break;
         }
     }
