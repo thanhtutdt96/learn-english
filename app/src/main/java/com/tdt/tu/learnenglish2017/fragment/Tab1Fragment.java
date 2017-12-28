@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tdt.tu.learnenglish2017.R;
@@ -52,6 +53,9 @@ public class Tab1Fragment extends Fragment {
     RecyclerView recyclerFeatured;
     @BindView(R.id.recyclerTopCourse)
     RecyclerView recyclerTopCourse;
+    @BindView(R.id.progressLoading)
+    ProgressBar progressLoading;
+
 
     private List<Category> categoryList = new ArrayList<>();
     private List<Course> featuredList = new ArrayList<>();
@@ -105,11 +109,13 @@ public class Tab1Fragment extends Fragment {
         LoadFeaturedCourse loadFeaturedCourse = new LoadFeaturedCourse(Constants.URL_GET_FEATURED_COURSES, null, Constants.CODE_GET_REQUEST);
         loadFeaturedCourse.execute();
 
+        LoadTopCourse loadTopCourse = new LoadTopCourse(Constants.URL_GET_TOP_COURSES, null, Constants.CODE_GET_REQUEST);
+        loadTopCourse.execute();
+
         LoadCategory loadCategory = new LoadCategory(Constants.URL_GET_CATEGORIES, null, Constants.CODE_GET_REQUEST);
         loadCategory.execute();
 
-        LoadTopCourse loadTopCourse = new LoadTopCourse(Constants.URL_GET_TOP_COURSES, null, Constants.CODE_GET_REQUEST);
-        loadTopCourse.execute();
+
     }
 
     private void refreshCategoryList(JSONArray categories) throws JSONException {
@@ -184,6 +190,7 @@ public class Tab1Fragment extends Fragment {
 
                     Bundle bundle = new Bundle();
                     bundle.putString("category_id", categoryList.get(recyclerViewItemPosition).getId());
+                    bundle.putString("category_name", categoryList.get(recyclerViewItemPosition).getTitle());
                     courseFragment.setArguments(bundle);
                 }
                 return false;
@@ -354,7 +361,7 @@ public class Tab1Fragment extends Fragment {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
+            progressLoading.setVisibility(View.GONE);
             recyclerCategoryHandler();
 
         }
@@ -389,6 +396,7 @@ public class Tab1Fragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            progressLoading.setVisibility(View.VISIBLE);
         }
 
         @Override

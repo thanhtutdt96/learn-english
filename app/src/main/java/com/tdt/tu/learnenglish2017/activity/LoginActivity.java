@@ -1,197 +1,120 @@
 package com.tdt.tu.learnenglish2017.activity;
 
 /**
- * Created by Pham Thanh Tu on 26-Sep-17.
+ * Created by 1stks on 28-Dec-17.
  */
 
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.android.volley.Request.Method;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 import com.tdt.tu.learnenglish2017.R;
-import com.tdt.tu.learnenglish2017.app.AppConfig;
-import com.tdt.tu.learnenglish2017.app.AppController;
-import com.tdt.tu.learnenglish2017.helper.SQLiteHandler;
-import com.tdt.tu.learnenglish2017.helper.SessionManager;
+import com.tdt.tu.learnenglish2017.helper.Constants;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
-
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 
-public class LoginActivity extends Activity {
-    private static final String TAG = RegisterActivity.class.getSimpleName();
-    private Button btnLogin;
-    private Button btnLinkToRegister;
-    private EditText inputEmail;
-    private EditText inputPassword;
-    private ProgressDialog pDialog;
-    private SessionManager session;
-    private SQLiteHandler db;
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+
+    @BindView(R.id.btnRegister)
+    Button btnRegister;
+    @BindView(R.id.btnLogin)
+    Button btnLogin;
+    @BindView(R.id.btnResetPassword)
+    Button btnResetPassword;
+    @BindView(R.id.email)
+    EditText inputEmail;
+    @BindView(R.id.password)
+    EditText inputPassword;
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
+
+    private FirebaseAuth firebaseAuth;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        init();
+    }
 
-        inputEmail = (EditText) findViewById(R.id.email);
-        inputPassword = (EditText) findViewById(R.id.password);
-        btnLogin = (Button) findViewById(R.id.btnLogin);
-        btnLinkToRegister = (Button) findViewById(R.id.btnLinkToRegisterScreen);
+    private void init() {
+        ButterKnife.bind(this);
 
-        // Progress dialog
-        pDialog = new ProgressDialog(this);
-        pDialog.setCancelable(false);
+        firebaseAuth = FirebaseAuth.getInstance();
 
-        // SQLite database handler
-        db = new SQLiteHandler(getApplicationContext());
-
-        // Session manager
-        session = new SessionManager(getApplicationContext());
-
-        // Check if user is already logged in or not
-        if (session.isLoggedIn()) {
-            // User is already logged in. Take him to main activity
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(intent);
+        if (firebaseAuth.getCurrentUser() != null) {
+            startActivity(new Intent(LoginActivity.this, MainActivity.class));
             finish();
         }
 
-        // Login button Click Event
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View view) {
-                String email = inputEmail.getText().toString().trim();
-                String password = inputPassword.getText().toString().trim();
-
-                // Check for empty data in the form
-                if (!email.isEmpty() && !password.isEmpty()) {
-                    // login user
-                    checkLogin(email, password);
-                } else {
-                    // Prompt user to enter credentials
-                    Toasty.warning(getApplicationContext(),
-                            "Please enter the credentials!", Toast.LENGTH_LONG)
-                            .show();
-                }
-            }
-
-        });
-
-        // Link to Register Screen
-        btnLinkToRegister.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(),
-                        RegisterActivity.class);
-                startActivity(i);
-                finish();
-            }
-        });
-
+        btnRegister.setOnClickListener(this);
+        btnLogin.setOnClickListener(this);
+        btnResetPassword.setOnClickListener(this);
     }
 
-    /**
-     * function to verify login details in mysql db
-     * */
-    private void checkLogin(final String email, final String password) {
-        // Tag used to cancel the request
-        String tag_string_req = "req_login";
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btnRegister:
+                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+                break;
+            case R.id.btnLogin:
+                final String email = inputEmail.getText().toString();
+                final String password = inputPassword.getText().toString();
 
-        pDialog.setMessage("Logging in ...");
-        showDialog();
+                if (TextUtils.isEmpty(email)) {
+                    Toasty.warning(getApplicationContext(), "Enter email address", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-        StringRequest strReq = new StringRequest(Method.POST,
-                AppConfig.URL_LOGIN, new Response.Listener<String>() {
+                if (TextUtils.isEmpty(password)) {
+                    Toasty.warning(getApplicationContext(), "Enter password", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-            @Override
-            public void onResponse(String response) {
-                Log.d(TAG, "Login Response: " + response.toString());
-                hideDialog();
+                progressBar.setVisibility(View.VISIBLE);
 
-                try {
-                    JSONObject jObj = new JSONObject(response);
-                    boolean error = jObj.getBoolean("error");
+                firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
 
-                    // Check for error node in json
-                    if (!error) {
-                        // user successfully logged in
-                        // Create login session
-                        session.setLogin(true);
+                        progressBar.setVisibility(View.GONE);
+                        if (!task.isSuccessful()) {
+                            if (password.length() < 6) {
+                                inputPassword.setError(getString(R.string.minimum_password));
+                            } else {
+                                Toast.makeText(LoginActivity.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
+                            }
+                        } else {
+                            SharedPreferences.Editor editor = getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).edit();
+                            editor.putString("username", email.split("@")[0]);
+                            editor.putString("email", email);
+                            editor.commit();
 
-                        // Now store the user in SQLite
-                        JSONObject user = jObj.getJSONObject("user");
-                        String email = user.getString("email");
-                        String name = user.getString("name");
-                        String created_at = user.getString("created_at");
-
-                        // Inserting row in users table
-                        db.addUser(email, name, created_at);
-
-                        // Launch main activity
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
-                    } else {
-                        // Error in login. Get the error message
-                        String errorMsg = jObj.getString("error_msg");
-                        Toast.makeText(getApplicationContext(),
-                                errorMsg, Toast.LENGTH_LONG).show();
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            startActivity(intent);
+                            finish();
+                        }
                     }
-                } catch (JSONException e) {
-                    // JSON error
-                    e.printStackTrace();
-                    Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                }
-
-            }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, "Login Error: " + error.getMessage());
-                Toast.makeText(getApplicationContext(),
-                        error.getMessage(), Toast.LENGTH_LONG).show();
-                hideDialog();
-            }
-        }) {
-
-            @Override
-            protected Map<String, String> getParams() {
-                // Posting parameters to login url
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("email", email);
-                params.put("password", password);
-
-                return params;
-            }
-
-        };
-
-        // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
-    }
-
-    private void showDialog() {
-        if (!pDialog.isShowing())
-            pDialog.show();
-    }
-
-    private void hideDialog() {
-        if (pDialog.isShowing())
-            pDialog.dismiss();
+                });
+                break;
+            case R.id.btnResetPassword:
+                startActivity(new Intent(LoginActivity.this, ResetPasswordActivity.class));
+                break;
+        }
     }
 }

@@ -44,6 +44,7 @@ import at.huber.youtubeExtractor.YtFile;
 import es.dmoral.toasty.Toasty;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.tdt.tu.learnenglish2017.activity.LessonActivity.lessonTitle;
 
 
 /**
@@ -75,7 +76,7 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 
         final Lesson lesson = list.get(position);
-
+        lessonTitle.setText(lesson.getTitle());
         holder.title.setText(lesson.getTitle());
         holder.duration.setText(lesson.getDuration());
         holder.lessonId.setText(lesson.getId());

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "971759523473",
+    "firebase_url": "https://learnenglish2017-264de.firebaseio.com",
+    "project_id": "learnenglish2017-264de",
+    "storage_bucket": "learnenglish2017-264de.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:971759523473:android:bebdc7c0fa817872",
+        "android_client_info": {
+          "package_name": "com.tdt.tu.learnenglish2017"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "971759523473-4n836ktfdtjb8qe35ihkm37ke87hlr03.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIBbar8iUTisFkO8ZrA4rWfKEfjpjQUPg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

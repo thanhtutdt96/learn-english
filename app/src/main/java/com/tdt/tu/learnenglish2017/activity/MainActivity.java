@@ -1,12 +1,19 @@
 package com.tdt.tu.learnenglish2017.activity;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.ColorRes;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
@@ -17,7 +24,10 @@ import android.widget.RelativeLayout;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.tdt.tu.learnenglish2017.R;
+import com.tdt.tu.learnenglish2017.fragment.DisconnectedFragment;
 import com.tdt.tu.learnenglish2017.fragment.Tab1Fragment;
 import com.tdt.tu.learnenglish2017.fragment.Tab2Fragment;
 import com.tdt.tu.learnenglish2017.fragment.Tab3Fragment;
@@ -39,18 +49,52 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.topBar)
     RelativeLayout topBar;
 
+    private BroadcastReceiver retryReceiver;
+
+    private BroadcastReceiver refreshReceiver;
+
+    private FirebaseAuth.AuthStateListener authListener;
+    private FirebaseAuth auth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         init();
+        authentication();
         isPermissionGranted();
         setupViewPager(viewPager);
         addBottomNavigationItems();
         setupBottomNavigationStyle();
         navigationTabHandler();
         createAppFolder();
+    }
+
+    private void authentication() {
+        //get firebase auth instance
+        auth = FirebaseAuth.getInstance();
+
+        //get current user
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        authListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user == null) {
+                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                    finish();
+                }
+            }
+        };
+    }
+
+    private boolean isConnected() {
+
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        return connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED;
     }
 
     private void navigationTabHandler() {
@@ -73,17 +117,73 @@ public class MainActivity extends AppCompatActivity {
 
     private void init() {
         ButterKnife.bind(this);
-        sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         bottomNavigation.setCurrentItem(0);
     }
 
+    private void initRetryReceiver() {
+        retryReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                setupViewPager(viewPager);
+            }
+        };
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("retry_connect");
+        registerReceiver(retryReceiver, intentFilter);
+    }
+
+    private void initRefreshReceiver() {
+        refreshReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                setupViewPager(viewPager);
+            }
+        };
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(refreshReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        auth.addAuthStateListener(authListener);
+        initRetryReceiver();
+        initRefreshReceiver();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (authListener != null) {
+            auth.removeAuthStateListener(authListener);
+        }
+        unregisterReceiver(refreshReceiver);
+        unregisterReceiver(retryReceiver);
+
+    }
+
     private void setupViewPager(ViewPager viewPager) {
-        sectionsPagerAdapter.addFragment(new Tab1Fragment());
-        sectionsPagerAdapter.addFragment(new Tab2Fragment());
-        sectionsPagerAdapter.addFragment(new Tab3Fragment());
-        sectionsPagerAdapter.addFragment(new Tab4Fragment());
-        sectionsPagerAdapter.addFragment(new Tab5Fragment());
-        viewPager.setAdapter(sectionsPagerAdapter);
+        if (isConnected()) {
+            sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+            sectionsPagerAdapter.addFragment(new Tab1Fragment());
+            sectionsPagerAdapter.addFragment(new Tab2Fragment());
+            sectionsPagerAdapter.addFragment(new Tab3Fragment());
+            sectionsPagerAdapter.addFragment(new Tab4Fragment());
+            sectionsPagerAdapter.addFragment(new Tab5Fragment());
+            viewPager.setAdapter(sectionsPagerAdapter);
+
+        } else {
+            sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+            sectionsPagerAdapter.addFragment(new DisconnectedFragment());
+            sectionsPagerAdapter.addFragment(new DisconnectedFragment());
+            sectionsPagerAdapter.addFragment(new DisconnectedFragment());
+            sectionsPagerAdapter.addFragment(new DisconnectedFragment());
+            sectionsPagerAdapter.addFragment(new DisconnectedFragment());
+            viewPager.setAdapter(sectionsPagerAdapter);
+        }
     }
 
     private void setupBottomNavigationStyle() {

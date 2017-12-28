@@ -8,7 +8,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,7 +36,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -66,6 +64,7 @@ public class Tab2Fragment extends Fragment {
     private List<Course> courseList = new ArrayList<>();
     private List<String> listCourseId = new ArrayList<>();
     private List<String> listTopSearch = new ArrayList<>();
+    private ArrayAdapter searchAdapter;
     private CourseAdapter adapter;
 
     private ArrayList<CourseSuggestion> historyList = new ArrayList<>();
@@ -88,6 +87,8 @@ public class Tab2Fragment extends Fragment {
         adapter = new CourseAdapter(view.getContext(), R.layout.course_row_layout, courseList);
         listViewSearchResult.setAdapter(adapter);
 
+        searchAdapter = new ArrayAdapter<>(view.getContext(), R.layout.top_searches_row_layout, listTopSearch);
+        listTopSearch.clear();
         listTopSearch.add("free");
         listTopSearch.add("conversation");
         listTopSearch.add("english");
@@ -98,7 +99,7 @@ public class Tab2Fragment extends Fragment {
         listTopSearch.add("food");
         listTopSearch.add("advanced");
         listTopSearch.add("sport");
-        listViewTopSearch.setAdapter(new ArrayAdapter<>(view.getContext(), R.layout.top_searches_row_layout, listTopSearch));
+        listViewTopSearch.setAdapter(searchAdapter);
 
         setupSearchBar();
 
@@ -299,8 +300,6 @@ public class Tab2Fragment extends Fragment {
             String[] courseNames = obj.getString("course_name").toLowerCase().split("\\s+");
             String[] tags = obj.getString("tag").split(",");
             String[] descriptions = obj.getString("description").toLowerCase().split("\\s*,\\s*|\\s+|\\s*\\.\\s*");
-
-            Log.d("Suggestion", Arrays.toString(descriptions));
 
             for (int j = 0; j < courseNames.length; j++) {
                 duplicateSuggestions.add(courseNames[j]);

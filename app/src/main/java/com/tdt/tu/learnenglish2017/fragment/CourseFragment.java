@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tdt.tu.learnenglish2017.R;
@@ -40,6 +41,8 @@ public class CourseFragment extends Fragment {
     ListView listView;
     @BindView(R.id.backArrow)
     ImageView backArrow;
+    @BindView(R.id.txtCategory)
+    TextView txtCategory;
     private ArrayList<Course> courseList = new ArrayList<>();
     private CourseAdapter adapter;
     private View view;
@@ -110,6 +113,8 @@ public class CourseFragment extends Fragment {
 
     private void init() {
         ButterKnife.bind(this, view);
+
+        txtCategory.setText(getArguments().getString("category_name", ""));
         adapter = new CourseAdapter(view.getContext(), R.layout.course_row_layout, courseList);
         listView.setAdapter(adapter);
     }

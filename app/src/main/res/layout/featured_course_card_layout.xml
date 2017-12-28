@@ -4,8 +4,8 @@
     android:id="@+id/cardView"
     android:layout_width="100dp"
     android:layout_height="wrap_content"
-    android:layout_margin="3dp"
-    card_view:cardElevation="5dp">
+    android:layout_margin="1dp"
+    card_view:cardElevation="3dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -14,7 +14,7 @@
         <ImageView
             android:id="@+id/thumbnail"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="95dp"
             android:background="?attr/selectableItemBackgroundBorderless" />
 
         <TextView

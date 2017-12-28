@@ -28,11 +28,10 @@ public class LessonActivity extends AppCompatActivity implements YouTubePlayer.O
 
     public static YouTubePlayer mYoutubePlayer;
     public static ImageView buttonDownloadAll;
-
+    public static TextView lessonTitle;
     private ViewPager viewPager;
     private TabLayout tabLayout;
     private TextView courseTitle;
-
     private SectionsPagerAdapter sectionsPagerAdapter;
     private YouTubePlayerFragment youTubePlayerFragment;
 
@@ -54,8 +53,9 @@ public class LessonActivity extends AppCompatActivity implements YouTubePlayer.O
     private void init() {
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
-        courseTitle = (TextView) findViewById(R.id.txtCourseName_Lesson);
+        courseTitle = (TextView) findViewById(R.id.txtCourseName);
         buttonDownloadAll = (ImageView) findViewById(R.id.btnDownloadAll);
+        lessonTitle = (TextView) findViewById(R.id.txtLessonName);
 
         courseTitle.setText(getIntent().getStringExtra("course_name"));
         link = getIntent().getStringExtra("link");
