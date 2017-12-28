@@ -23,10 +23,6 @@ import javax.net.ssl.HttpsURLConnection;
  */
 public class RequestHandler {
 
-    //Method to send httpPostRequest
-    //This method is taking two arguments
-    //First argument is the URL of the script to which we will send the request
-    //Other is an HashMap with name value pairs containing the data to be send with the request
     public String sendPostRequest(String requestURL, HashMap<String, String> postDataParams) {
         //Creating a URL
         URL url;

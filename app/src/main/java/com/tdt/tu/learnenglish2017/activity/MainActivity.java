@@ -162,10 +162,9 @@ public class MainActivity extends AppCompatActivity {
         }
         unregisterReceiver(refreshReceiver);
         unregisterReceiver(retryReceiver);
-
     }
 
-    private void setupViewPager(ViewPager viewPager) {
+    private void setupViewPager(final ViewPager viewPager) {
         if (isConnected()) {
             sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
             sectionsPagerAdapter.addFragment(new Tab1Fragment());
@@ -173,7 +172,6 @@ public class MainActivity extends AppCompatActivity {
             sectionsPagerAdapter.addFragment(new Tab3Fragment());
             sectionsPagerAdapter.addFragment(new Tab4Fragment());
             sectionsPagerAdapter.addFragment(new Tab5Fragment());
-            viewPager.setAdapter(sectionsPagerAdapter);
 
         } else {
             sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -182,8 +180,9 @@ public class MainActivity extends AppCompatActivity {
             sectionsPagerAdapter.addFragment(new DisconnectedFragment());
             sectionsPagerAdapter.addFragment(new DisconnectedFragment());
             sectionsPagerAdapter.addFragment(new DisconnectedFragment());
-            viewPager.setAdapter(sectionsPagerAdapter);
+
         }
+        viewPager.setAdapter(sectionsPagerAdapter);
     }
 
     private void setupBottomNavigationStyle() {

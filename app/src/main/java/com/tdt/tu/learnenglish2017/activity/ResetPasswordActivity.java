@@ -23,7 +23,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 
-public class ResetPasswordActivity extends AppCompatActivity {
+public class ResetPasswordActivity extends AppCompatActivity implements View.OnClickListener {
 
     @BindView(R.id.email)
     EditText inputEmail;
@@ -39,22 +39,24 @@ public class ResetPasswordActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reset_password);
+        init();
+    }
 
+    private void init() {
         ButterKnife.bind(this);
-
         firebaseAuth = FirebaseAuth.getInstance();
+        btnBack.setOnClickListener(this);
+        btnReset.setOnClickListener(this);
+    }
 
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btnBack:
                 finish();
-            }
-        });
+                break;
 
-        btnReset.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
+            case R.id.btnResetPassword:
                 String email = inputEmail.getText().toString().trim();
 
                 if (TextUtils.isEmpty(email)) {
@@ -76,9 +78,8 @@ public class ResetPasswordActivity extends AppCompatActivity {
                                 progressBar.setVisibility(View.GONE);
                             }
                         });
-            }
-        });
+                break;
+        }
     }
-
 }
 

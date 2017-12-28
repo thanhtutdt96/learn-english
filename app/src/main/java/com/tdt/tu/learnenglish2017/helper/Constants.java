@@ -12,10 +12,6 @@ public class Constants {
 
     private static String ROOT_URL = "http://learnenglish2017.tk/app-service/";
 
-    public static String URL_LOGIN = ROOT_URL + "login.php";
-
-    public static String URL_REGISTER = ROOT_URL + "register.php";
-
     public static String URL_GET_LESSONS_BY_COURSE_ID = ROOT_URL + "api.php?apicall=getlessonsbycourseid";
 
     public static String URL_GET_QUESTIONS = ROOT_URL + "api.php?apicall=getquestions";
