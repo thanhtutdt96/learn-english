@@ -19,15 +19,12 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.RelativeLayout;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.tdt.tu.learnenglish2017.R;
-import com.tdt.tu.learnenglish2017.fragment.DisconnectedFragment;
 import com.tdt.tu.learnenglish2017.fragment.Tab1Fragment;
 import com.tdt.tu.learnenglish2017.fragment.Tab2Fragment;
 import com.tdt.tu.learnenglish2017.fragment.Tab3Fragment;
@@ -46,8 +43,6 @@ public class MainActivity extends AppCompatActivity {
     ViewPager viewPager;
     @BindView(R.id.bottomNavigation)
     AHBottomNavigation bottomNavigation;
-    @BindView(R.id.topBar)
-    RelativeLayout topBar;
 
     private BroadcastReceiver retryReceiver;
 
@@ -72,11 +67,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void authentication() {
-        //get firebase auth instance
         auth = FirebaseAuth.getInstance();
-
-        //get current user
-        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         authListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -104,10 +95,6 @@ public class MainActivity extends AppCompatActivity {
                 if (!wasSelected) {
                     viewPager.setCurrentItem(position);
                 }
-                if (position == 4)
-                    topBar.setVisibility(View.VISIBLE);
-                else
-                    topBar.setVisibility(View.GONE);
 
                 return true;
             }
@@ -117,7 +104,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void init() {
         ButterKnife.bind(this);
+        sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         bottomNavigation.setCurrentItem(0);
+
     }
 
     private void initRetryReceiver() {
@@ -150,8 +139,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         auth.addAuthStateListener(authListener);
-        initRetryReceiver();
-        initRefreshReceiver();
+//        initRetryReceiver();
+//        initRefreshReceiver();
     }
 
     @Override
@@ -160,28 +149,17 @@ public class MainActivity extends AppCompatActivity {
         if (authListener != null) {
             auth.removeAuthStateListener(authListener);
         }
-        unregisterReceiver(refreshReceiver);
-        unregisterReceiver(retryReceiver);
+//        unregisterReceiver(refreshReceiver);
+//        unregisterReceiver(retryReceiver);
     }
 
-    private void setupViewPager(final ViewPager viewPager) {
-        if (isConnected()) {
-            sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-            sectionsPagerAdapter.addFragment(new Tab1Fragment());
-            sectionsPagerAdapter.addFragment(new Tab2Fragment());
-            sectionsPagerAdapter.addFragment(new Tab3Fragment());
-            sectionsPagerAdapter.addFragment(new Tab4Fragment());
-            sectionsPagerAdapter.addFragment(new Tab5Fragment());
+    private void setupViewPager(ViewPager viewPager) {
+        sectionsPagerAdapter.addFragment(new Tab1Fragment());
+        sectionsPagerAdapter.addFragment(new Tab2Fragment());
+        sectionsPagerAdapter.addFragment(new Tab3Fragment());
+        sectionsPagerAdapter.addFragment(new Tab4Fragment());
+        sectionsPagerAdapter.addFragment(new Tab5Fragment());
 
-        } else {
-            sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-            sectionsPagerAdapter.addFragment(new DisconnectedFragment());
-            sectionsPagerAdapter.addFragment(new DisconnectedFragment());
-            sectionsPagerAdapter.addFragment(new DisconnectedFragment());
-            sectionsPagerAdapter.addFragment(new DisconnectedFragment());
-            sectionsPagerAdapter.addFragment(new DisconnectedFragment());
-
-        }
         viewPager.setAdapter(sectionsPagerAdapter);
     }
 

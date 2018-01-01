@@ -105,7 +105,7 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
             }
         });
 
-        holder.itemView.setActivated(selectedPosition == position);
+        holder.itemView.setSelected(selectedPosition == position);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -164,10 +164,11 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
                     holder.waitingCircle.setVisibility(View.GONE);
                 } else {
                     for (int i = 0; i < ytFiles.size(); i++) {
-                        if (ytFiles.keyAt(ytFiles.size() - 1) > 22)
-                            iTag = 22;
-                        else
-                            iTag = ytFiles.keyAt(ytFiles.size() - 1);
+                        if (ytFiles.keyAt(i) == 22) {
+                            iTag = ytFiles.keyAt(i);
+                        } else {
+                            iTag = 18;
+                        }
                     }
                     YtFile ytFile = ytFiles.get(iTag);
                     holder.waitingCircle.setVisibility(View.GONE);
