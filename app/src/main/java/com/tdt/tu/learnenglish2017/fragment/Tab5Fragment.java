@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +38,12 @@ public class Tab5Fragment extends Fragment implements View.OnClickListener {
     Button btnLogout;
     @BindView(R.id.cvDoQuiz)
     CardView cvDoQuiz;
+    @BindView(R.id.cvDownloadQuality)
+    CardView cvDownloadQuality;
+    @BindView(R.id.cvDownloadedContent)
+    CardView cvDownloadedContent;
+    @BindView(R.id.cvAbout)
+    CardView cvAbout;
 
     private View view;
 
@@ -66,6 +73,7 @@ public class Tab5Fragment extends Fragment implements View.OnClickListener {
 
         cvDoQuiz.setOnClickListener(this);
         btnLogout.setOnClickListener(this);
+        cvDownloadQuality.setOnClickListener(this);
 
         authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -88,9 +96,15 @@ public class Tab5Fragment extends Fragment implements View.OnClickListener {
         switch (view.getId()) {
             case R.id.btnLogout:
                 logout();
+                break;
             case R.id.cvDoQuiz:
                 Intent intent = new Intent(view.getContext(), FirstQuizActivity.class);
                 startActivity(intent);
+                break;
+            case R.id.cvDownloadQuality:
+                Fragment downloadedQualityFragment = new DownloadedQualityFragment();
+                replaceFragment(downloadedQualityFragment);
+                break;
         }
     }
 
@@ -106,5 +120,12 @@ public class Tab5Fragment extends Fragment implements View.OnClickListener {
         if (authStateListener != null) {
             firebaseAuth.removeAuthStateListener(authStateListener);
         }
+    }
+
+    public void replaceFragment(Fragment fragment) {
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment5_container, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 }
