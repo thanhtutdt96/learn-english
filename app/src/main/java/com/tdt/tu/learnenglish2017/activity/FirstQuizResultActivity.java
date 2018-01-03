@@ -150,7 +150,7 @@ public class FirstQuizResultActivity extends AppCompatActivity implements View.O
 
     private void initHistoryDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.Theme_AppCompat_Light_Dialog));
-        View dialogView = getLayoutInflater().inflate(R.layout.quiz_result_layout, null);
+        View dialogView = getLayoutInflater().inflate(R.layout.quiz_result, null);
         builder.setView(dialogView);
         View customTile = getLayoutInflater().inflate(R.layout.custom_dialog_title, null);
         builder.setCustomTitle(customTile);
@@ -165,7 +165,7 @@ public class FirstQuizResultActivity extends AppCompatActivity implements View.O
         });
 
         ListView listView = (ListView) dialogView.findViewById(R.id.listHistory);
-        quizResultAdapter = new QuizResultAdapter(dialogView.getContext(), R.layout.quiz_result_row_layout, quizResultList);
+        quizResultAdapter = new QuizResultAdapter(dialogView.getContext(), R.layout.quiz_result_row, quizResultList);
         listView.setAdapter(quizResultAdapter);
 
         HashMap<String, String> params = new HashMap<>();

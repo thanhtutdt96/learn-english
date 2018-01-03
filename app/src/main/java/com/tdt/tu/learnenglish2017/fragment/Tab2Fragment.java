@@ -73,7 +73,7 @@ public class Tab2Fragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment2_layout, container, false);
+        view = inflater.inflate(R.layout.fragment2, container, false);
 
         init();
         loadSearchSuggestions();
@@ -84,10 +84,10 @@ public class Tab2Fragment extends Fragment {
 
     private void init() {
         ButterKnife.bind(this, view);
-        adapter = new CourseAdapter(view.getContext(), R.layout.course_row_layout, courseList);
+        adapter = new CourseAdapter(view.getContext(), R.layout.course_row, courseList);
         listViewSearchResult.setAdapter(adapter);
 
-        searchAdapter = new ArrayAdapter<>(view.getContext(), R.layout.top_searches_row_layout, listTopSearch);
+        searchAdapter = new ArrayAdapter<>(view.getContext(), R.layout.top_searches_row, listTopSearch);
         listTopSearch.clear();
         listTopSearch.add("free");
         listTopSearch.add("conversation");

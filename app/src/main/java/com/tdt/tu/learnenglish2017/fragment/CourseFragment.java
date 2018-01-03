@@ -115,7 +115,7 @@ public class CourseFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         txtCategory.setText(getArguments().getString("category_name", ""));
-        adapter = new CourseAdapter(view.getContext(), R.layout.course_row_layout, courseList);
+        adapter = new CourseAdapter(view.getContext(), R.layout.course_row, courseList);
         listView.setAdapter(adapter);
     }
 

@@ -34,7 +34,7 @@ public class FeaturedCourseAdapter extends RecyclerView.Adapter<FeaturedCourseAd
 
     @Override
     public FeaturedCourseAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.featured_course_card_layout, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.featured_course_card, parent, false);
 
         return new FeaturedCourseAdapter.ViewHolder(itemView);
     }

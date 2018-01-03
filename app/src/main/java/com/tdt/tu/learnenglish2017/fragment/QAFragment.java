@@ -157,7 +157,7 @@ public class QAFragment extends Fragment {
 
     private void init() {
         ButterKnife.bind(this, view);
-        adapter = new QuestionAdapter(view.getContext(), R.layout.question_row_layout, questionList);
+        adapter = new QuestionAdapter(view.getContext(), R.layout.question_row, questionList);
         listView.setAdapter(adapter);
 
         SharedPreferences prefs = view.getContext().getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE);

@@ -56,7 +56,7 @@ public class Tab5Fragment extends Fragment implements View.OnClickListener {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment5_layout, container, false);
+        view = inflater.inflate(R.layout.fragment5, container, false);
         init();
         return view;
     }

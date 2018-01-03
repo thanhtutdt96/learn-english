@@ -54,21 +54,24 @@ import static com.tdt.tu.learnenglish2017.activity.LessonActivity.lessonTitle;
 public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder> {
     private List<Lesson> list = new ArrayList<>();
     private Context context;
-    private String videoPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LearnEnglish2017/Download/";
+    private String videoPath;
+    private String courseFolder;
     private int videoQuality;
     private int selectedPosition = 0;
 
     private List<String> watchedList = new ArrayList<>();
 
-    public LessonAdapter(Context context, List<Lesson> list) {
+    public LessonAdapter(Context context, List<Lesson> list, String courseFolder) {
         this.context = context;
         this.list = list;
+        this.courseFolder = courseFolder;
         videoQuality = context.getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).getInt("iTag", 22);
+        videoPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LearnEnglish2017/Download/" + courseFolder + "/";
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.lesson_row_layout, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.lesson_row, parent, false);
 
         return new ViewHolder(itemView);
     }
@@ -96,6 +99,7 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
         holder.buttonDownload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                createCourseFolder();
                 if (checkFileExist(holder, fileNameHandler(holder.title.getText().toString()))) {
                     return;
                 }
@@ -139,6 +143,13 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
 
             }
         });
+    }
+
+    private void createCourseFolder() {
+        File courseFolderPath = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/LearnEnglish2017/Download/" + courseFolder);
+        if (!courseFolderPath.exists()) {
+            courseFolderPath.mkdirs();
+        }
     }
 
     private String fileNameHandler(String videoTitle, YtFile ytFile) {
@@ -207,17 +218,23 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
         File folder = new File(videoPath);
         File[] listOfFiles = folder.listFiles();
 
-        for (File file : listOfFiles) {
-            if (file.isFile()) {
-                String[] filename = file.getName().split("\\.(?=[^\\.]+$)");
-                if (filename[0].equalsIgnoreCase(fileName)) {
-                    holder.buttonDownload.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_check_orange_24dp));
-                    holder.buttonDownload.setEnabled(false);
-                    holder.buttonDownload.setClickable(false);
-                    holder.buttonOpen.setVisibility(View.VISIBLE);
-                    return true;
+        try {
+            for (File file : listOfFiles) {
+                if (file.isFile()) {
+                    String[] filename = file.getName().split("\\.(?=[^\\.]+$)");
+                    if (filename[0].equalsIgnoreCase(fileName)) {
+                        holder.buttonDownload.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_check_orange_24dp));
+                        holder.buttonDownload.setEnabled(false);
+                        holder.buttonDownload.setClickable(false);
+                        holder.buttonOpen.setVisibility(View.VISIBLE);
+                        return true;
+                    }
+                } else {
+                    return false;
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return false;
     }

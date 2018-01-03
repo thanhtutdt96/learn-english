@@ -157,7 +157,7 @@ public class AnswerFragment extends Fragment {
 
     private void init() {
         ButterKnife.bind(this, view);
-        adapter = new AnswerAdapter(view.getContext(), R.layout.answer_row_layout, answerList);
+        adapter = new AnswerAdapter(view.getContext(), R.layout.answer_row, answerList);
         listView.setAdapter(adapter);
     }
 

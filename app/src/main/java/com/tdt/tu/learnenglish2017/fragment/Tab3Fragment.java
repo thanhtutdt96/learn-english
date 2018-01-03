@@ -50,7 +50,7 @@ public class Tab3Fragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
-        view = inflater.inflate(R.layout.fragment3_layout, container, false);
+        view = inflater.inflate(R.layout.fragment3, container, false);
 
         init();
         loadUserCourses();
@@ -130,7 +130,7 @@ public class Tab3Fragment extends Fragment {
 
     private void init() {
         ButterKnife.bind(this, view);
-        adapter = new CourseAdapter(view.getContext(), R.layout.course_row_layout, listUserCourse);
+        adapter = new CourseAdapter(view.getContext(), R.layout.course_row, listUserCourse);
         listView.setAdapter(adapter);
     }
 

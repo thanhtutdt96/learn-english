@@ -57,7 +57,7 @@ public class Tab4Fragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
-        view = inflater.inflate(R.layout.fragment4_layout, container, false);
+        view = inflater.inflate(R.layout.fragment4, container, false);
 
         init();
         loadUserFavorites();
@@ -166,7 +166,7 @@ public class Tab4Fragment extends Fragment {
 
     private void init() {
         ButterKnife.bind(this, view);
-        adapter = new CourseAdapter(view.getContext(), R.layout.course_row_layout, listFavorite);
+        adapter = new CourseAdapter(view.getContext(), R.layout.course_row, listFavorite);
         listView.setAdapter(adapter);
     }
 

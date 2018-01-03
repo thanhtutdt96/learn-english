@@ -29,9 +29,10 @@ public class LessonActivity extends AppCompatActivity implements YouTubePlayer.O
     public static YouTubePlayer mYoutubePlayer;
     public static Button buttonDownloadAll;
     public static TextView lessonTitle;
+    public static TextView courseTitle;
+
     private ViewPager viewPager;
     private TabLayout tabLayout;
-    private TextView courseTitle;
     private SectionsPagerAdapter sectionsPagerAdapter;
     private YouTubePlayerFragment youTubePlayerFragment;
 

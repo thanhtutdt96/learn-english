@@ -137,7 +137,7 @@ public class LessonQuizResultActivity extends AppCompatActivity implements View.
 
     private void initHistoryDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.Theme_AppCompat_Light_Dialog));
-        View dialogView = getLayoutInflater().inflate(R.layout.quiz_result_layout, null);
+        View dialogView = getLayoutInflater().inflate(R.layout.quiz_result, null);
         builder.setView(dialogView);
         View customTile = getLayoutInflater().inflate(R.layout.custom_dialog_title, null);
         builder.setCustomTitle(customTile);
@@ -152,7 +152,7 @@ public class LessonQuizResultActivity extends AppCompatActivity implements View.
         });
 
         ListView listView = (ListView) dialogView.findViewById(R.id.listHistory);
-        adapter = new QuizResultAdapter(dialogView.getContext(), R.layout.quiz_result_row_layout, quizResultList);
+        adapter = new QuizResultAdapter(dialogView.getContext(), R.layout.quiz_result_row, quizResultList);
         listView.setAdapter(adapter);
 
         HashMap<String, String> params = new HashMap<>();
