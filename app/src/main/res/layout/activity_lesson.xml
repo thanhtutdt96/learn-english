@@ -39,15 +39,15 @@
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
             android:textColor="@color/colorBlack" />
 
-        <ImageView
+        <Button
             android:id="@+id/btnDownloadAll"
-            android:layout_width="27dp"
-            android:layout_height="27dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_alignParentRight="true"
             android:layout_marginRight="6dp"
             android:layout_marginTop="10dp"
-            android:padding="2dp"
-            android:src="@drawable/ic_download_orange" />
+            android:background="@drawable/ic_download_orange"
+            android:padding="2dp" />
 
         <ImageView
             android:id="@+id/ivPlay"

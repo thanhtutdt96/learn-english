@@ -33,7 +33,6 @@ import es.dmoral.toasty.Toasty;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.tdt.tu.learnenglish2017.activity.LessonActivity.buttonDownloadAll;
-import static com.tdt.tu.learnenglish2017.activity.LessonActivity.lessonTitle;
 
 /**
  * Created by Pham Thanh Tu on 30-Oct-17.
@@ -136,12 +135,10 @@ public class LessonsFragment extends Fragment {
                 e.printStackTrace();
             }
 
-            lessonTitle.setText(lessonList.get(0).getTitle());
-
             buttonDownloadAll.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(final View view) {
-                    // buttonDownloadAll.setEnabled(false);
+                    buttonDownloadAll.setClickable(false);
                     layoutManager.scrollToPosition(0);
                     new Handler().postDelayed(new Runnable() {
                         @Override
@@ -176,7 +173,7 @@ public class LessonsFragment extends Fragment {
                     }, 50);
                 }
             });
-            buttonDownloadAll.setEnabled(false);
+
         }
 
 

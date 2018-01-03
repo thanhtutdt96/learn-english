@@ -55,7 +55,7 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
     private List<Lesson> list = new ArrayList<>();
     private Context context;
     private String videoPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LearnEnglish2017/Download/";
-
+    private int videoQuality;
     private int selectedPosition = 0;
 
     private List<String> watchedList = new ArrayList<>();
@@ -63,6 +63,7 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
     public LessonAdapter(Context context, List<Lesson> list) {
         this.context = context;
         this.list = list;
+        videoQuality = context.getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).getInt("iTag", 22);
     }
 
     @Override
@@ -76,7 +77,14 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 
         final Lesson lesson = list.get(position);
-        lessonTitle.setText(lesson.getTitle());
+        if (position == selectedPosition) {
+            holder.itemView.setSelected(true);
+            lessonTitle.setText(lesson.getTitle());
+            holder.watchedCheck.setVisibility(View.VISIBLE);
+            holder.thumbnail.setAlpha(0.5f);
+            saveWatchedLesson(lesson.getId());
+        }
+
         holder.title.setText(lesson.getTitle());
         holder.duration.setText(lesson.getDuration());
         holder.lessonId.setText(lesson.getId());
@@ -105,20 +113,20 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
             }
         });
 
-        holder.itemView.setSelected(selectedPosition == position);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 holder.watchedCheck.setVisibility(View.VISIBLE);
                 holder.thumbnail.setAlpha(0.5f);
                 saveWatchedLesson(holder.lessonId.getText().toString());
 
-                if (holder.getAdapterPosition() == RecyclerView.NO_POSITION)
-                    return;
-                notifyItemChanged(selectedPosition);
-                selectedPosition = holder.getLayoutPosition();
-                notifyItemChanged(selectedPosition);
+                int currentPosition = holder.getLayoutPosition();
+                if (selectedPosition != currentPosition) {
+                    int lastSelectedPosition = selectedPosition;
+                    selectedPosition = currentPosition;
+                    notifyItemChanged(lastSelectedPosition);
+                    holder.itemView.setSelected(true);
+                }
 
                 String selectedLessonLink = list.get(holder.getLayoutPosition()).getLink();
                 if (LessonActivity.mYoutubePlayer != null) {
@@ -126,6 +134,9 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
                     LessonActivity.mYoutubePlayer.loadVideo(selectedLessonLink);
                     LessonActivity.mYoutubePlayer.play();
                 }
+
+                lessonTitle.setText(holder.title.getText().toString());
+
             }
         });
     }
@@ -164,10 +175,14 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
                     holder.waitingCircle.setVisibility(View.GONE);
                 } else {
                     for (int i = 0; i < ytFiles.size(); i++) {
-                        if (ytFiles.keyAt(i) == 22) {
-                            iTag = ytFiles.keyAt(i);
+                        if (ytFiles.keyAt(i) == videoQuality) {
+                            iTag = videoQuality;
                         } else {
-                            iTag = 18;
+                            if (ytFiles.keyAt(i) == 22) {
+                                iTag = 22;
+                            } else if (ytFiles.keyAt(i) == 18) {
+                                iTag = 18;
+                            }
                         }
                     }
                     YtFile ytFile = ytFiles.get(iTag);

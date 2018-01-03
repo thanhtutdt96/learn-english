@@ -63,18 +63,23 @@ public class DownloadedQualityFragment extends Fragment {
     }
 
     private void radioButtonHandler() {
-        RadioButton rbSelected = (RadioButton) view.findViewById(radioGroup.getCheckedRadioButtonId());
-        switch (rbSelected.getId()) {
-            case R.id.rbMedium:
-                saveQualityValue("medium");
-                break;
-            case R.id.rbHd:
-                saveQualityValue("hd");
-                break;
-            case R.id.rbFullHd:
-                saveQualityValue("fullhd");
-                break;
-        }
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                switch (i) {
+                    case R.id.rbMedium:
+                        saveQualityValue("medium");
+                        break;
+                    case R.id.rbHd:
+                        saveQualityValue("hd");
+                        break;
+                    case R.id.rbFullHd:
+                        saveQualityValue("fullhd");
+                        break;
+                }
+            }
+        });
+
     }
 
     private void saveQualityValue(String quality) {
@@ -89,7 +94,7 @@ public class DownloadedQualityFragment extends Fragment {
                 editor.commit();
                 break;
             case "fullhd":
-                editor.putInt("iTag", 37);
+                editor.putInt("iTag", 137);
                 editor.commit();
                 break;
         }

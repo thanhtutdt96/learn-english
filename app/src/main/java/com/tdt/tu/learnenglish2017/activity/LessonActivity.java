@@ -7,7 +7,7 @@ import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.ImageView;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,7 +27,7 @@ import es.dmoral.toasty.Toasty;
 public class LessonActivity extends AppCompatActivity implements YouTubePlayer.OnInitializedListener {
 
     public static YouTubePlayer mYoutubePlayer;
-    public static ImageView buttonDownloadAll;
+    public static Button buttonDownloadAll;
     public static TextView lessonTitle;
     private ViewPager viewPager;
     private TabLayout tabLayout;
@@ -54,7 +54,7 @@ public class LessonActivity extends AppCompatActivity implements YouTubePlayer.O
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         courseTitle = (TextView) findViewById(R.id.txtCourseName);
-        buttonDownloadAll = (ImageView) findViewById(R.id.btnDownloadAll);
+        buttonDownloadAll = (Button) findViewById(R.id.btnDownloadAll);
         lessonTitle = (TextView) findViewById(R.id.txtLessonName);
 
         courseTitle.setText(getIntent().getStringExtra("course_name"));

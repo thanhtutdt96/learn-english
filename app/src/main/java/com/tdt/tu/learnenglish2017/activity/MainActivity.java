@@ -1,14 +1,10 @@
 package com.tdt.tu.learnenglish2017.activity;
 
 import android.Manifest;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -30,6 +26,7 @@ import com.tdt.tu.learnenglish2017.fragment.Tab2Fragment;
 import com.tdt.tu.learnenglish2017.fragment.Tab3Fragment;
 import com.tdt.tu.learnenglish2017.fragment.Tab4Fragment;
 import com.tdt.tu.learnenglish2017.fragment.Tab5Fragment;
+import com.tdt.tu.learnenglish2017.helper.Constants;
 import com.tdt.tu.learnenglish2017.helper.SectionsPagerAdapter;
 
 import java.io.File;
@@ -44,12 +41,10 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.bottomNavigation)
     AHBottomNavigation bottomNavigation;
 
-    private BroadcastReceiver retryReceiver;
-
-    private BroadcastReceiver refreshReceiver;
-
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
+
+    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +61,32 @@ public class MainActivity extends AppCompatActivity {
         createAppFolder();
     }
 
+    private void askFirstQuiz() {
+        boolean isFirstRun = getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).getBoolean("first_run", true);
+        editor = getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).edit();
+
+        if (isFirstRun) {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Hold on...");
+            builder.setMessage("Would you like to take a proficiency test ?");
+            builder.setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    startActivity(new Intent(MainActivity.this, FirstQuizActivity.class));
+                }
+            });
+            builder.setPositiveButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            });
+            builder.create().show();
+
+            editor.putBoolean("first_run", false).commit();
+        }
+    }
+
     private void authentication() {
         auth = FirebaseAuth.getInstance();
 
@@ -79,13 +100,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
-    }
-
-    private boolean isConnected() {
-
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        return connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
-                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED;
     }
 
     private void navigationTabHandler() {
@@ -109,38 +123,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void initRetryReceiver() {
-        retryReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                setupViewPager(viewPager);
-            }
-        };
-
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("retry_connect");
-        registerReceiver(retryReceiver, intentFilter);
-    }
-
-    private void initRefreshReceiver() {
-        refreshReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                setupViewPager(viewPager);
-            }
-        };
-
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
-        registerReceiver(refreshReceiver, intentFilter);
-    }
-
     @Override
     protected void onStart() {
         super.onStart();
         auth.addAuthStateListener(authListener);
-//        initRetryReceiver();
-//        initRefreshReceiver();
     }
 
     @Override
@@ -149,8 +135,6 @@ public class MainActivity extends AppCompatActivity {
         if (authListener != null) {
             auth.removeAuthStateListener(authListener);
         }
-//        unregisterReceiver(refreshReceiver);
-//        unregisterReceiver(retryReceiver);
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -201,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             createAppFolder();
+            askFirstQuiz();
         }
     }
 
