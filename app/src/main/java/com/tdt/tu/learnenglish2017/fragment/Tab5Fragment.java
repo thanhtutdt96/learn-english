@@ -30,8 +30,7 @@ import static android.content.Context.MODE_PRIVATE;
  */
 
 public class Tab5Fragment extends Fragment implements View.OnClickListener {
-    @BindView(R.id.name)
-    TextView txtName;
+
     @BindView(R.id.email)
     TextView txtEmail;
     @BindView(R.id.btnLogout)
@@ -70,7 +69,6 @@ public class Tab5Fragment extends Fragment implements View.OnClickListener {
 
         name = view.getContext().getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).getString("username", "");
         email = view.getContext().getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).getString("email", "");
-        txtName.setText(name);
         txtEmail.setText(email);
 
         cvDoQuiz.setOnClickListener(this);
