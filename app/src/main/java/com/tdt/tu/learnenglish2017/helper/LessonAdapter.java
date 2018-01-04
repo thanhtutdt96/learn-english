@@ -3,7 +3,6 @@ package com.tdt.tu.learnenglish2017.helper;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.SparseArray;
@@ -66,7 +65,7 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
         this.list = list;
         this.courseFolder = courseFolder;
         videoQuality = context.getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).getInt("iTag", 22);
-        videoPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LearnEnglish2017/Download/" + courseFolder + "/";
+        videoPath = Constants.DOWNLOAD_PATH + courseFolder + "/";
     }
 
     @Override
@@ -146,7 +145,7 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
     }
 
     private void createCourseFolder() {
-        File courseFolderPath = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/LearnEnglish2017/Download/" + courseFolder);
+        File courseFolderPath = new File(Constants.DOWNLOAD_PATH + courseFolder);
         if (!courseFolderPath.exists()) {
             courseFolderPath.mkdirs();
         }

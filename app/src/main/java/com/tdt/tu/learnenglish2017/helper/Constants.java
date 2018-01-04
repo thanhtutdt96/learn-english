@@ -1,15 +1,14 @@
 package com.tdt.tu.learnenglish2017.helper;
 
+import android.os.Environment;
+
 public class Constants {
 
     public static final int CODE_GET_REQUEST = 1024;
-
     public static final int CODE_POST_REQUEST = 1025;
-
     public static final String PREFERENCES_KEY = "MY_PREFS";
-
     public static final String API_KEY = "AIzaSyD3-fhnusRAieaxCw8sfkZyxJBoWpqr7PY";
-
+    public static String DOWNLOAD_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LearnEnglish2017/Download/";
     private static String ROOT_URL = "http://learnenglish2017.tk/app-service/";
 
     public static String URL_GET_LESSONS_BY_COURSE_ID = ROOT_URL + "api.php?apicall=getlessonsbycourseid";

@@ -14,6 +14,7 @@ import android.view.ContextThemeWrapper;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -41,10 +42,10 @@ import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 
 public class FirstQuizResultActivity extends AppCompatActivity implements View.OnClickListener {
-    @BindView(R.id.ivHome)
-    ImageView ivHome;
-    @BindView(R.id.ivHistory)
-    ImageView ivHistory;
+    @BindView(R.id.btnHome)
+    Button btnHome;
+    @BindView(R.id.btnHistory)
+    Button btnHistory;
     @BindView(R.id.txtResult)
     TextView txtResult;
     @BindView(R.id.circleResult)
@@ -88,8 +89,8 @@ public class FirstQuizResultActivity extends AppCompatActivity implements View.O
         recyclerSuggestion.setItemAnimator(new DefaultItemAnimator());
         recyclerSuggestion.setAdapter(suggestionAdapter);
 
-        ivHome.setOnClickListener(this);
-        ivHistory.setOnClickListener(this);
+        btnHome.setOnClickListener(this);
+        btnHistory.setOnClickListener(this);
     }
 
     private void loadSuggestion() {
@@ -139,10 +140,10 @@ public class FirstQuizResultActivity extends AppCompatActivity implements View.O
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.ivHome:
+            case R.id.btnHome:
                 finish();
                 break;
-            case R.id.ivHistory:
+            case R.id.btnHistory:
                 initHistoryDialog();
                 break;
         }
@@ -270,7 +271,7 @@ public class FirstQuizResultActivity extends AppCompatActivity implements View.O
             SharedPreferences.Editor editor = getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).edit();
             editor.putString("course_id", suggestionList.get(position).getCourseId());
             editor.putString("description", suggestionList.get(position).getDescription());
-            editor.commit();
+            editor.apply();
 
             Intent intent = new Intent(FirstQuizResultActivity.this, LessonActivity.class);
             intent.putExtra("course_name", suggestionList.get(position).getCourseName());

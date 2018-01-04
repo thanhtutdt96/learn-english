@@ -37,8 +37,8 @@ import es.dmoral.toasty.Toasty;
 
 public class LessonQuizActivity extends AppCompatActivity implements View.OnClickListener {
 
-    @BindView(R.id.ivHome)
-    ImageView txtQuit;
+    @BindView(R.id.btnHome)
+    Button btnHome;
     @BindView(R.id.txtQuestionNumber)
     TextView txtQuestionNumber;
     @BindView(R.id.timeCircle)
@@ -93,7 +93,7 @@ public class LessonQuizActivity extends AppCompatActivity implements View.OnClic
         mediaManager.addSound("true", R.raw.true_sound);
         mediaManager.addSound("false", R.raw.false_sound);
 
-        txtQuit.setOnClickListener(this);
+        btnHome.setOnClickListener(this);
         btnCheckAnswer.setOnClickListener(this);
         btnNext.setOnClickListener(this);
     }
@@ -101,7 +101,7 @@ public class LessonQuizActivity extends AppCompatActivity implements View.OnClic
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.ivHome:
+            case R.id.btnHome:
                 finish();
                 break;
 

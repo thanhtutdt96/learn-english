@@ -23,7 +23,7 @@ import static android.content.Context.MODE_PRIVATE;
  */
 
 public class DownloadedQualityFragment extends Fragment {
-    @BindView(R.id.btnBackArrow)
+    @BindView(R.id.btnBack)
     Button btnBackArrow;
     @BindView(R.id.radioGroup)
     RadioGroup radioGroup;

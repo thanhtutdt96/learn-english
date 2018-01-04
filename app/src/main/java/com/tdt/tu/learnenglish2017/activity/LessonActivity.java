@@ -15,7 +15,7 @@ import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerFragment;
 import com.tdt.tu.learnenglish2017.R;
-import com.tdt.tu.learnenglish2017.fragment.AboutFragment;
+import com.tdt.tu.learnenglish2017.fragment.AboutCourseFragment;
 import com.tdt.tu.learnenglish2017.fragment.LessonsFragment;
 import com.tdt.tu.learnenglish2017.fragment.QAFragment;
 import com.tdt.tu.learnenglish2017.fragment.QuizFragment;
@@ -83,7 +83,7 @@ public class LessonActivity extends AppCompatActivity implements YouTubePlayer.O
         adapter.addFragment(new LessonsFragment());
         adapter.addFragment(new QAFragment());
         adapter.addFragment(new QuizFragment());
-        adapter.addFragment(new AboutFragment());
+        adapter.addFragment(new AboutCourseFragment());
         viewPager.setAdapter(adapter);
     }
 

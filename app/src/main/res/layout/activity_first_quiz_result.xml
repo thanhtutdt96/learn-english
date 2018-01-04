@@ -25,35 +25,32 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <ImageView
-                    android:id="@+id/ivHome"
+                <Button
+                    android:id="@+id/btnHome"
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dp"
-                    android:src="@drawable/ic_home_white_24dp"
-                    android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
-                    android:textColor="@color/colorWhite" />
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/ic_home_white_24dp" />
 
                 <TextView
                     android:id="@+id/txtQuestionNumber"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:text="Result"
+                    android:text="@string/result"
                     android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
-                    android:textColor="@color/colorWhite" />
+                    android:textColor="@color/colorWhite"
+                    tools:ignore="RelativeOverlap" />
 
-                <ImageView
-                    android:id="@+id/ivHistory"
+                <Button
+                    android:id="@+id/btnHistory"
                     android:layout_width="28dp"
                     android:layout_height="28dp"
-                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="10dp"
-                    android:src="@drawable/ic_history_white_24dp"
-                    android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
-                    android:textColor="@color/colorWhite" />
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/ic_history_white_24dp" />
             </RelativeLayout>
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
@@ -66,8 +63,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/appBar"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <LinearLayout
@@ -80,7 +76,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="First quiz completed !"
+                    android:text="@string/first_quiz_completed"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
                     android:textColor="@color/colorOrange" />
 
@@ -90,7 +86,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:gravity="center"
-                    android:text="Correct/Total"
+                    android:text="@string/correct_total"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
                     android:textColor="@color/colorOrange"
                     android:textStyle="bold" />
@@ -101,7 +97,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:gravity="center"
-                    android:text="0/10"
+                    android:text="@string/score"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
                     android:textColor="@color/colorGreen"
                     android:textStyle="bold" />
@@ -130,7 +126,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:text="GOOD"
+                    android:text="@string/rank"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Display1"
                     android:textColor="@color/colorGreen" />
 
@@ -139,7 +135,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@id/relativeCircle"
                 android:layout_marginTop="10dp"
                 android:orientation="vertical">
 
@@ -149,7 +144,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center_horizontal"
-                    android:text="Courses suit you best:"
+                    android:text="@string/course_suggestion"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
                     android:textColor="@color/colorOrange" />
 

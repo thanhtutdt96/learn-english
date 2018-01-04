@@ -22,11 +22,11 @@
                 android:layout_height="wrap_content">
 
                 <Button
-                    android:id="@+id/btnBackArrow"
+                    android:id="@+id/btnBack"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
                     android:background="@drawable/ic_arrow_back_white_24dp" />
 
                 <TextView
@@ -35,7 +35,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:gravity="center"
-                    android:text="Download Quality"
+                    android:text="@string/download_quality"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
                     android:textColor="@color/colorWhite" />
             </RelativeLayout>
@@ -51,7 +51,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Select default downloaded video quality"
+            android:text="@string/downloaded_video_quality"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
             android:textColor="@color/colorBlack" />
 
@@ -65,7 +65,7 @@
                 android:id="@+id/rbMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Medium Quality - 360p"
+                android:text="@string/medium_quality"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
                 android:textColor="@color/colorBlack" />
 
@@ -74,7 +74,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="HD Quality - 720p"
+                android:text="@string/hd_quality"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
                 android:textColor="@color/colorBlack" />
 
@@ -82,7 +82,7 @@
                 android:id="@+id/rbFullHd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Full HD Quality - 1080p"
+                android:text="@string/full_hd_quality"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
                 android:textColor="@color/colorBlack" />
         </RadioGroup>

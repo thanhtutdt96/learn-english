@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Hold on...");
             builder.setMessage("Would you like to take a proficiency test ?");
+            builder.setIcon(R.drawable.ic_info_orange_24dp);
             builder.setNegativeButton("Yes", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {

@@ -95,9 +95,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         progressBar.setVisibility(View.GONE);
                         if (!task.isSuccessful()) {
                             if (password.length() < 6) {
-                                inputPassword.setError(getString(R.string.minimum_password));
+                                inputPassword.setError("Password too short, enter minimum 6 characters");
                             } else {
-                                Toasty.error(LoginActivity.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
+                                Toasty.error(LoginActivity.this, "Authentication failed, check your email and password or sign up", Toast.LENGTH_LONG).show();
                             }
                         } else {
                             SharedPreferences.Editor editor = getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).edit();

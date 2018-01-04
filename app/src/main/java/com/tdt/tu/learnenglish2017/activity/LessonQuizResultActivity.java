@@ -34,14 +34,14 @@ import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 
 public class LessonQuizResultActivity extends AppCompatActivity implements View.OnClickListener {
-    @BindView(R.id.ivHome)
-    ImageView ivHome;
+    @BindView(R.id.btnHome)
+    Button btnHome;
     @BindView(R.id.btnRedo)
     Button btnRedo;
     @BindView(R.id.btnDone)
     Button btnDone;
-    @BindView(R.id.ivHistory)
-    ImageView ivHistory;
+    @BindView(R.id.btnHistory)
+    Button btnHistory;
     @BindView(R.id.txtResult)
     TextView txtResult;
     @BindView(R.id.circleResult)
@@ -73,10 +73,10 @@ public class LessonQuizResultActivity extends AppCompatActivity implements View.
         lessonId = getIntent().getStringExtra("lesson_id");
         setContent();
 
-        ivHome.setOnClickListener(this);
+        btnHome.setOnClickListener(this);
         btnDone.setOnClickListener(this);
         btnRedo.setOnClickListener(this);
-        ivHistory.setOnClickListener(this);
+        btnHistory.setOnClickListener(this);
     }
 
     private void setContent() {
@@ -118,7 +118,7 @@ public class LessonQuizResultActivity extends AppCompatActivity implements View.
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.ivHome:
+            case R.id.btnHome:
                 btnDone.performClick();
                 break;
             case R.id.btnRedo:
@@ -129,7 +129,7 @@ public class LessonQuizResultActivity extends AppCompatActivity implements View.
             case R.id.btnDone:
                 finish();
                 break;
-            case R.id.ivHistory:
+            case R.id.btnHistory:
                 initHistoryDialog();
                 break;
         }

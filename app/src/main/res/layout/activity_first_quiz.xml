@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.tdt.tu.learnenglish2017.activity.LessonQuizActivity">
+    tools:context="com.tdt.tu.learnenglish2017.activity.LessonQuizActivity"
+    tools:ignore="ContentDescription">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBar"
@@ -25,14 +26,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <ImageView
-                    android:id="@+id/ivHome"
+                <Button
+                    android:id="@+id/btnHome"
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dp"
-                    android:src="@drawable/ic_home_white_24dp"
-                    android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/ic_home_white_24dp"
                     android:textColor="@color/colorWhite" />
 
                 <TextView
@@ -40,17 +40,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:text="1/10"
+                    android:text="@string/question_number"
                     android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
-                    android:textColor="@color/colorWhite" />
+                    android:textColor="@color/colorWhite"
+                    custom:ignore="RelativeOverlap" />
 
                 <com.github.lzyzsd.circleprogress.DonutProgress
                     android:id="@+id/timeCircle"
                     android:layout_width="26dp"
                     android:layout_height="26dp"
-                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginEnd="10dp"
                     android:rotation="270"
                     app:donut_finished_color="@color/colorWhite"
                     app:donut_finished_stroke_width="3dp"
@@ -68,9 +69,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/appBar"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="20dp"
-        android:text="Fill into the blank"
+        android:text="@string/fill_into_the_blank"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
         android:textStyle="bold" />
 
@@ -83,7 +84,7 @@
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:layout_marginTop="10dp"
-        android:text="Question content"
+        android:text="@string/question_content"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
         android:textStyle="bold" />
 
@@ -98,7 +99,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
-            android:layout_marginLeft="27dp"
+            android:layout_marginStart="27dp"
             android:layout_marginTop="4dp"
             android:src="@drawable/ic_check_green_24dp"
             android:visibility="invisible" />
@@ -108,7 +109,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
-            android:layout_marginLeft="27dp"
+            android:layout_marginStart="27dp"
             android:layout_marginTop="4dp"
             android:src="@drawable/ic_close_red_24dp"
             android:visibility="invisible" />
@@ -118,7 +119,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="27dp"
+            android:layout_marginStart="27dp"
             android:src="@drawable/ic_check_green_24dp"
             android:visibility="invisible" />
 
@@ -127,7 +128,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="27dp"
+            android:layout_marginStart="27dp"
             android:src="@drawable/ic_close_red_24dp"
             android:visibility="invisible" />
 
@@ -137,7 +138,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:layout_marginBottom="4dp"
-            android:layout_marginLeft="27dp"
+            android:layout_marginStart="27dp"
             android:src="@drawable/ic_check_green_24dp"
             android:visibility="invisible" />
 
@@ -147,7 +148,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:layout_marginBottom="4dp"
-            android:layout_marginLeft="27dp"
+            android:layout_marginStart="27dp"
             android:src="@drawable/ic_close_red_24dp"
             android:visibility="invisible" />
 
@@ -155,13 +156,13 @@
             android:id="@+id/radioGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="50dp">
+            android:layout_marginStart="50dp">
 
             <RadioButton
                 android:id="@+id/rbOptionA"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Option A"
+                android:text="@string/option_a"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
 
             <RadioButton
@@ -169,7 +170,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="Option B"
+                android:text="@string/option_b"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
 
             <RadioButton
@@ -177,7 +178,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="Option C"
+                android:text="@string/option_c"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
         </RadioGroup>
     </FrameLayout>
@@ -190,7 +191,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="30dp"
         android:background="@drawable/button_orange_rounded"
-        android:text="Check Answer"
+        android:text="@string/check_answer"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
         android:textColor="@color/colorWhite"
         android:textStyle="bold" />
@@ -203,7 +204,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="30dp"
         android:background="@drawable/button_orange_rounded"
-        android:text="Next"
+        android:text="@string/next"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
         android:textColor="@color/colorWhite"
         android:textStyle="bold"

@@ -74,6 +74,8 @@ public class Tab5Fragment extends Fragment implements View.OnClickListener {
         cvDoQuiz.setOnClickListener(this);
         btnLogout.setOnClickListener(this);
         cvDownloadQuality.setOnClickListener(this);
+        cvDownloadedContent.setOnClickListener(this);
+        cvAbout.setOnClickListener(this);
 
         authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -104,6 +106,16 @@ public class Tab5Fragment extends Fragment implements View.OnClickListener {
             case R.id.cvDownloadQuality:
                 Fragment downloadedQualityFragment = new DownloadedQualityFragment();
                 replaceFragment(downloadedQualityFragment);
+                break;
+
+            case R.id.cvDownloadedContent:
+                Fragment downloadedContentFragment = new DownloadedContentFragment();
+                replaceFragment(downloadedContentFragment);
+                break;
+
+            case R.id.cvAbout:
+                Fragment aboutFragment = new AboutFragment();
+                replaceFragment(aboutFragment);
                 break;
         }
     }

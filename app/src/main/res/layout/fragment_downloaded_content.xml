@@ -22,7 +22,7 @@
                 android:layout_height="wrap_content">
 
                 <Button
-                    android:id="@+id/btnBackArrow"
+                    android:id="@+id/btnBack"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_centerVertical="true"
@@ -46,7 +46,8 @@
         android:id="@+id/expandableList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="10dp">
+        android:layout_margin="10dp"
+        android:scrollbars="none">
 
     </ExpandableListView>
 </LinearLayout>

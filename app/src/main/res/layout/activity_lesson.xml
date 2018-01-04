@@ -15,11 +15,7 @@
             android:id="@+id/youtubePlayerFragment"
             android:name="com.google.android.youtube.player.YouTubePlayerFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true" />
+            android:layout_height="match_parent" />
 
     </FrameLayout>
 
@@ -29,13 +25,15 @@
 
         <TextView
             android:id="@+id/txtCourseName"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
-            android:text="Course Title"
+            android:layout_toStartOf="@id/btnDownloadAll"
+            android:ellipsize="end"
+            android:text="@string/course_title"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
             android:textColor="@color/colorBlack" />
 
@@ -43,8 +41,8 @@
             android:id="@+id/btnDownloadAll"
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="6dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="6dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/ic_download_orange"
             android:padding="2dp" />
@@ -55,9 +53,10 @@
             android:layout_height="23dp"
             android:layout_below="@+id/txtCourseName"
             android:layout_marginBottom="5dp"
-            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
             android:layout_marginTop="5dp"
-            android:src="@drawable/ic_play_arrow_blue_24dp" />
+            android:src="@drawable/ic_play_arrow_blue_24dp"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/txtLessonName"
@@ -65,10 +64,10 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/txtCourseName"
             android:layout_marginBottom="5dp"
-            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
             android:layout_marginTop="5dp"
-            android:layout_toRightOf="@+id/ivPlay"
-            android:text="Lesson Title"
+            android:layout_toEndOf="@+id/ivPlay"
+            android:text="@string/lesson_title"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
             android:textColor="@color/colorBlue" />
 
