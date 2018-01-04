@@ -61,15 +61,17 @@ public class QAFragment extends Fragment {
     @BindView(R.id.editContent)
     EditText editContent;
 
-    List<Question> questionList = new ArrayList<>();
-    QuestionAdapter adapter;
-    View view;
+    private List<Question> questionList = new ArrayList<>();
+    private List<String> lessonNumberList = new ArrayList<>();
+    private QuestionAdapter questionAdapter;
+    private ArrayAdapter<String> spinnerAdapter;
+    private View view;
 
-    String courseId;
-    String name;
-    int numberOfQuestionRow;
+    private String courseId;
+    private String name;
+    private int numberOfQuestionRow;
 
-    BroadcastReceiver receiver;
+    private BroadcastReceiver receiver;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -78,7 +80,6 @@ public class QAFragment extends Fragment {
 
         init();
         buttonHandler();
-        spinnerHandler();
         loadQuestions();
         listViewHandler();
 
@@ -129,6 +130,7 @@ public class QAFragment extends Fragment {
             public void onClick(View view) {
                 askForm.setVisibility(View.VISIBLE);
                 buttonAsk.setVisibility(View.GONE);
+                spinnerHandler();
             }
         });
 
@@ -157,8 +159,8 @@ public class QAFragment extends Fragment {
 
     private void init() {
         ButterKnife.bind(this, view);
-        adapter = new QuestionAdapter(view.getContext(), R.layout.question_row, questionList);
-        listView.setAdapter(adapter);
+        questionAdapter = new QuestionAdapter(view.getContext(), R.layout.question_row, questionList);
+        listView.setAdapter(questionAdapter);
 
         SharedPreferences prefs = view.getContext().getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE);
         courseId = prefs.getString("course_id", "");
@@ -166,9 +168,10 @@ public class QAFragment extends Fragment {
     }
 
     private void spinnerHandler() {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(view.getContext(), android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.lessons_array));
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+        loadLessonNumbers();
+        spinnerAdapter = new ArrayAdapter<>(view.getContext(), android.R.layout.simple_spinner_item, lessonNumberList);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(spinnerAdapter);
     }
 
     private void createQuestion() {
@@ -192,8 +195,8 @@ public class QAFragment extends Fragment {
             params.put("title", title);
             params.put("content", content);
 
-            PerformNetworkRequest request = new PerformNetworkRequest(Constants.URL_ADD_QUESTION, params, Constants.CODE_POST_REQUEST);
-            request.execute();
+            LoadQuestions loadQuestions = new LoadQuestions(Constants.URL_ADD_QUESTION, params, Constants.CODE_POST_REQUEST);
+            loadQuestions.execute();
 
             askForm.setVisibility(View.GONE);
             buttonAsk.setVisibility(View.VISIBLE);
@@ -202,8 +205,8 @@ public class QAFragment extends Fragment {
     }
 
     private void loadQuestions() {
-        PerformNetworkRequest request = new PerformNetworkRequest(Constants.URL_GET_QUESTIONS, null, Constants.CODE_GET_REQUEST);
-        request.execute();
+        LoadQuestions loadQuestions = new LoadQuestions(Constants.URL_GET_QUESTIONS, null, Constants.CODE_GET_REQUEST);
+        loadQuestions.execute();
     }
 
     private void refreshQuestionList(JSONArray questions) throws JSONException {
@@ -223,7 +226,7 @@ public class QAFragment extends Fragment {
                 ));
             }
         }
-        adapter.notifyDataSetChanged();
+        questionAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -256,13 +259,31 @@ public class QAFragment extends Fragment {
         view.getContext().unregisterReceiver(receiver);
     }
 
-    private class PerformNetworkRequest extends AsyncTask<Void, Void, String> {
+    private void loadLessonNumbers() {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("course_id", courseId);
+
+        LoadLessonNumbers loadLessonNumbers = new LoadLessonNumbers(Constants.URL_GET_LESSON_NUMBERS_BY_COURSE_ID, params, Constants.CODE_POST_REQUEST);
+        loadLessonNumbers.execute();
+    }
+
+    private void refreshNumberList(JSONArray numbers) throws JSONException {
+        lessonNumberList.clear();
+        lessonNumberList.add("General Question");
+        for (int i = 0; i < numbers.length(); i++) {
+            JSONObject obj = numbers.getJSONObject(i);
+            lessonNumberList.add(obj.getString("lesson_number"));
+        }
+        spinnerAdapter.notifyDataSetChanged();
+    }
+
+    private class LoadQuestions extends AsyncTask<Void, Void, String> {
 
         String url;
         HashMap<String, String> params;
         int requestCode;
 
-        PerformNetworkRequest(String url, HashMap<String, String> params, int requestCode) {
+        LoadQuestions(String url, HashMap<String, String> params, int requestCode) {
             this.url = url;
             this.params = params;
             this.requestCode = requestCode;
@@ -283,6 +304,54 @@ public class QAFragment extends Fragment {
                         Toasty.success(view.getContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
 
                     refreshQuestionList(object.getJSONArray("questions"));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            RequestHandler requestHandler = new RequestHandler();
+
+            if (requestCode == Constants.CODE_POST_REQUEST)
+                return requestHandler.sendPostRequest(url, params);
+
+
+            if (requestCode == Constants.CODE_GET_REQUEST)
+                return requestHandler.sendGetRequest(url);
+
+            return null;
+        }
+    }
+
+    class LoadLessonNumbers extends AsyncTask<Void, Void, String> {
+
+        String url;
+        HashMap<String, String> params;
+        int requestCode;
+
+        LoadLessonNumbers(String url, HashMap<String, String> params, int requestCode) {
+            this.url = url;
+            this.params = params;
+            this.requestCode = requestCode;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            try {
+                JSONObject object = new JSONObject(s);
+                if (!object.getBoolean("error")) {
+                    if (!object.getString("message").equals(""))
+                        Toast.makeText(view.getContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
+
+                    refreshNumberList(object.getJSONArray("quizzes"));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

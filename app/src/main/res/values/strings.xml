@@ -3,20 +3,6 @@
 
     <string name="app_name">Learn English 2017</string>
 
-    <string-array name="lessons_array">
-        <item>General</item>
-        <item>Lesson 1</item>
-        <item>Lesson 2</item>
-        <item>Lesson 3</item>
-        <item>Lesson 4</item>
-        <item>Lesson 5</item>
-        <item>Lesson 6</item>
-        <item>Lesson 7</item>
-        <item>Lesson 8</item>
-        <item>Lesson 9</item>
-        <item>Lesson 10</item>
-    </string-array>
-
     <string name="summary">Summary</string>
     <string name="mine">Mine</string>
     <string name="featured">Featured</string>
@@ -69,5 +55,10 @@
     <string name="about_description_2">We will update the courses and lessons regularly. Thank you for using and enjoying our app.</string>
     <string name="about_description_3">Send feedback to support@learnenglish2017.tk</string>
     <string name="about_description_4">Visit app website at learnenglish2017.tk</string>
+    <string name="old_password">Old password: *</string>
+    <string name="new_password">New password: *</string>
+    <string name="confirm_password">Confirm password: *</string>
+    <string name="change_password">Change password</string>
+    <string name="btn_confirm">Confirm</string>
 
 </resources>

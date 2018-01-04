@@ -1,9 +1,5 @@
 package com.tdt.tu.learnenglish2017.activity;
 
-/**
- * Created by 1stks on 28-Dec-17.
- */
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -103,7 +99,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             SharedPreferences.Editor editor = getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).edit();
                             editor.putString("username", email.split("@")[0]);
                             editor.putString("email", email);
-                            editor.commit();
+                            editor.putString("password", password);
+                            editor.apply();
 
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);

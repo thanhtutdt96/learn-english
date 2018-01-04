@@ -44,6 +44,8 @@ public class Tab5Fragment extends Fragment implements View.OnClickListener {
     CardView cvDownloadedContent;
     @BindView(R.id.cvAbout)
     CardView cvAbout;
+    @BindView(R.id.cvChangePassword)
+    CardView cvChangePassword;
 
     private View view;
 
@@ -73,6 +75,7 @@ public class Tab5Fragment extends Fragment implements View.OnClickListener {
 
         cvDoQuiz.setOnClickListener(this);
         btnLogout.setOnClickListener(this);
+        cvChangePassword.setOnClickListener(this);
         cvDownloadQuality.setOnClickListener(this);
         cvDownloadedContent.setOnClickListener(this);
         cvAbout.setOnClickListener(this);
@@ -99,10 +102,12 @@ public class Tab5Fragment extends Fragment implements View.OnClickListener {
             case R.id.btnLogout:
                 logout();
                 break;
+
             case R.id.cvDoQuiz:
                 Intent intent = new Intent(view.getContext(), FirstQuizActivity.class);
                 startActivity(intent);
                 break;
+
             case R.id.cvDownloadQuality:
                 Fragment downloadedQualityFragment = new DownloadedQualityFragment();
                 replaceFragment(downloadedQualityFragment);
@@ -116,6 +121,11 @@ public class Tab5Fragment extends Fragment implements View.OnClickListener {
             case R.id.cvAbout:
                 Fragment aboutFragment = new AboutFragment();
                 replaceFragment(aboutFragment);
+                break;
+
+            case R.id.cvChangePassword:
+                Fragment changePasswordFragment = new ChangePasswordFragment();
+                replaceFragment(changePasswordFragment);
                 break;
         }
     }
@@ -137,6 +147,7 @@ public class Tab5Fragment extends Fragment implements View.OnClickListener {
     public void replaceFragment(Fragment fragment) {
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment5_container, fragment);
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         transaction.addToBackStack(null);
         transaction.commit();
     }
