@@ -136,8 +136,7 @@ public class Tab4Fragment extends Fragment {
     }
 
     private void loadUserFavorites() {
-        SharedPreferences prefs = view.getContext().getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE);
-        String email = prefs.getString("email", "");
+        String email = view.getContext().getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).getString("email", "");
 
         HashMap<String, String> params = new HashMap<>();
         params.put("email", email);
@@ -148,7 +147,6 @@ public class Tab4Fragment extends Fragment {
 
     private void refreshFavoriteList(JSONArray courses) throws JSONException {
         listFavorite.clear();
-
         for (int i = 0; i < courses.length(); i++) {
             JSONObject obj = courses.getJSONObject(i);
 
@@ -158,7 +156,8 @@ public class Tab4Fragment extends Fragment {
                     obj.getString("course_name"),
                     obj.getInt("price"),
                     obj.getString("description"),
-                    obj.getString("link")
+                    obj.getString("link"),
+                    Float.parseFloat(obj.getString("rating"))
             ));
         }
         adapter.notifyDataSetChanged();

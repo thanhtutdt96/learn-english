@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cardView"
     android:layout_width="100dp"
@@ -15,7 +16,8 @@
             android:id="@+id/thumbnail"
             android:layout_width="match_parent"
             android:layout_height="95dp"
-            android:background="?attr/selectableItemBackgroundBorderless" />
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="fitXY" />
 
         <TextView
             android:id="@+id/title"
@@ -30,11 +32,29 @@
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
             android:textColor="@android:color/black" />
 
+        <com.iarcuschin.simpleratingbar.SimpleRatingBar
+            android:id="@+id/ratingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/title"
+            android:layout_marginLeft="5dp"
+            android:paddingBottom="2dp"
+            android:paddingTop="3dp"
+            app:srb_borderColor="#FFA726"
+            app:srb_fillColor="@color/colorOrange"
+            app:srb_isIndicator="true"
+            app:srb_pressedBorderColor="#FF9800"
+            app:srb_pressedFillColor="#FFA726"
+            app:srb_starBorderWidth="3"
+            app:srb_starCornerRadius="8"
+            app:srb_starSize="15dp"
+            app:srb_starsSeparation="2dp" />
+
         <TextView
             android:id="@+id/price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/title"
+            android:layout_below="@id/ratingBar"
             android:layout_marginLeft="5dp"
             android:text="Price"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"

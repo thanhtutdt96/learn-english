@@ -104,7 +104,8 @@ public class CourseFragment extends Fragment {
                     obj.getString("course_name"),
                     obj.getInt("price"),
                     obj.getString("description"),
-                    obj.getString("link")
+                    obj.getString("link"),
+                    Float.parseFloat(obj.getString("rating"))
             ));
         }
 

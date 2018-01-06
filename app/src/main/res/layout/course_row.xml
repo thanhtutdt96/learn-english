@@ -1,41 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/course_row"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/course_icon"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        android:padding="5dp" />
+        android:id="@+id/icon"
+        android:layout_width="85dp"
+        android:layout_height="80dp"
+        android:padding="5dp"
+        android:scaleType="fitXY"
+        tools:ignore="ContentDescription" />
 
     <LinearLayout
-        android:id="@+id/center_course_row"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/course_icon"
+        android:layout_toEndOf="@+id/icon"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/course_title"
+            android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="5dp"
             android:padding="2dp"
-            android:text="Title"
+            android:text="@string/course_title"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
             android:textColor="@android:color/black" />
 
-        <TextView
-            android:id="@+id/course_price"
+        <com.iarcuschin.simpleratingbar.SimpleRatingBar
+            android:id="@+id/ratingBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:padding="2dp"
-            android:text="Price"
+            app:srb_borderColor="#FFA726"
+            app:srb_fillColor="@color/colorOrange"
+            app:srb_isIndicator="true"
+            app:srb_pressedBorderColor="#FF9800"
+            app:srb_pressedFillColor="#FFA726"
+            app:srb_starCornerRadius="8"
+            app:srb_starSize="20dp"
+            app:srb_starsSeparation="3dp" />
+
+        <TextView
+            android:id="@+id/price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:padding="2dp"
+            android:text="@string/price"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
             android:textColor="@color/colorOrange" />
 

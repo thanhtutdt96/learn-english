@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.iarcuschin.simpleratingbar.SimpleRatingBar;
 import com.squareup.picasso.Picasso;
 import com.tdt.tu.learnenglish2017.R;
 import com.tdt.tu.learnenglish2017.item.Course;
@@ -27,12 +28,14 @@ import butterknife.ButterKnife;
  */
 
 public class CourseAdapter extends ArrayAdapter<Course> {
-    @BindView(R.id.course_icon)
+    @BindView(R.id.icon)
     ImageView icon;
-    @BindView(R.id.course_title)
+    @BindView(R.id.title)
     TextView title;
-    @BindView(R.id.course_price)
+    @BindView(R.id.price)
     TextView price;
+    @BindView(R.id.ratingBar)
+    SimpleRatingBar ratingBar;
     private Context context;
     private int resId;
     private List<Course> list;
@@ -64,6 +67,7 @@ public class CourseAdapter extends ArrayAdapter<Course> {
             price.setText("Free");
         else
             price.setText(priceUnit);
+        ratingBar.setRating(course.getRating());
 
         return convertView;
     }

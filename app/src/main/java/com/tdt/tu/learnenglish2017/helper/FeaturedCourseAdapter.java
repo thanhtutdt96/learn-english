@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.iarcuschin.simpleratingbar.SimpleRatingBar;
 import com.squareup.picasso.Picasso;
 import com.tdt.tu.learnenglish2017.R;
 import com.tdt.tu.learnenglish2017.item.Course;
@@ -50,6 +51,7 @@ public class FeaturedCourseAdapter extends RecyclerView.Adapter<FeaturedCourseAd
             holder.price.setText("Free");
         else
             holder.price.setText(priceUnit);
+        holder.ratingBar.setRating(course.getRating());
     }
 
     @Override
@@ -65,6 +67,8 @@ public class FeaturedCourseAdapter extends RecyclerView.Adapter<FeaturedCourseAd
         TextView title;
         @BindView(R.id.price)
         TextView price;
+        @BindView(R.id.ratingBar)
+        SimpleRatingBar ratingBar;
 
         public ViewHolder(View itemView) {
             super(itemView);

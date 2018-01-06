@@ -4,7 +4,6 @@ package com.tdt.tu.learnenglish2017.activity;
  * Created by 1stks on 28-Dec-17.
  */
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -88,10 +87,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         progressBar.setVisibility(View.GONE);
 
                         if (!task.isSuccessful()) {
-                            Toasty.error(RegisterActivity.this, "Authentication failed." + task.getException(),
+                            Toasty.error(RegisterActivity.this, "Authentication failed. " + task.getException(),
                                     Toast.LENGTH_SHORT).show();
                         } else {
-                            startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                            Toasty.success(RegisterActivity.this, "Register success. Please log in." + task.getException(),
+                                    Toast.LENGTH_SHORT).show();
                             finish();
                         }
                     }

@@ -7,14 +7,16 @@ public class Course {
     private int price;
     private String description;
     private String link;
+    private float rating;
 
-    public Course(String image, String courseId, String courseName, int price, String description, String link) {
+    public Course(String image, String courseId, String courseName, int price, String description, String link, float rating) {
         this.image = image;
         this.courseId = courseId;
         this.courseName = courseName;
         this.price = price;
         this.description = description;
         this.link = link;
+        this.rating = rating;
     }
 
     public String getImage() {
@@ -63,5 +65,13 @@ public class Course {
 
     public void setLink(String link) {
         this.link = link;
+    }
+
+    public float getRating() {
+        return rating;
+    }
+
+    public void setRating(float rating) {
+        this.rating = rating;
     }
 }

@@ -71,6 +71,34 @@
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
             android:textColor="@color/colorBlue" />
 
+        <TextView
+            android:id="@+id/txtRate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtLessonName"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:text="Rate this Course"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead" />
+
+        <com.iarcuschin.simpleratingbar.SimpleRatingBar
+            android:id="@+id/ratingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtLessonName"
+            android:layout_marginBottom="5dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_toEndOf="@id/txtRate"
+            app:srb_borderColor="#FFA726"
+            app:srb_fillColor="@color/colorOrange"
+            app:srb_pressedBorderColor="#FF9800"
+            app:srb_pressedFillColor="#FFA726"
+            app:srb_starCornerRadius="8"
+            app:srb_starSize="20dp"
+            app:srb_starsSeparation="3dp"
+            app:srb_stepSize="0.5" />
     </RelativeLayout>
 
     <android.support.design.widget.TabLayout

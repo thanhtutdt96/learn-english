@@ -214,7 +214,8 @@ public class FirstQuizResultActivity extends AppCompatActivity implements View.O
                     obj.getString("course_name"),
                     obj.getInt("price"),
                     obj.getString("description"),
-                    obj.getString("link")
+                    obj.getString("link"),
+                    Float.parseFloat(obj.getString("rating"))
             ));
         }
         suggestionAdapter.notifyDataSetChanged();

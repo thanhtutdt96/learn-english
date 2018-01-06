@@ -129,6 +129,8 @@ public class CourseInfoActivity extends AppCompatActivity implements YouTubePlay
 
                 Intent intent = new Intent(CourseInfoActivity.this, LessonActivity.class);
                 intent.putExtra("course_name", name);
+                intent.putExtra("link", link);
+                intent.putExtra("course_id", courseId);
                 startActivity(intent);
 
             }
@@ -202,6 +204,7 @@ public class CourseInfoActivity extends AppCompatActivity implements YouTubePlay
         HashMap<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("course_id", courseId);
+        params.put("rating", String.valueOf(0.0));
 
         PerformNetworkRequest request = new PerformNetworkRequest(Constants.URL_ADD_USER_COURSE, params, Constants.CODE_POST_REQUEST);
         request.execute();

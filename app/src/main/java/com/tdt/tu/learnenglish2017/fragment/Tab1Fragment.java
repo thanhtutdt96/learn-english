@@ -136,7 +136,6 @@ public class Tab1Fragment extends Fragment {
 
     private void refreshFeaturedList(JSONArray courses) throws JSONException {
         featuredList.clear();
-
         for (int i = 0; i < courses.length(); i++) {
             JSONObject obj = courses.getJSONObject(i);
 
@@ -146,7 +145,8 @@ public class Tab1Fragment extends Fragment {
                     obj.getString("course_name"),
                     obj.getInt("price"),
                     obj.getString("description"),
-                    obj.getString("link")
+                    obj.getString("link"),
+                    Float.parseFloat(obj.getString("rating"))
             ));
         }
         featuredAdapter.notifyDataSetChanged();
@@ -164,7 +164,8 @@ public class Tab1Fragment extends Fragment {
                     obj.getString("course_name"),
                     obj.getInt("price"),
                     obj.getString("description"),
-                    obj.getString("link")
+                    obj.getString("link"),
+                    Float.parseFloat(obj.getString("rating"))
             ));
         }
         topAdapter.notifyDataSetChanged();

@@ -33,7 +33,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize|screenLayout" />
         <activity android:name=".activity.LessonQuizActivity" />
         <activity android:name=".activity.LessonQuizResultActivity" />
-        <activity android:name=".activity.FirstQuizActivity"></activity>
+        <activity android:name=".activity.FirstQuizActivity" />
         <activity android:name=".activity.FirstQuizResultActivity" />
     </application>
 

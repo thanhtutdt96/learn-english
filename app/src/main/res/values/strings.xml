@@ -60,5 +60,6 @@
     <string name="confirm_password">Confirm password: *</string>
     <string name="change_password">Change password</string>
     <string name="btn_confirm">Confirm</string>
+    <string name="price">Price</string>
 
 </resources>

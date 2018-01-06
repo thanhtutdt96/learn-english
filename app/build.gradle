@@ -42,7 +42,7 @@ dependencies {
     compile 'com.github.lzyzsd:circleprogress:1.2.1'
     compile 'bg.devlabs.fullscreenvideoview:library:0.0.5'
     compile 'com.github.arimorty:floatingsearchview:2.1.1'
-
+    compile 'com.iarcuschin:simpleratingbar:0.1.5'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 }

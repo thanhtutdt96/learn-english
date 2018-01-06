@@ -94,6 +94,7 @@ public class Tab3Fragment extends Fragment {
                 Intent intent = new Intent(view.getContext(), LessonActivity.class);
                 intent.putExtra("course_name", listUserCourse.get(i).getCourseName());
                 intent.putExtra("link", listUserCourse.get(i).getLink());
+                intent.putExtra("course_id", listUserCourse.get(i).getCourseId());
                 startActivity(intent);
             }
         });
@@ -106,14 +107,14 @@ public class Tab3Fragment extends Fragment {
         HashMap<String, String> params = new HashMap<>();
         params.put("email", email);
 
-        PerformNetworkRequest request = new PerformNetworkRequest(Constants.URL_GET_COURSES_BY_EMAIL, params, Constants.CODE_POST_REQUEST);
-        request.execute();
+        LoadUserCourses loadUserCourses = new LoadUserCourses(Constants.URL_GET_COURSES_BY_EMAIL, params, Constants.CODE_POST_REQUEST);
+        loadUserCourses.execute();
     }
 
-    private void refreshQuestionList(JSONArray questions) throws JSONException {
+    private void refreshCourseList(JSONArray courses) throws JSONException {
         listUserCourse.clear();
-        for (int i = 0; i < questions.length(); i++) {
-            JSONObject obj = questions.getJSONObject(i);
+        for (int i = 0; i < courses.length(); i++) {
+            JSONObject obj = courses.getJSONObject(i);
 
             listUserCourse.add(new Course(
                     obj.getString("icon"),
@@ -121,7 +122,8 @@ public class Tab3Fragment extends Fragment {
                     obj.getString("course_name"),
                     obj.getInt("price"),
                     obj.getString("description"),
-                    obj.getString("link")
+                    obj.getString("link"),
+                    Float.parseFloat(obj.getString("rating"))
             ));
         }
 
@@ -134,13 +136,13 @@ public class Tab3Fragment extends Fragment {
         listView.setAdapter(adapter);
     }
 
-    private class PerformNetworkRequest extends AsyncTask<Void, Void, String> {
+    private class LoadUserCourses extends AsyncTask<Void, Void, String> {
 
         String url;
         HashMap<String, String> params;
         int requestCode;
 
-        PerformNetworkRequest(String url, HashMap<String, String> params, int requestCode) {
+        LoadUserCourses(String url, HashMap<String, String> params, int requestCode) {
             this.url = url;
             this.params = params;
             this.requestCode = requestCode;
@@ -161,7 +163,7 @@ public class Tab3Fragment extends Fragment {
                     if (!object.getString("message").equals(""))
                         Toasty.info(view.getContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
 
-                    refreshQuestionList(object.getJSONArray("courses"));
+                    refreshCourseList(object.getJSONArray("courses"));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
