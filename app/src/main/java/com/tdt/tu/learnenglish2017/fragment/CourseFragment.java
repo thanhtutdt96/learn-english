@@ -4,12 +4,15 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,8 +40,8 @@ import es.dmoral.toasty.Toasty;
 
 public class CourseFragment extends Fragment {
 
-    @BindView(R.id.listCourse)
-    ListView listView;
+    @BindView(R.id.recyclerCourse)
+    RecyclerView recyclerCourse;
     @BindView(R.id.backArrow)
     ImageView backArrow;
     @BindView(R.id.txtCategory)
@@ -54,7 +57,6 @@ public class CourseFragment extends Fragment {
         init();
         buttonHandler();
         loadCourses();
-        listViewHandler();
         return view;
     }
 
@@ -67,18 +69,42 @@ public class CourseFragment extends Fragment {
         });
     }
 
-    private void listViewHandler() {
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent i = new Intent(view.getContext(), CourseInfoActivity.class);
-                i.putExtra("course_id", courseList.get(position).getCourseId());
-                i.putExtra("course_name", courseList.get(position).getCourseName());
-                i.putExtra("price", courseList.get(position).getPrice());
-                i.putExtra("description", courseList.get(position).getDescription());
-                i.putExtra("link", courseList.get(position).getLink());
+    private void recyclerViewHandler() {
+        recyclerCourse.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+            GestureDetector gestureDetector = new GestureDetector(view.getContext(), new GestureDetector.SimpleOnGestureListener() {
+                @Override
+                public boolean onSingleTapUp(MotionEvent motionEvent) {
+                    return true;
+                }
+            });
 
-                startActivity(i);
+            @Override
+            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+                View childView = recyclerCourse.findChildViewUnder(e.getX(), e.getY());
+                int recyclerViewItemPosition;
+                if (childView != null && gestureDetector.onTouchEvent(e)) {
+                    recyclerViewItemPosition = recyclerCourse.getChildAdapterPosition(childView);
+
+                    Intent i = new Intent(view.getContext(), CourseInfoActivity.class);
+                    i.putExtra("course_id", courseList.get(recyclerViewItemPosition).getCourseId());
+                    i.putExtra("course_name", courseList.get(recyclerViewItemPosition).getCourseName());
+                    i.putExtra("price", courseList.get(recyclerViewItemPosition).getPrice());
+                    i.putExtra("description", courseList.get(recyclerViewItemPosition).getDescription());
+                    i.putExtra("link", courseList.get(recyclerViewItemPosition).getLink());
+
+                    startActivity(i);
+                }
+                return false;
+            }
+
+            @Override
+            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
             }
         });
     }
@@ -88,15 +114,15 @@ public class CourseFragment extends Fragment {
         HashMap<String, String> params = new HashMap<>();
         params.put("category_id", categoryId);
 
-        PerformNetworkRequest request = new PerformNetworkRequest(Constants.URL_GET_COURSES_BY_CATEGORY_ID, params, Constants.CODE_POST_REQUEST);
-        request.execute();
+        LoadCourses loadCourses = new LoadCourses(Constants.URL_GET_COURSES_BY_CATEGORY_ID, params, Constants.CODE_POST_REQUEST);
+        loadCourses.execute();
     }
 
-    private void refreshQuestionList(JSONArray questions) throws JSONException {
+    private void refreshCourseList(JSONArray courses) throws JSONException {
         courseList.clear();
 
-        for (int i = 0; i < questions.length(); i++) {
-            JSONObject obj = questions.getJSONObject(i);
+        for (int i = 0; i < courses.length(); i++) {
+            JSONObject obj = courses.getJSONObject(i);
 
             courseList.add(new Course(
                     obj.getString("icon"),
@@ -116,25 +142,25 @@ public class CourseFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         txtCategory.setText(getArguments().getString("category_name", ""));
-        adapter = new CourseAdapter(view.getContext(), R.layout.course_row, courseList);
-        listView.setAdapter(adapter);
+
+        adapter = new CourseAdapter(view.getContext(), courseList);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
+        recyclerCourse.setLayoutManager(linearLayoutManager);
+        recyclerCourse.setHasFixedSize(true);
+        recyclerCourse.setItemAnimator(new DefaultItemAnimator());
+        recyclerCourse.setAdapter(adapter);
     }
 
-    private class PerformNetworkRequest extends AsyncTask<Void, Void, String> {
+    private class LoadCourses extends AsyncTask<Void, Void, String> {
 
         String url;
         HashMap<String, String> params;
         int requestCode;
 
-        PerformNetworkRequest(String url, HashMap<String, String> params, int requestCode) {
+        LoadCourses(String url, HashMap<String, String> params, int requestCode) {
             this.url = url;
             this.params = params;
             this.requestCode = requestCode;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
         }
 
         @Override
@@ -146,11 +172,12 @@ public class CourseFragment extends Fragment {
                     if (!object.getString("message").equals(""))
                         Toasty.info(view.getContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
 
-                    refreshQuestionList(object.getJSONArray("courses"));
+                    refreshCourseList(object.getJSONArray("courses"));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            recyclerViewHandler();
         }
 
         @Override

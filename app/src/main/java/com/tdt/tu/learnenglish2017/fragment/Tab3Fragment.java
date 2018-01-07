@@ -9,19 +9,22 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.tdt.tu.learnenglish2017.R;
 import com.tdt.tu.learnenglish2017.activity.LessonActivity;
 import com.tdt.tu.learnenglish2017.helper.Constants;
-import com.tdt.tu.learnenglish2017.helper.CourseAdapter;
 import com.tdt.tu.learnenglish2017.helper.RequestHandler;
-import com.tdt.tu.learnenglish2017.item.Course;
+import com.tdt.tu.learnenglish2017.helper.UserCourseAdapter;
+import com.tdt.tu.learnenglish2017.item.UserCourse;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,11 +41,11 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class Tab3Fragment extends Fragment {
 
-    @BindView(R.id.listUserCourse)
-    ListView listView;
+    @BindView(R.id.recyclerUserCourse)
+    RecyclerView recyclerUserCourse;
     private View view;
-    private ArrayList<Course> listUserCourse = new ArrayList<>();
-    private CourseAdapter adapter;
+    private ArrayList<UserCourse> userCourseList = new ArrayList<>();
+    private UserCourseAdapter adapter;
 
     private BroadcastReceiver receiver;
 
@@ -54,7 +57,6 @@ public class Tab3Fragment extends Fragment {
 
         init();
         loadUserCourses();
-        listViewHandler();
         return view;
     }
 
@@ -66,7 +68,7 @@ public class Tab3Fragment extends Fragment {
             }
         };
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("refresh_qa_list");
+        intentFilter.addAction("refresh_user_courses");
         view.getContext().registerReceiver(receiver, intentFilter);
     }
 
@@ -82,20 +84,44 @@ public class Tab3Fragment extends Fragment {
         view.getContext().unregisterReceiver(receiver);
     }
 
-    private void listViewHandler() {
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                SharedPreferences.Editor editor = view.getContext().getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).edit();
-                editor.putString("course_id", listUserCourse.get(i).getCourseId());
-                editor.putString("description", listUserCourse.get(i).getDescription());
-                editor.commit();
+    private void recyclerViewHandler() {
+        recyclerUserCourse.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+            GestureDetector gestureDetector = new GestureDetector(view.getContext(), new GestureDetector.SimpleOnGestureListener() {
+                @Override
+                public boolean onSingleTapUp(MotionEvent motionEvent) {
+                    return true;
+                }
+            });
 
-                Intent intent = new Intent(view.getContext(), LessonActivity.class);
-                intent.putExtra("course_name", listUserCourse.get(i).getCourseName());
-                intent.putExtra("link", listUserCourse.get(i).getLink());
-                intent.putExtra("course_id", listUserCourse.get(i).getCourseId());
-                startActivity(intent);
+            @Override
+            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+                View childView = recyclerUserCourse.findChildViewUnder(e.getX(), e.getY());
+                int recyclerViewItemPosition;
+                if (childView != null && gestureDetector.onTouchEvent(e)) {
+                    recyclerViewItemPosition = recyclerUserCourse.getChildAdapterPosition(childView);
+
+                    SharedPreferences.Editor editor = view.getContext().getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).edit();
+                    editor.putString("course_id", userCourseList.get(recyclerViewItemPosition).getCourseId());
+                    editor.putString("description", userCourseList.get(recyclerViewItemPosition).getDescription());
+                    editor.commit();
+
+                    Intent intent = new Intent(view.getContext(), LessonActivity.class);
+                    intent.putExtra("course_name", userCourseList.get(recyclerViewItemPosition).getCourseName());
+                    intent.putExtra("link", userCourseList.get(recyclerViewItemPosition).getLink());
+                    intent.putExtra("course_id", userCourseList.get(recyclerViewItemPosition).getCourseId());
+                    startActivity(intent);
+                }
+                return false;
+            }
+
+            @Override
+            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
             }
         });
     }
@@ -112,18 +138,18 @@ public class Tab3Fragment extends Fragment {
     }
 
     private void refreshCourseList(JSONArray courses) throws JSONException {
-        listUserCourse.clear();
+        userCourseList.clear();
         for (int i = 0; i < courses.length(); i++) {
             JSONObject obj = courses.getJSONObject(i);
 
-            listUserCourse.add(new Course(
+            userCourseList.add(new UserCourse(
                     obj.getString("icon"),
                     obj.getString("course_id"),
                     obj.getString("course_name"),
-                    obj.getInt("price"),
                     obj.getString("description"),
                     obj.getString("link"),
-                    Float.parseFloat(obj.getString("rating"))
+                    Float.parseFloat(obj.getString("rating")),
+                    obj.getInt("progress")
             ));
         }
 
@@ -132,8 +158,13 @@ public class Tab3Fragment extends Fragment {
 
     private void init() {
         ButterKnife.bind(this, view);
-        adapter = new CourseAdapter(view.getContext(), R.layout.course_row, listUserCourse);
-        listView.setAdapter(adapter);
+
+        adapter = new UserCourseAdapter(view.getContext(), userCourseList);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
+        recyclerUserCourse.setLayoutManager(linearLayoutManager);
+        recyclerUserCourse.setHasFixedSize(true);
+        recyclerUserCourse.setItemAnimator(new DefaultItemAnimator());
+        recyclerUserCourse.setAdapter(adapter);
     }
 
     private class LoadUserCourses extends AsyncTask<Void, Void, String> {
@@ -168,6 +199,7 @@ public class Tab3Fragment extends Fragment {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            recyclerViewHandler();
         }
 
         @Override

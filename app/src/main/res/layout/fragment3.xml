@@ -5,10 +5,10 @@
     android:background="?android:windowBackground"
     android:orientation="vertical">
 
-    <ListView
-        android:id="@+id/listUserCourse"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerUserCourse"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="10dp" />
+        android:layout_marginTop="10dp" />
 
 </LinearLayout>

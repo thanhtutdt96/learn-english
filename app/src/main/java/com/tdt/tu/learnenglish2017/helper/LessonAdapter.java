@@ -2,6 +2,7 @@ package com.tdt.tu.learnenglish2017.helper;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -140,6 +141,9 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
 
                 lessonTitle.setText(holder.title.getText().toString());
 
+                Intent intent = new Intent();
+                intent.setAction("refresh_user_courses");
+                context.sendBroadcast(intent);
             }
         });
     }
@@ -265,10 +269,14 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
     }
 
     private void saveWatchedLesson(String lessonId) {
-        String email = context.getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).getString("email", "");
+        SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE);
+        String email = sharedPreferences.getString("email", "");
+        String courseId = sharedPreferences.getString("course_id", "");
+
         HashMap<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("lesson_id", lessonId);
+        params.put("course_id", courseId);
 
         SaveWatchedLesson saveWatchedLesson = new SaveWatchedLesson(Constants.URL_SAVE_WATCHED_LESSON, params, Constants.CODE_POST_REQUEST);
         saveWatchedLesson.execute();

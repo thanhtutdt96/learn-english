@@ -8,8 +8,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -52,8 +57,8 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class Tab2Fragment extends Fragment {
     public static List<CourseSuggestion> suggestionList = new ArrayList<>();
-    @BindView(R.id.listSearchResult)
-    ListView listViewSearchResult;
+    @BindView(R.id.recyclerSearchResult)
+    RecyclerView recyclerSearchResult;
     @BindView(R.id.listTopSearch)
     ListView listViewTopSearch;
     @BindView(R.id.searchBar)
@@ -65,7 +70,7 @@ public class Tab2Fragment extends Fragment {
     private List<String> listCourseId = new ArrayList<>();
     private List<String> listTopSearch = new ArrayList<>();
     private ArrayAdapter searchAdapter;
-    private CourseAdapter adapter;
+    private CourseAdapter courseAdapter;
 
     private ArrayList<CourseSuggestion> historyList = new ArrayList<>();
     private ArrayList<String> duplicateSuggestions = new ArrayList<>();
@@ -84,8 +89,12 @@ public class Tab2Fragment extends Fragment {
 
     private void init() {
         ButterKnife.bind(this, view);
-        adapter = new CourseAdapter(view.getContext(), R.layout.course_row, courseList);
-        listViewSearchResult.setAdapter(adapter);
+        courseAdapter = new CourseAdapter(view.getContext(), courseList);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
+        recyclerSearchResult.setLayoutManager(linearLayoutManager);
+        recyclerSearchResult.setHasFixedSize(true);
+        recyclerSearchResult.setItemAnimator(new DefaultItemAnimator());
+        recyclerSearchResult.setAdapter(courseAdapter);
 
         searchAdapter = new ArrayAdapter<>(view.getContext(), R.layout.top_searches_row, listTopSearch);
         listTopSearch.clear();
@@ -113,6 +122,7 @@ public class Tab2Fragment extends Fragment {
                 inputMethodManager.hideSoftInputFromWindow(searchBar.getWindowToken(), 0);
             }
         });
+
     }
 
     private void setupSearchBar() {
@@ -171,7 +181,7 @@ public class Tab2Fragment extends Fragment {
                 if (item.getItemId() == R.id.action_home) {
                     listViewTopSearch.setVisibility(View.VISIBLE);
                     txtTopSearches.setVisibility(View.VISIBLE);
-                    listViewSearchResult.setVisibility(View.GONE);
+                    recyclerSearchResult.setVisibility(View.GONE);
                     searchBar.clearQuery();
                     searchBar.clearSuggestions();
                 }
@@ -200,7 +210,7 @@ public class Tab2Fragment extends Fragment {
     private void searchHandler(String query) {
         listViewTopSearch.setVisibility(View.GONE);
         txtTopSearches.setVisibility(View.GONE);
-        listViewSearchResult.setVisibility(View.VISIBLE);
+        recyclerSearchResult.setVisibility(View.VISIBLE);
         if (query.equalsIgnoreCase("Free")) {
             loadSearchResults("" + 0);
         } else
@@ -208,15 +218,39 @@ public class Tab2Fragment extends Fragment {
     }
 
     private void listViewHandler() {
-        listViewSearchResult.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String email = view.getContext().getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).getString("email", "");
-                HashMap<String, String> params = new HashMap<>();
-                params.put("email", email);
+        recyclerSearchResult.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+            GestureDetector gestureDetector = new GestureDetector(view.getContext(), new GestureDetector.SimpleOnGestureListener() {
+                @Override
+                public boolean onSingleTapUp(MotionEvent motionEvent) {
+                    return true;
+                }
+            });
 
-                LoadUserCourseIds loadUserCourseIds = new LoadUserCourseIds(Constants.URL_GET_USER_COURSE_IDS_BY_EMAIL, params, Constants.CODE_POST_REQUEST, i);
-                loadUserCourseIds.execute();
+            @Override
+            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+                View childView = recyclerSearchResult.findChildViewUnder(e.getX(), e.getY());
+                int recyclerViewItemPosition;
+                if (childView != null && gestureDetector.onTouchEvent(e)) {
+                    recyclerViewItemPosition = recyclerSearchResult.getChildAdapterPosition(childView);
+
+                    String email = view.getContext().getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).getString("email", "");
+                    HashMap<String, String> params = new HashMap<>();
+                    params.put("email", email);
+
+                    LoadUserCourseIds loadUserCourseIds = new LoadUserCourseIds(Constants.URL_GET_USER_COURSE_IDS_BY_EMAIL, params, Constants.CODE_POST_REQUEST, recyclerViewItemPosition);
+                    loadUserCourseIds.execute();
+                }
+                return false;
+            }
+
+            @Override
+            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
             }
         });
     }
@@ -245,7 +279,7 @@ public class Tab2Fragment extends Fragment {
             ));
         }
 
-        adapter.notifyDataSetChanged();
+        courseAdapter.notifyDataSetChanged();
     }
 
     private void refreshCourseIdList(JSONArray questions) throws JSONException {

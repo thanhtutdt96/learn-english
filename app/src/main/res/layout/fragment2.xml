@@ -30,12 +30,12 @@
 
     </com.arlib.floatingsearchview.FloatingSearchView>
 
-    <ListView
-        android:id="@+id/listSearchResult"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerSearchResult"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/topBar"
-        android:layout_margin="10dp"
+        android:layout_marginTop="10dp"
         android:visibility="gone" />
 
     <TextView

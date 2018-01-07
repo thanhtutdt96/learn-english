@@ -85,7 +85,7 @@ public class CourseInfoActivity extends AppCompatActivity implements YouTubePlay
             @Override
             public void onClick(View view) {
                 addCourseToUserCourse();
-                buyHandler();
+                enrollHandler();
             }
         });
 
@@ -111,7 +111,7 @@ public class CourseInfoActivity extends AppCompatActivity implements YouTubePlay
         });
     }
 
-    private void buyHandler() {
+    private void enrollHandler() {
         btnBuy.setText("Enrolled");
         btnBuy.setEnabled(false);
         btnBuy.setBackgroundColor(getResources().getColor(R.color.colorGrey));
@@ -132,7 +132,7 @@ public class CourseInfoActivity extends AppCompatActivity implements YouTubePlay
                 intent.putExtra("link", link);
                 intent.putExtra("course_id", courseId);
                 startActivity(intent);
-
+                finish();
             }
         });
         builder.setPositiveButton("No", new DialogInterface.OnClickListener() {

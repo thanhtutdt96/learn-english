@@ -9,11 +9,14 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.tdt.tu.learnenglish2017.R;
@@ -43,10 +46,10 @@ import static android.content.Context.MODE_PRIVATE;
  */
 
 public class Tab4Fragment extends Fragment {
-    @BindView(R.id.listFavorite)
-    ListView listView;
-    private List<Course> listFavorite = new ArrayList<>();
-    private List<String> listCourseId = new ArrayList<>();
+    @BindView(R.id.recyclerFavorite)
+    RecyclerView recyclerFavorite;
+    private List<Course> favoriteList = new ArrayList<>();
+    private List<String> courseIdList = new ArrayList<>();
 
     private CourseAdapter adapter;
     private View view;
@@ -56,13 +59,9 @@ public class Tab4Fragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-
         view = inflater.inflate(R.layout.fragment4, container, false);
-
         init();
         loadUserFavorites();
-        listViewHandler();
-
         return view;
     }
 
@@ -90,16 +89,40 @@ public class Tab4Fragment extends Fragment {
         view.getContext().unregisterReceiver(receiver);
     }
 
-    private void listViewHandler() {
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String email = view.getContext().getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).getString("email", "");
-                HashMap<String, String> params = new HashMap<>();
-                params.put("email", email);
+    private void recyclerViewHandler() {
+        recyclerFavorite.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+            GestureDetector gestureDetector = new GestureDetector(view.getContext(), new GestureDetector.SimpleOnGestureListener() {
+                @Override
+                public boolean onSingleTapUp(MotionEvent motionEvent) {
+                    return true;
+                }
+            });
 
-                LoadUserCourseIds loadUserCourseIds = new LoadUserCourseIds(Constants.URL_GET_USER_COURSE_IDS_BY_EMAIL, params, Constants.CODE_POST_REQUEST, i);
-                loadUserCourseIds.execute();
+            @Override
+            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+                View childView = recyclerFavorite.findChildViewUnder(e.getX(), e.getY());
+                int recyclerViewItemPosition;
+                if (childView != null && gestureDetector.onTouchEvent(e)) {
+                    recyclerViewItemPosition = recyclerFavorite.getChildAdapterPosition(childView);
+
+                    String email = view.getContext().getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).getString("email", "");
+                    HashMap<String, String> params = new HashMap<>();
+                    params.put("email", email);
+
+                    LoadUserCourseIds loadUserCourseIds = new LoadUserCourseIds(Constants.URL_GET_USER_COURSE_IDS_BY_EMAIL, params, Constants.CODE_POST_REQUEST, recyclerViewItemPosition);
+                    loadUserCourseIds.execute();
+                }
+                return false;
+            }
+
+            @Override
+            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
             }
         });
     }
@@ -107,28 +130,28 @@ public class Tab4Fragment extends Fragment {
     private void switchActivity(int position) {
         if (checkEnrolledCourse(position)) {
             SharedPreferences.Editor editor = view.getContext().getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).edit();
-            editor.putString("course_id", listFavorite.get(position).getCourseId());
-            editor.putString("description", listFavorite.get(position).getDescription());
+            editor.putString("course_id", favoriteList.get(position).getCourseId());
+            editor.putString("description", favoriteList.get(position).getDescription());
             editor.commit();
 
             Intent intent = new Intent(view.getContext(), LessonActivity.class);
-            intent.putExtra("course_name", listFavorite.get(position).getCourseName());
+            intent.putExtra("course_name", favoriteList.get(position).getCourseName());
             startActivity(intent);
         } else {
             Intent intent = new Intent(view.getContext(), CourseInfoActivity.class);
-            intent.putExtra("course_id", listFavorite.get(position).getCourseId());
-            intent.putExtra("course_name", listFavorite.get(position).getCourseName());
-            intent.putExtra("price", listFavorite.get(position).getPrice());
-            intent.putExtra("description", listFavorite.get(position).getDescription());
-            intent.putExtra("link", listFavorite.get(position).getLink());
+            intent.putExtra("course_id", favoriteList.get(position).getCourseId());
+            intent.putExtra("course_name", favoriteList.get(position).getCourseName());
+            intent.putExtra("price", favoriteList.get(position).getPrice());
+            intent.putExtra("description", favoriteList.get(position).getDescription());
+            intent.putExtra("link", favoriteList.get(position).getLink());
 
             startActivity(intent);
         }
     }
 
     private boolean checkEnrolledCourse(int position) {
-        for (String courseId : listCourseId) {
-            if (courseId.equals(listFavorite.get(position).getCourseId())) {
+        for (String courseId : courseIdList) {
+            if (courseId.equals(favoriteList.get(position).getCourseId())) {
                 return true;
             }
         }
@@ -146,11 +169,11 @@ public class Tab4Fragment extends Fragment {
     }
 
     private void refreshFavoriteList(JSONArray courses) throws JSONException {
-        listFavorite.clear();
+        favoriteList.clear();
         for (int i = 0; i < courses.length(); i++) {
             JSONObject obj = courses.getJSONObject(i);
 
-            listFavorite.add(new Course(
+            favoriteList.add(new Course(
                     obj.getString("icon"),
                     obj.getString("course_id"),
                     obj.getString("course_name"),
@@ -165,15 +188,19 @@ public class Tab4Fragment extends Fragment {
 
     private void init() {
         ButterKnife.bind(this, view);
-        adapter = new CourseAdapter(view.getContext(), R.layout.course_row, listFavorite);
-        listView.setAdapter(adapter);
+        adapter = new CourseAdapter(view.getContext(), favoriteList);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
+        recyclerFavorite.setLayoutManager(linearLayoutManager);
+        recyclerFavorite.setHasFixedSize(true);
+        recyclerFavorite.setItemAnimator(new DefaultItemAnimator());
+        recyclerFavorite.setAdapter(adapter);
     }
 
-    private void refreshCourseIdList(JSONArray questions) throws JSONException {
-        listCourseId.clear();
-        for (int i = 0; i < questions.length(); i++) {
-            JSONObject obj = questions.getJSONObject(i);
-            listCourseId.add(obj.getString("course_id"));
+    private void refreshCourseIdList(JSONArray courses) throws JSONException {
+        courseIdList.clear();
+        for (int i = 0; i < courses.length(); i++) {
+            JSONObject obj = courses.getJSONObject(i);
+            courseIdList.add(obj.getString("course_id"));
         }
     }
 
@@ -190,12 +217,6 @@ public class Tab4Fragment extends Fragment {
         }
 
         @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-        }
-
-        @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             try {
@@ -209,7 +230,7 @@ public class Tab4Fragment extends Fragment {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
+            recyclerViewHandler();
         }
 
         @Override

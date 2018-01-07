@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="1dp"
+    android:layout_marginTop="1dp"
+    app:cardCornerRadius="2dp"
+    tools:ignore="ContentDescription">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="85dp"
+            android:layout_height="81dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="5dp"
+            android:padding="5dp"
+            android:scaleType="fitXY" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"
+            android:layout_toEndOf="@+id/icon"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="3dp"
+                android:padding="2dp"
+                android:text="@string/course_title"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                android:textColor="@android:color/black" />
+
+            <com.iarcuschin.simpleratingbar.SimpleRatingBar
+                android:id="@+id/ratingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:padding="2dp"
+                app:srb_borderColor="#FFA726"
+                app:srb_fillColor="@color/colorOrange"
+                app:srb_isIndicator="true"
+                app:srb_pressedBorderColor="#FF9800"
+                app:srb_pressedFillColor="#FFA726"
+                app:srb_starCornerRadius="8"
+                app:srb_starSize="20dp"
+                app:srb_starsSeparation="3dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:paddingBottom="2dp"
+                android:paddingStart="2dp"
+                android:paddingTop="3dp">
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="8dp"
+                    android:layout_toLeftOf="@id/ivComplete" />
+
+                <ImageView
+                    android:id="@+id/ivComplete"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:paddingBottom="2dp"
+                    android:src="@drawable/ic_check_orange_24dp"
+                    android:visibility="invisible" />
+            </RelativeLayout>
+        </LinearLayout>
+
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

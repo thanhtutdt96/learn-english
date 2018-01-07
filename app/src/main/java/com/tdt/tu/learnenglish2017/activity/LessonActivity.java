@@ -244,5 +244,4 @@ public class LessonActivity extends AppCompatActivity implements YouTubePlayer.O
             return null;
         }
     }
-
 }
