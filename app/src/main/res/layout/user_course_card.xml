@@ -70,18 +70,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="8dp"
-                    android:layout_toLeftOf="@id/ivComplete" />
+                    android:layout_marginRight="20dp"
+                    android:max="100" />
 
-                <ImageView
-                    android:id="@+id/ivComplete"
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:paddingBottom="2dp"
-                    android:src="@drawable/ic_check_orange_24dp"
-                    android:visibility="invisible" />
             </RelativeLayout>
         </LinearLayout>
 

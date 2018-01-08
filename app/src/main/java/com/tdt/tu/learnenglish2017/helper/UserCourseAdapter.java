@@ -42,12 +42,7 @@ public class UserCourseAdapter extends RecyclerView.Adapter<UserCourseAdapter.Vi
         Picasso.with(context).load(course.getImage()).into(holder.icon);
         holder.title.setText(course.getCourseName());
         holder.ratingBar.setRating(course.getRating());
-
-        holder.progressBar.setMax(100);
         holder.progressBar.setProgress(course.getProgress());
-        if (holder.progressBar.isIndeterminate()) {
-            holder.ivComplete.setVisibility(View.VISIBLE);
-        }
     }
 
     @Override
@@ -65,8 +60,6 @@ public class UserCourseAdapter extends RecyclerView.Adapter<UserCourseAdapter.Vi
         SimpleRatingBar ratingBar;
         @BindView(R.id.progressBar)
         ProgressBar progressBar;
-        @BindView(R.id.ivComplete)
-        ImageView ivComplete;
 
         public ViewHolder(View itemView) {
             super(itemView);
