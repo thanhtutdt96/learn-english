@@ -51,20 +51,24 @@ public class Tab1Fragment extends Fragment {
     RecyclerView recyclerCategory;
     @BindView(R.id.recyclerFeatured)
     RecyclerView recyclerFeatured;
-    @BindView(R.id.recyclerTopCourse)
-    RecyclerView recyclerTopCourse;
+    @BindView(R.id.recyclerTopCommunicationCourse)
+    RecyclerView recyclerTopCommunicationCourse;
+    @BindView(R.id.recyclerTopProficiencyCourse)
+    RecyclerView recyclerTopProficiencyCourse;
     @BindView(R.id.progressLoading)
     ProgressBar progressLoading;
 
 
     private List<Category> categoryList = new ArrayList<>();
     private List<Course> featuredList = new ArrayList<>();
-    private List<Course> topList = new ArrayList<>();
+    private List<Course> topCommunicationList = new ArrayList<>();
+    private List<Course> topProficiencyList = new ArrayList<>();
     private List<String> listCourseId = new ArrayList<>();
 
     private CategoryAdapter categoryAdapter;
     private FeaturedCourseAdapter featuredAdapter;
-    private FeaturedCourseAdapter topAdapter;
+    private FeaturedCourseAdapter topCommunicationAdapter;
+    private FeaturedCourseAdapter topProficiencyAdapter;
     private View view;
 
     @Nullable
@@ -83,7 +87,8 @@ public class Tab1Fragment extends Fragment {
         ButterKnife.bind(this, view);
         categoryAdapter = new CategoryAdapter(view.getContext(), categoryList);
         featuredAdapter = new FeaturedCourseAdapter(view.getContext(), featuredList);
-        topAdapter = new FeaturedCourseAdapter(view.getContext(), topList);
+        topCommunicationAdapter = new FeaturedCourseAdapter(view.getContext(), topCommunicationList);
+        topProficiencyAdapter = new FeaturedCourseAdapter(view.getContext(), topProficiencyList);
 
         LinearLayoutManager linearLayoutManager1 = new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerFeatured.setLayoutManager(linearLayoutManager1);
@@ -92,13 +97,19 @@ public class Tab1Fragment extends Fragment {
         recyclerFeatured.setAdapter(featuredAdapter);
 
         LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false);
-        recyclerTopCourse.setLayoutManager(linearLayoutManager2);
-        recyclerTopCourse.setHasFixedSize(true);
-        recyclerTopCourse.setItemAnimator(new DefaultItemAnimator());
-        recyclerTopCourse.setAdapter(topAdapter);
+        recyclerTopCommunicationCourse.setLayoutManager(linearLayoutManager2);
+        recyclerTopCommunicationCourse.setHasFixedSize(true);
+        recyclerTopCommunicationCourse.setItemAnimator(new DefaultItemAnimator());
+        recyclerTopCommunicationCourse.setAdapter(topCommunicationAdapter);
 
         LinearLayoutManager linearLayoutManager3 = new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false);
-        recyclerCategory.setLayoutManager(linearLayoutManager3);
+        recyclerTopProficiencyCourse.setLayoutManager(linearLayoutManager3);
+        recyclerTopProficiencyCourse.setHasFixedSize(true);
+        recyclerTopProficiencyCourse.setItemAnimator(new DefaultItemAnimator());
+        recyclerTopProficiencyCourse.setAdapter(topProficiencyAdapter);
+
+        LinearLayoutManager linearLayoutManager4 = new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false);
+        recyclerCategory.setLayoutManager(linearLayoutManager4);
         recyclerCategory.setHasFixedSize(true);
         recyclerCategory.setItemAnimator(new DefaultItemAnimator());
         recyclerCategory.setAdapter(categoryAdapter);
@@ -109,13 +120,14 @@ public class Tab1Fragment extends Fragment {
         LoadFeaturedCourse loadFeaturedCourse = new LoadFeaturedCourse(Constants.URL_GET_FEATURED_COURSES, null, Constants.CODE_GET_REQUEST);
         loadFeaturedCourse.execute();
 
-        LoadTopCourse loadTopCourse = new LoadTopCourse(Constants.URL_GET_TOP_COURSES, null, Constants.CODE_GET_REQUEST);
-        loadTopCourse.execute();
+        LoadTopCommunicationCourse loadTopCommunicationCourse = new LoadTopCommunicationCourse(Constants.URL_GET_TOP_COMMUNICATION_COURSES, null, Constants.CODE_GET_REQUEST);
+        loadTopCommunicationCourse.execute();
+
+        LoadTopProficiencyCourse loadTopProficiencyCourse = new LoadTopProficiencyCourse(Constants.URL_GET_TOP_PROFICIENCY_COURSES, null, Constants.CODE_GET_REQUEST);
+        loadTopProficiencyCourse.execute();
 
         LoadCategory loadCategory = new LoadCategory(Constants.URL_GET_CATEGORIES, null, Constants.CODE_GET_REQUEST);
         loadCategory.execute();
-
-
     }
 
     private void refreshCategoryList(JSONArray categories) throws JSONException {
@@ -152,13 +164,13 @@ public class Tab1Fragment extends Fragment {
         featuredAdapter.notifyDataSetChanged();
     }
 
-    private void refreshTopList(JSONArray courses) throws JSONException {
-        topList.clear();
+    private void refreshTopCommunicationList(JSONArray courses) throws JSONException {
+        topCommunicationList.clear();
 
         for (int i = 0; i < courses.length(); i++) {
             JSONObject obj = courses.getJSONObject(i);
 
-            topList.add(new Course(
+            topCommunicationList.add(new Course(
                     obj.getString("icon"),
                     obj.getString("course_id"),
                     obj.getString("course_name"),
@@ -168,7 +180,26 @@ public class Tab1Fragment extends Fragment {
                     Float.parseFloat(obj.getString("rating"))
             ));
         }
-        topAdapter.notifyDataSetChanged();
+        topCommunicationAdapter.notifyDataSetChanged();
+    }
+
+    private void refreshTopProficiencyList(JSONArray courses) throws JSONException {
+        topProficiencyList.clear();
+
+        for (int i = 0; i < courses.length(); i++) {
+            JSONObject obj = courses.getJSONObject(i);
+
+            topProficiencyList.add(new Course(
+                    obj.getString("icon"),
+                    obj.getString("course_id"),
+                    obj.getString("course_name"),
+                    obj.getInt("price"),
+                    obj.getString("description"),
+                    obj.getString("link"),
+                    Float.parseFloat(obj.getString("rating"))
+            ));
+        }
+        topProficiencyAdapter.notifyDataSetChanged();
     }
 
     private void recyclerCategoryHandler() {
@@ -247,8 +278,8 @@ public class Tab1Fragment extends Fragment {
         });
     }
 
-    private void recyclerTopCourseHandler() {
-        recyclerTopCourse.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+    private void recyclerTopCommunicationHandler() {
+        recyclerTopCommunicationCourse.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
             GestureDetector gestureDetector = new GestureDetector(view.getContext(), new GestureDetector.SimpleOnGestureListener() {
                 @Override
                 public boolean onSingleTapUp(MotionEvent motionEvent) {
@@ -258,16 +289,54 @@ public class Tab1Fragment extends Fragment {
 
             @Override
             public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-                View childView = recyclerTopCourse.findChildViewUnder(e.getX(), e.getY());
+                View childView = recyclerTopCommunicationCourse.findChildViewUnder(e.getX(), e.getY());
                 int recyclerViewItemPosition;
                 if (childView != null && gestureDetector.onTouchEvent(e)) {
-                    recyclerViewItemPosition = recyclerTopCourse.getChildAdapterPosition(childView);
+                    recyclerViewItemPosition = recyclerTopCommunicationCourse.getChildAdapterPosition(childView);
 
                     String email = view.getContext().getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).getString("email", "");
                     HashMap<String, String> params = new HashMap<>();
                     params.put("email", email);
 
-                    LoadUserCourseIds loadUserCourseIds = new LoadUserCourseIds(Constants.URL_GET_USER_COURSE_IDS_BY_EMAIL, params, Constants.CODE_POST_REQUEST, topList, recyclerViewItemPosition);
+                    LoadUserCourseIds loadUserCourseIds = new LoadUserCourseIds(Constants.URL_GET_USER_COURSE_IDS_BY_EMAIL, params, Constants.CODE_POST_REQUEST, topCommunicationList, recyclerViewItemPosition);
+                    loadUserCourseIds.execute();
+                }
+                return false;
+            }
+
+            @Override
+            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+            }
+        });
+    }
+
+    private void recyclerTopProficiencyHandler() {
+        recyclerTopProficiencyCourse.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+            GestureDetector gestureDetector = new GestureDetector(view.getContext(), new GestureDetector.SimpleOnGestureListener() {
+                @Override
+                public boolean onSingleTapUp(MotionEvent motionEvent) {
+                    return true;
+                }
+            });
+
+            @Override
+            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+                View childView = recyclerTopProficiencyCourse.findChildViewUnder(e.getX(), e.getY());
+                int recyclerViewItemPosition;
+                if (childView != null && gestureDetector.onTouchEvent(e)) {
+                    recyclerViewItemPosition = recyclerTopProficiencyCourse.getChildAdapterPosition(childView);
+
+                    String email = view.getContext().getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).getString("email", "");
+                    HashMap<String, String> params = new HashMap<>();
+                    params.put("email", email);
+
+                    LoadUserCourseIds loadUserCourseIds = new LoadUserCourseIds(Constants.URL_GET_USER_COURSE_IDS_BY_EMAIL, params, Constants.CODE_POST_REQUEST, topProficiencyList, recyclerViewItemPosition);
                     loadUserCourseIds.execute();
                 }
                 return false;
@@ -341,11 +410,6 @@ public class Tab1Fragment extends Fragment {
             this.url = url;
             this.params = params;
             this.requestCode = requestCode;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
         }
 
         @Override
@@ -432,21 +496,16 @@ public class Tab1Fragment extends Fragment {
         }
     }
 
-    private class LoadTopCourse extends AsyncTask<Void, Void, String> {
+    private class LoadTopCommunicationCourse extends AsyncTask<Void, Void, String> {
 
         String url;
         HashMap<String, String> params;
         int requestCode;
 
-        LoadTopCourse(String url, HashMap<String, String> params, int requestCode) {
+        LoadTopCommunicationCourse(String url, HashMap<String, String> params, int requestCode) {
             this.url = url;
             this.params = params;
             this.requestCode = requestCode;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
         }
 
         @Override
@@ -458,12 +517,12 @@ public class Tab1Fragment extends Fragment {
                     if (!object.getString("message").equals(""))
                         Toasty.info(view.getContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
 
-                    refreshTopList(object.getJSONArray("courses"));
+                    refreshTopCommunicationList(object.getJSONArray("courses"));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            recyclerTopCourseHandler();
+            recyclerTopCommunicationHandler();
         }
 
         @Override
@@ -480,6 +539,51 @@ public class Tab1Fragment extends Fragment {
             return null;
         }
     }
+
+    private class LoadTopProficiencyCourse extends AsyncTask<Void, Void, String> {
+
+        String url;
+        HashMap<String, String> params;
+        int requestCode;
+
+        LoadTopProficiencyCourse(String url, HashMap<String, String> params, int requestCode) {
+            this.url = url;
+            this.params = params;
+            this.requestCode = requestCode;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            try {
+                JSONObject object = new JSONObject(s);
+                if (!object.getBoolean("error")) {
+                    if (!object.getString("message").equals(""))
+                        Toasty.info(view.getContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
+
+                    refreshTopProficiencyList(object.getJSONArray("courses"));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            recyclerTopProficiencyHandler();
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            RequestHandler requestHandler = new RequestHandler();
+
+            if (requestCode == Constants.CODE_POST_REQUEST)
+                return requestHandler.sendPostRequest(url, params);
+
+
+            if (requestCode == Constants.CODE_GET_REQUEST)
+                return requestHandler.sendGetRequest(url);
+
+            return null;
+        }
+    }
+
 
     public class LoadUserCourseIds extends AsyncTask<Void, Void, String> {
 

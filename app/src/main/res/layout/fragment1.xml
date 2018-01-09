@@ -33,21 +33,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/txtFeatured"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
                     android:scrollbars="none" />
-
 
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/sectionTopCourse"
+                android:id="@+id/sectionTopCommunicationCourse"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/sectionFeatured"
                 android:padding="10dp">
 
                 <TextView
-                    android:id="@+id/txtTopCourse"
+                    android:id="@+id/txtTopCommunicationCourse"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Top Course for &quot;English Communication&quot;"
@@ -56,11 +55,37 @@
                     tools:ignore="HardcodedText" />
 
                 <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recyclerTopCourse"
+                    android:id="@+id/recyclerTopCommunicationCourse"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/txtTopCourse"
-                    android:layout_marginTop="10dp"
+                    android:layout_below="@+id/txtTopCommunicationCourse"
+                    android:layout_marginTop="5dp"
+                    android:scrollbars="none" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/sectionTopProficiencyCourse"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/sectionTopCommunicationCourse"
+                android:padding="10dp">
+
+                <TextView
+                    android:id="@+id/txtTopProficiencyCourse"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Top Course for &quot;English Proficiency&quot;"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/colorBlack"
+                    tools:ignore="HardcodedText" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recyclerTopProficiencyCourse"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txtTopProficiencyCourse"
+                    android:layout_marginTop="5dp"
                     android:scrollbars="none" />
 
             </RelativeLayout>
@@ -68,7 +93,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/sectionTopCourse"
+                android:layout_below="@id/sectionTopProficiencyCourse"
                 android:padding="10dp">
 
                 <TextView
@@ -84,7 +109,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/txtCategory"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
                     android:scrollbars="none" />
 
 
