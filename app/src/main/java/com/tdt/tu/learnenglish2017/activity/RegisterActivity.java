@@ -80,6 +80,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     return;
                 }
 
+
                 progressBar.setVisibility(View.VISIBLE);
                 auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -90,7 +91,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                             Toasty.error(RegisterActivity.this, "Authentication failed. " + task.getException(),
                                     Toast.LENGTH_SHORT).show();
                         } else {
-                            Toasty.success(RegisterActivity.this, "Register success. Please log in." + task.getException(),
+                            Toasty.success(RegisterActivity.this, "Register success. Please log in.",
                                     Toast.LENGTH_SHORT).show();
                             finish();
                         }

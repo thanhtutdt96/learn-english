@@ -1,6 +1,7 @@
 package com.tdt.tu.learnenglish2017.fragment;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,12 +14,19 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.tdt.tu.learnenglish2017.R;
 import com.tdt.tu.learnenglish2017.activity.FirstQuizActivity;
 import com.tdt.tu.learnenglish2017.activity.LoginActivity;
 import com.tdt.tu.learnenglish2017.helper.Constants;
+import com.tdt.tu.learnenglish2017.helper.RequestHandler;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,6 +53,10 @@ public class Tab5Fragment extends Fragment implements View.OnClickListener {
     CardView cvAbout;
     @BindView(R.id.cvChangePassword)
     CardView cvChangePassword;
+    @BindView(R.id.circleProgress)
+    DonutProgress circleProgress;
+    @BindView(R.id.txtProgress)
+    TextView txtProgress;
 
     private View view;
 
@@ -59,6 +71,7 @@ public class Tab5Fragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment5, container, false);
         init();
+        getTotalProgress();
         return view;
     }
 
@@ -149,4 +162,54 @@ public class Tab5Fragment extends Fragment implements View.OnClickListener {
         transaction.addToBackStack(null);
         transaction.commit();
     }
+
+    private void getTotalProgress() {
+        HashMap<String, String> params = new HashMap();
+        params.put("email", email);
+
+        GetTotalProgress getTotalProgress = new GetTotalProgress(Constants.URL_GET_TOTAL_PROGRESS, params, Constants.CODE_POST_REQUEST);
+        getTotalProgress.execute();
+    }
+
+    public class GetTotalProgress extends AsyncTask<Void, Void, String> {
+
+        String url;
+        HashMap<String, String> params;
+        int requestCode;
+
+        GetTotalProgress(String url, HashMap<String, String> params, int requestCode) {
+            this.url = url;
+            this.params = params;
+            this.requestCode = requestCode;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            try {
+                JSONObject object = new JSONObject(s);
+                if (!object.getBoolean("error")) {
+                    int progress = object.getJSONArray("courses").getJSONObject(0).getInt("total_progress");
+                    circleProgress.setProgress(progress);
+                    txtProgress.setText(progress + "%");
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            RequestHandler requestHandler = new RequestHandler();
+
+            if (requestCode == Constants.CODE_POST_REQUEST)
+                return requestHandler.sendPostRequest(url, params);
+
+            if (requestCode == Constants.CODE_GET_REQUEST)
+                return requestHandler.sendGetRequest(url);
+
+            return null;
+        }
+    }
+
 }

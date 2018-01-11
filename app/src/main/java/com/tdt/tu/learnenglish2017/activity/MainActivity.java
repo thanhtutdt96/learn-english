@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -15,6 +16,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
@@ -27,12 +29,18 @@ import com.tdt.tu.learnenglish2017.fragment.Tab3Fragment;
 import com.tdt.tu.learnenglish2017.fragment.Tab4Fragment;
 import com.tdt.tu.learnenglish2017.fragment.Tab5Fragment;
 import com.tdt.tu.learnenglish2017.helper.Constants;
+import com.tdt.tu.learnenglish2017.helper.RequestHandler;
 import com.tdt.tu.learnenglish2017.helper.SectionsPagerAdapter;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dmoral.toasty.Toasty;
 
 public class MainActivity extends AppCompatActivity {
     SectionsPagerAdapter sectionsPagerAdapter;
@@ -45,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth auth;
 
     private SharedPreferences.Editor editor;
+    private int isFirstLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,39 +67,32 @@ public class MainActivity extends AppCompatActivity {
         addBottomNavigationItems();
         setupBottomNavigationStyle();
         navigationTabHandler();
+        checkFirstLogin();
         createAppFolder();
     }
 
     private void askFirstQuiz() {
-        boolean isFirstRun = getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).getBoolean("first_run", true);
-        editor = getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).edit();
-
-        if (isFirstRun) {
-            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Hold on...");
-            builder.setMessage("Would you like to take a proficiency test ?");
-            builder.setIcon(R.drawable.ic_info_orange_24dp);
-            builder.setNegativeButton("Yes", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    startActivity(new Intent(MainActivity.this, FirstQuizActivity.class));
-                }
-            });
-            builder.setPositiveButton("No", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    dialogInterface.dismiss();
-                }
-            });
-            builder.create().show();
-
-            editor.putBoolean("first_run", false).commit();
-        }
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Hold on...");
+        builder.setMessage("Would you like to take a proficiency test ?");
+        builder.setIcon(R.drawable.ic_info_orange_24dp);
+        builder.setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                startActivity(new Intent(MainActivity.this, FirstQuizActivity.class));
+            }
+        });
+        builder.setPositiveButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        builder.create().show();
     }
 
     private void authentication() {
         auth = FirebaseAuth.getInstance();
-
         authListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -99,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(new Intent(MainActivity.this, LoginActivity.class));
                     finish();
                 }
+
             }
         };
     }
@@ -186,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             createAppFolder();
-            askFirstQuiz();
+            checkFirstLogin();
         }
     }
 
@@ -210,6 +213,94 @@ public class MainActivity extends AppCompatActivity {
             }
         } else {
             return true;
+        }
+    }
+
+    private void checkFirstLogin() {
+        HashMap<String, String> params = new HashMap();
+        params.put("email", getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).getString("email", ""));
+
+        CheckFirstLogin checkFirstLogin = new CheckFirstLogin(Constants.URL_CHECK_FIRST_LOGIN, params, Constants.CODE_POST_REQUEST);
+        checkFirstLogin.execute();
+    }
+
+    private void saveFirstLogin(String email) {
+        HashMap<String, String> params = new HashMap();
+        params.put("email", email);
+
+        SaveFirstLogin saveFirstLogin = new SaveFirstLogin(Constants.URL_SAVE_FIRST_LOGIN, params, Constants.CODE_POST_REQUEST);
+        saveFirstLogin.execute();
+    }
+
+    public class CheckFirstLogin extends AsyncTask<Void, Void, String> {
+
+        String url;
+        HashMap<String, String> params;
+        int requestCode;
+
+        CheckFirstLogin(String url, HashMap<String, String> params, int requestCode) {
+            this.url = url;
+            this.params = params;
+            this.requestCode = requestCode;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            try {
+                JSONObject object = new JSONObject(s);
+                if (!object.getBoolean("error")) {
+                    if (!object.getString("message").equals(""))
+                        Toasty.info(MainActivity.this, object.getString("message"), Toast.LENGTH_SHORT).show();
+                    isFirstLogin = object.getJSONArray("users").getJSONObject(0).getInt("first_login");
+
+                    if (isFirstLogin == 1) {
+                        saveFirstLogin(getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).getString("email", ""));
+                        askFirstQuiz();
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            RequestHandler requestHandler = new RequestHandler();
+
+            if (requestCode == Constants.CODE_POST_REQUEST)
+                return requestHandler.sendPostRequest(url, params);
+
+            if (requestCode == Constants.CODE_GET_REQUEST)
+                return requestHandler.sendGetRequest(url);
+
+            return null;
+        }
+    }
+
+    public class SaveFirstLogin extends AsyncTask<Void, Void, String> {
+
+        String url;
+        HashMap<String, String> params;
+        int requestCode;
+
+        SaveFirstLogin(String url, HashMap<String, String> params, int requestCode) {
+            this.url = url;
+            this.params = params;
+            this.requestCode = requestCode;
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            RequestHandler requestHandler = new RequestHandler();
+
+            if (requestCode == Constants.CODE_POST_REQUEST)
+                return requestHandler.sendPostRequest(url, params);
+
+            if (requestCode == Constants.CODE_GET_REQUEST)
+                return requestHandler.sendGetRequest(url);
+
+            return null;
         }
     }
 }

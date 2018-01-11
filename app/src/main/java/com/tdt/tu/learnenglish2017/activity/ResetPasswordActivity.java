@@ -57,7 +57,7 @@ public class ResetPasswordActivity extends AppCompatActivity implements View.OnC
                 break;
 
             case R.id.btnResetPassword:
-                String email = inputEmail.getText().toString().trim();
+                final String email = inputEmail.getText().toString().trim();
 
                 if (TextUtils.isEmpty(email)) {
                     Toasty.warning(getApplication(), "Enter your registered email", Toast.LENGTH_SHORT).show();
@@ -71,6 +71,8 @@ public class ResetPasswordActivity extends AppCompatActivity implements View.OnC
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
                                     Toasty.success(ResetPasswordActivity.this, "We have sent you instructions to reset your password", Toast.LENGTH_SHORT).show();
+                                    inputEmail.getText().clear();
+                                    inputEmail.clearFocus();
                                 } else {
                                     Toasty.error(ResetPasswordActivity.this, "Failed to send reset email", Toast.LENGTH_SHORT).show();
                                 }

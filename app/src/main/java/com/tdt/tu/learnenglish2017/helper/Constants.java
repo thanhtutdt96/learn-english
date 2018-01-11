@@ -76,5 +76,10 @@ public class Constants {
 
     public static String URL_SAVE_COURSE_RATING = ROOT_URL + "savecourserating";
 
+    public static String URL_CHECK_FIRST_LOGIN = ROOT_URL + "checkfirstlogin";
+
+    public static String URL_SAVE_FIRST_LOGIN = ROOT_URL + "savefirstlogin";
+
+    public static String URL_GET_TOTAL_PROGRESS = ROOT_URL + "gettotalprogress";
 
 }
