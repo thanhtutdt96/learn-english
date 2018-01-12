@@ -84,7 +84,7 @@ public class Tab5Fragment extends Fragment implements View.OnClickListener {
 
         name = view.getContext().getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).getString("username", "");
         email = view.getContext().getSharedPreferences(Constants.PREFERENCES_KEY, MODE_PRIVATE).getString("email", "");
-        txtEmail.setText(email);
+        txtEmail.setText("User: " + email);
 
         cvDoQuiz.setOnClickListener(this);
         btnLogout.setOnClickListener(this);
