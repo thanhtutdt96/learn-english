@@ -307,6 +307,7 @@ public class Tab2Fragment extends Fragment {
             intent.putExtra("price", courseList.get(position).getPrice());
             intent.putExtra("description", courseList.get(position).getDescription());
             intent.putExtra("link", courseList.get(position).getLink());
+            intent.putExtra("rating", courseList.get(position).getRating());
 
             startActivity(intent);
         }

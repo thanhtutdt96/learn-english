@@ -91,6 +91,7 @@ public class CourseFragment extends Fragment {
                     i.putExtra("price", courseList.get(recyclerViewItemPosition).getPrice());
                     i.putExtra("description", courseList.get(recyclerViewItemPosition).getDescription());
                     i.putExtra("link", courseList.get(recyclerViewItemPosition).getLink());
+                    i.putExtra("rating", courseList.get(recyclerViewItemPosition).getRating());
 
                     startActivity(i);
                 }

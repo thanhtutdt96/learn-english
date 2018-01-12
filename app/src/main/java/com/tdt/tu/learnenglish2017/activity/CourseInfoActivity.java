@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerFragment;
+import com.iarcuschin.simpleratingbar.SimpleRatingBar;
 import com.tdt.tu.learnenglish2017.R;
 import com.tdt.tu.learnenglish2017.helper.Constants;
 import com.tdt.tu.learnenglish2017.helper.RequestHandler;
@@ -51,6 +52,8 @@ public class CourseInfoActivity extends AppCompatActivity implements YouTubePlay
     ImageView ivBack;
     @BindView(R.id.btnRemove)
     Button btnRemove;
+    @BindView(R.id.ratingBar)
+    SimpleRatingBar ratingBar;
 
     private YouTubePlayerFragment youTubePlayerFragment;
     private int REQUEST_VIDEO = 1;
@@ -183,7 +186,9 @@ public class CourseInfoActivity extends AppCompatActivity implements YouTubePlay
         price = getIntent().getIntExtra("price", 0);
         description = getIntent().getStringExtra("description");
         link = getIntent().getStringExtra("link");
+        ratingBar.setRating(getIntent().getFloatExtra("rating", 0f));
         courseName.setText(name);
+
 
         SpannableString priceUnit = new SpannableString("đ" + String.valueOf(price));
         priceUnit.setSpan(new UnderlineSpan(), 0, 1, 0);

@@ -387,6 +387,8 @@ public class Tab1Fragment extends Fragment {
             intent.putExtra("price", list.get(position).getPrice());
             intent.putExtra("description", list.get(position).getDescription());
             intent.putExtra("link", list.get(position).getLink());
+            intent.putExtra("rating", list.get(position).getRating());
+
             startActivity(intent);
         }
     }

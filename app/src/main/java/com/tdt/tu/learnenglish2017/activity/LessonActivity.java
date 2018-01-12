@@ -64,11 +64,21 @@ public class LessonActivity extends AppCompatActivity implements YouTubePlayer.O
 
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
+
     private void ratingBarHandler() {
         ratingBar.setOnRatingBarChangeListener(new SimpleRatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(SimpleRatingBar simpleRatingBar, float rating, boolean fromUser) {
                 saveCourseRating(rating);
+
+                Intent intent = new Intent();
+                intent.setAction("refresh_user_courses");
+                sendBroadcast(intent);
             }
         });
     }

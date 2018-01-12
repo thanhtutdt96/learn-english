@@ -284,6 +284,7 @@ public class FirstQuizResultActivity extends AppCompatActivity implements View.O
             intent.putExtra("price", suggestionList.get(position).getPrice());
             intent.putExtra("description", suggestionList.get(position).getDescription());
             intent.putExtra("link", suggestionList.get(position).getLink());
+            intent.putExtra("rating", suggestionList.get(position).getRating());
 
             startActivity(intent);
         }

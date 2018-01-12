@@ -146,6 +146,7 @@ public class Tab4Fragment extends Fragment {
             intent.putExtra("price", favoriteList.get(position).getPrice());
             intent.putExtra("description", favoriteList.get(position).getDescription());
             intent.putExtra("link", favoriteList.get(position).getLink());
+            intent.putExtra("rating", favoriteList.get(position).getRating());
 
             startActivity(intent);
         }
