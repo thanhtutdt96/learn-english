@@ -136,6 +136,8 @@ public class Tab4Fragment extends Fragment {
 
             Intent intent = new Intent(view.getContext(), LessonActivity.class);
             intent.putExtra("course_name", favoriteList.get(position).getCourseName());
+            intent.putExtra("link", favoriteList.get(position).getLink());
+
             startActivity(intent);
         } else {
             Intent intent = new Intent(view.getContext(), CourseInfoActivity.class);

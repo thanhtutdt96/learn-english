@@ -263,10 +263,10 @@ public class CourseInfoActivity extends AppCompatActivity implements YouTubePlay
         return (YouTubePlayerFragment) getFragmentManager().findFragmentById(R.id.youtubePlayerFragment);
     }
 
-    private void refreshCourseIdList(JSONArray questions) throws JSONException {
+    private void refreshCourseIdList(JSONArray courses) throws JSONException {
         favoriteCourseIdList.clear();
-        for (int i = 0; i < questions.length(); i++) {
-            JSONObject obj = questions.getJSONObject(i);
+        for (int i = 0; i < courses.length(); i++) {
+            JSONObject obj = courses.getJSONObject(i);
             favoriteCourseIdList.add(obj.getString("course_id"));
         }
     }
@@ -302,7 +302,7 @@ public class CourseInfoActivity extends AppCompatActivity implements YouTubePlay
                 JSONObject object = new JSONObject(s);
                 if (!object.getBoolean("error")) {
                     if (!object.getString("message").equals(""))
-                        Toasty.info(CourseInfoActivity.this, object.getString("message"), Toast.LENGTH_SHORT).show();
+                        Toasty.success(CourseInfoActivity.this, object.getString("message"), Toast.LENGTH_SHORT).show();
                     refreshCourseIdList(object.getJSONArray("course_ids"));
                     buttonHandler();
                 }

@@ -378,6 +378,7 @@ public class Tab1Fragment extends Fragment {
 
             Intent intent = new Intent(view.getContext(), LessonActivity.class);
             intent.putExtra("course_name", list.get(position).getCourseName());
+            intent.putExtra("link", list.get(position).getLink());
             startActivity(intent);
         } else {
             Intent intent = new Intent(view.getContext(), CourseInfoActivity.class);
@@ -386,7 +387,6 @@ public class Tab1Fragment extends Fragment {
             intent.putExtra("price", list.get(position).getPrice());
             intent.putExtra("description", list.get(position).getDescription());
             intent.putExtra("link", list.get(position).getLink());
-
             startActivity(intent);
         }
     }

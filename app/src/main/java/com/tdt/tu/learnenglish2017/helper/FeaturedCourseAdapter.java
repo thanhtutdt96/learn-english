@@ -41,7 +41,7 @@ public class FeaturedCourseAdapter extends RecyclerView.Adapter<FeaturedCourseAd
     }
 
     @Override
-    public void onBindViewHolder(FeaturedCourseAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(final FeaturedCourseAdapter.ViewHolder holder, int position) {
         Course course = list.get(position);
         Picasso.with(context).load(course.getImage()).into(holder.icon);
         holder.title.setText(course.getCourseName());

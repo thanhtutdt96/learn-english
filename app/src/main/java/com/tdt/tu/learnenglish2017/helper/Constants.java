@@ -82,4 +82,6 @@ public class Constants {
 
     public static String URL_GET_TOTAL_PROGRESS = ROOT_URL + "gettotalprogress";
 
+    public static String URL_GET_SCORE_RANK = ROOT_URL + "getscorerank";
+
 }

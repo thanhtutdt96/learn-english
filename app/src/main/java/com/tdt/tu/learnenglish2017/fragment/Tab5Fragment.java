@@ -57,6 +57,8 @@ public class Tab5Fragment extends Fragment implements View.OnClickListener {
     DonutProgress circleProgress;
     @BindView(R.id.txtProgress)
     TextView txtProgress;
+    @BindView(R.id.txtRanking)
+    TextView txtRanking;
 
     private View view;
 
@@ -71,7 +73,7 @@ public class Tab5Fragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment5, container, false);
         init();
-        getTotalProgress();
+        setContent();
         return view;
     }
 
@@ -163,12 +165,21 @@ public class Tab5Fragment extends Fragment implements View.OnClickListener {
         transaction.commit();
     }
 
-    private void getTotalProgress() {
+    private void setContent() {
         HashMap<String, String> params = new HashMap();
         params.put("email", email);
 
         GetTotalProgress getTotalProgress = new GetTotalProgress(Constants.URL_GET_TOTAL_PROGRESS, params, Constants.CODE_POST_REQUEST);
         getTotalProgress.execute();
+
+        GetScoreRank getScoreRank = new GetScoreRank(Constants.URL_GET_SCORE_RANK, params, Constants.CODE_POST_REQUEST);
+        getScoreRank.execute();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setContent();
     }
 
     public class GetTotalProgress extends AsyncTask<Void, Void, String> {
@@ -212,4 +223,44 @@ public class Tab5Fragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    public class GetScoreRank extends AsyncTask<Void, Void, String> {
+
+        String url;
+        HashMap<String, String> params;
+        int requestCode;
+
+        GetScoreRank(String url, HashMap<String, String> params, int requestCode) {
+            this.url = url;
+            this.params = params;
+            this.requestCode = requestCode;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            try {
+                JSONObject object = new JSONObject(s);
+                if (!object.getBoolean("error")) {
+                    int scoreOrder = object.getJSONArray("results").getJSONObject(0).getInt("score_order");
+                    int totalResult = object.getJSONArray("results").getJSONObject(0).getInt("total_result");
+                    txtRanking.setText("#" + scoreOrder + " / " + totalResult);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            RequestHandler requestHandler = new RequestHandler();
+
+            if (requestCode == Constants.CODE_POST_REQUEST)
+                return requestHandler.sendPostRequest(url, params);
+
+            if (requestCode == Constants.CODE_GET_REQUEST)
+                return requestHandler.sendGetRequest(url);
+
+            return null;
+        }
+    }
 }

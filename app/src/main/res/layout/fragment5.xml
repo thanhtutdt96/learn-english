@@ -117,11 +117,10 @@
 
                 <TextView
                     android:id="@+id/txtRanking"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/ivRanking"
-                    android:text="#10 / 50 users"
-                    android:textAlignment="center"
+                    android:layout_centerHorizontal="true"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
                     android:textColor="@color/colorOrange"
                     android:textStyle="bold" />

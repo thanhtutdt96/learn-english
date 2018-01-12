@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/enroll_now"
+        android:orderInCategory="100"
+        android:title="Enroll Now" />
+    <item
+        android:id="@+id/add_to_favorite"
+        android:orderInCategory="101"
+        android:title="Add to Favorite" />
+
+</menu>
