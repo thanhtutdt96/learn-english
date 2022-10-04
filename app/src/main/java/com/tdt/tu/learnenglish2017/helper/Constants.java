@@ -12,7 +12,7 @@ public class Constants {
 
     public static String DOWNLOAD_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LearnEnglish2017/Download/";
 
-    private static String ROOT_URL = "http://learnenglish2017.tk/app-service/api.php?apicall=";
+    private static String ROOT_URL = "http://learn-english-api.000webhostapp.com/v1/api.php?apicall=";
 
     public static String URL_GET_LESSONS_BY_COURSE_ID = ROOT_URL + "getlessonsbycourseid";
 
