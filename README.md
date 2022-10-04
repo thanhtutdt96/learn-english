@@ -1,5 +1,5 @@
 # Learn English
-An Android app simplify the English learning curves by providing lots of useful courses and lessons, effectively and efficiently teach reading, listening, and speaking skills.
+An Android app simplify the English learning curves by providing lots of useful courses and lessons, effectively and efficiently teach reading, listening, and speaking skills. Built with Android Studio.
 
 ## Main features
 
