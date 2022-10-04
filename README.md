@@ -4,10 +4,11 @@ An Android app simplify the English learning curves by providing lots of useful 
 ## Main features
 
 - User authentication (Firebase)
-- List out top courses, lessons & categories
+- List out top courses, lessons, categories
 - Enroll courses & save the learning progress
-- Lesson Q&A, comments , Quiz
-- Save & view favorite courses
+- Search for course
+- Lesson Q&A, comments , quiz
+- Save & view favorite courses, add rating
 - Download lessons & view offline
 
 ## APK
